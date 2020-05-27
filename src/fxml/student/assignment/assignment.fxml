@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+ * 작성자 : 도현호
+ -->
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="768.0" prefWidth="1024.0" style="-fx-background-color: #F4F4F4;"
+			xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+			fx:controller="student.tasks.AssignmentController" fx:id = "assignPane" >
+   <children>
+		<!-- 창크기 좌우 15px여백을 위해 x좌표 15와 1024에서 30만큼 뺀 가로크기 지정 -->
+		<TableView fx:id="tableView" layoutX="15.0" layoutY="40.0" prefHeight="580.0" prefWidth="994.0">
+			<columns>
+				<TableColumn fx:id="colTaskNo" prefWidth="70.0" text="No." />
+				<TableColumn fx:id="colTaskName" prefWidth="320.0" text="과제명" />
+				<TableColumn fx:id="colTaskSubmit" prefWidth="102.0" text="제출여부" />
+				<TableColumn fx:id="colTaskSubmissionDate" prefWidth="130.0" text="제출날짜" />
+				<TableColumn fx:id="colTaskDeadlineDate" prefWidth="130.0" text="마감날짜" />
+				<TableColumn fx:id="colTaskScore" prefWidth="120.0" text="점수" />
+				<TableColumn fx:id="colTaskAssign" prefWidth="120.0" text="과제제출" />
+			</columns>
+		</TableView>
+		<ProgressBar fx:id="pgbScore" layoutX="559" layoutY="640.0" prefWidth="200.0" prefHeight="25" progress="0.0" />
+		<Label layoutX="559.0" layoutY="670.0" prefWidth="40.0" text="점수 : " />
+		<Label fx:id="lblMyScore" layoutX="599.0" layoutY="670.0" prefWidth="40.0" />
+		<Label alignment="CENTER" layoutX="639.0" layoutY="670.0" prefWidth="20.0" text="/" />
+		<Label fx:id="lblPerfectScore" layoutX="659.0" layoutY="672.0" prefWidth="40.0" />
+		<ProgressBar fx:id="pgbSubmitCnt" layoutX="809" layoutY="640.0" prefWidth="200.0" prefHeight="25" progress="0.0" />
+		<Label layoutX="809" layoutY="670" prefWidth="65.0" text="과제 개수 :" />
+		<Label fx:id="lblTotalTask" layoutX="874" layoutY="670.0" prefWidth="40.0" />
+		<Label alignment="CENTER" layoutX="914" layoutY="670" prefWidth="20.0" text="/" />
+		<Label fx:id="lblSubmitTask" layoutX="934" layoutY="670" prefWidth="40.0" />
+   </children>
+</AnchorPane>
+
