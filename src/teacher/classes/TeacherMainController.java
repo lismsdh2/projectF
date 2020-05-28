@@ -49,12 +49,20 @@ import main.Main_Master_Controller;
 import util.Navigator;
 
 public class TeacherMainController extends Main_Master_Controller implements Initializable {
+	
+	UserDto user = AppMain.app.getUser();
+	//LoginUser user = Information.info.getUser();
+	String userid = user.getId();
+	String username = user.getName();
+
 	@FXML
 	private AnchorPane teacherMain;
 	@FXML
 	private TextField txtSearch;
 	@FXML
 	private TableView<ClassDto> classTableView;
+	ObservableList<ClassDto> classList = FXCollections.observableArrayList();
+	ClassDao cDao = new ClassDao();
 	@FXML
 	private TableColumn<ClassDto, ?> tcClassNo;
 	@FXML
@@ -71,14 +79,6 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 	private TableColumn<ClassDto, Boolean> modify;
 	@FXML 
 	private TableColumn<ClassDto, Boolean> detail;
-	
-	UserDto user = AppMain.app.getUser();
-	//LoginUser user = Information.info.getUser();
-	String userid = user.getId();
-	String username = user.getName();
-	ObservableList<ClassDto> classList = FXCollections.observableArrayList();
-	ClassDao cDao = new ClassDao();
-
 
 	Stage classListStage;
 
@@ -106,7 +106,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 			if (selectedRowClass != null) {
 				AppMain.app.setClassno(selectedRowClass.getClassNo());
 				//Information.info.setClassNo(selectedRowClass.getClassNo());
-				Navigator.loadPages("../fxml/teacher/tasks/TaskList.fxml");
+				Navigator.loadPages("../fxml/tasks/TaskList.fxml");
 			}
 		}
 	}
@@ -172,7 +172,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 						dialog.setTitle("강의수정");
 										
 						try {
-							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/update_class.fxml"));
+							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/classes/update_class.fxml"));
 							ClassDto class1 = cDao.selectClassOne(selectedClassNo);
 							
 							TextField txtClassName = (TextField) parent.lookup("#className");
@@ -220,15 +220,22 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 									LocalDate startDate = localDateStartDate.getValue();
 									LocalDate endDate = localDateEndDate.getValue();
 									int limitStudent = 0;
+									long day1 = 0;
+									long day2 = 0;
+									
 									try {
 										limitStudent = Integer.parseInt(txtLimitStudent.getText());										
 									} catch (Exception e) {}
 									
 									//시작일과 종료일을 비교
-									long day1 = ChronoUnit.DAYS.between(startDate,endDate);
+									if(startDate!=null && endDate!=null) {
+										day1 = ChronoUnit.DAYS.between(startDate,endDate);					
+									}
 									//종료일과 오늘날짜를 비교
 									LocalDate today = LocalDate.now();
-									long day2 = ChronoUnit.DAYS.between(today,endDate);
+									if(endDate!=null) {
+										day2 = ChronoUnit.DAYS.between(today,endDate);
+									}
 									
 									Alert alert = new Alert(AlertType.INFORMATION);
 									if(className.length()==0) {
@@ -334,7 +341,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 						dialog.setTitle("강의상세보기");
 						
 						try {
-							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/detail_class.fxml"));
+							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/classes/detail_class.fxml"));
 							ClassDto classDto = cDao.selectClassOne(selectedClassNo);
 									
 							Label txtClassName = (Label) parent.lookup("#className");
@@ -388,7 +395,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		dialog.initOwner(teacherMain.getScene().getWindow());
 		dialog.setTitle("강의추가");
 						
-		Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/add_class.fxml"));
+		Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/classes/add_class.fxml"));
 		
 		TextField txtClassName = (TextField) parent.lookup("#className");
 		Label txtTeacherName = (Label) parent.lookup("#teacherName");
@@ -418,8 +425,11 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 				String className = txtClassName.getText();
 				String description = txtDescription.getText();
 				LocalDate startDate = localDateStartDate.getValue();
-				LocalDate endDate = localDateEndDate.getValue();
+				LocalDate endDate = localDateEndDate.getValue();				
 				int limitStudent = 0;
+				long day1 = 0;
+				long day2 = 0;
+				
 				try {
 					limitStudent = Integer.parseInt(txtLimitStudent.getText());
 				} catch (Exception e) {}
@@ -427,10 +437,14 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 				String teacherid = userid;
 				
 				//시작일과 종료일을 비교
-				long day1 = ChronoUnit.DAYS.between(startDate,endDate);
+				if(startDate!=null && endDate!=null) {
+					day1 = ChronoUnit.DAYS.between(startDate,endDate);					
+				}
 				//종료일과 오늘날짜를 비교
 				LocalDate today = LocalDate.now();
-				long day2 = ChronoUnit.DAYS.between(today,endDate);
+				if(endDate!=null) {
+					day2 = ChronoUnit.DAYS.between(today,endDate);
+				}
 				
 				Alert alert = new Alert(AlertType.INFORMATION);
 				if(className.length()==0) {
