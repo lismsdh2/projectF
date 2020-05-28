@@ -172,7 +172,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 						dialog.setTitle("강의수정");
 										
 						try {
-							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/classes/update_class.fxml"));
+							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/update_class.fxml"));
 							ClassDto class1 = cDao.selectClassOne(selectedClassNo);
 							
 							TextField txtClassName = (TextField) parent.lookup("#className");
@@ -341,7 +341,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 						dialog.setTitle("강의상세보기");
 						
 						try {
-							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/classes/detail_class.fxml"));
+							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/detail_class.fxml"));
 							ClassDto classDto = cDao.selectClassOne(selectedClassNo);
 									
 							Label txtClassName = (Label) parent.lookup("#className");
@@ -395,7 +395,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		dialog.initOwner(teacherMain.getScene().getWindow());
 		dialog.setTitle("강의추가");
 						
-		Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/classes/add_class.fxml"));
+		Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/add_class.fxml"));
 		
 		TextField txtClassName = (TextField) parent.lookup("#className");
 		Label txtTeacherName = (Label) parent.lookup("#teacherName");
