@@ -106,7 +106,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 			if (selectedRowClass != null) {
 				AppMain.app.setClassno(selectedRowClass.getClassNo());
 				//Information.info.setClassNo(selectedRowClass.getClassNo());
-				Navigator.loadPages("../fxml/tasks/TaskList.fxml");
+				Navigator.loadPages("../fxml/teacher/tasks/TaskList.fxml");
 			}
 		}
 	}
