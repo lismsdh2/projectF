@@ -13,6 +13,8 @@ import DTO.UserDto;
 import DTO.TaskDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -67,7 +69,7 @@ public class TaskListController extends Main_Master_Controller implements Initia
 	String userid = user.getId();
 	int classno = AppMain.app.getClassno();
 	ClassDao cDao = new ClassDao();
-	ClassDto nowClass = cDao.selectClassOne(classno);;
+	ClassDto nowClass = cDao.selectClassOne(classno);
 	
 	TaskDao tDao = new TaskDao();
 
@@ -75,7 +77,7 @@ public class TaskListController extends Main_Master_Controller implements Initia
 	ObservableList<String> classNameList = FXCollections.observableArrayList();
 
 	Stage reportListStage;
-	TaskCreateController tcController = new TaskCreateController(this);
+	//TaskCreateController tcController = new TaskCreateController(this);
 	TaskModifyController tmController = new TaskModifyController(this);
 
 	public void setPrimaryStage(Stage reportListStage) {
@@ -92,8 +94,16 @@ public class TaskListController extends Main_Master_Controller implements Initia
 		setTableColumns();
 
 		// 과제 생성 버튼
-		btnReportCreate.setOnAction(e -> tcController.showStage());
-
+		//btnReportCreate.setOnAction(e -> tcController.showStage());
+		btnReportCreate.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				TaskCreateController tcController = new TaskCreateController(TaskListController.this);
+				tcController.showStage();
+			}
+		});
+		
 		// 과제 더블클릭 -> 상세 페이지
 		tblViewReport.setOnMouseClicked(e -> handleClicked(e));
 		
@@ -136,9 +146,8 @@ public class TaskListController extends Main_Master_Controller implements Initia
 				TaskDto selected = tblViewReport.getSelectionModel().getSelectedItem();
 				if (selected != null) { // 상단제목바 누르면 null임
 					System.out.println(selected.toString());
-//					int selectedNo = selected.getTcNo();
-					Navigator.loadPages("../fxml/teacher/tasks/TaskListDetail.fxml");
-
+					int selectedNo = selected.getTcNo();
+					Navigator.loadPages("../fxml/tasks/TaskListDetail.fxml");
 				}
 			}
 		}
@@ -232,10 +241,12 @@ public class TaskListController extends Main_Master_Controller implements Initia
 	public void refreshTable() {
 		if(classno == 0) {
 			taskList = tDao.selectUserTaskList(userid);
-			tblViewReport.setItems(taskList);			
+			tblViewReport.setItems(taskList);	
+			btnReportCreate.setVisible(false);
 		} else {
 			taskList = tDao.selectUserClassTaskList(userid, classno);
 			tblViewReport.setItems(taskList);
+			btnReportCreate.setVisible(true);
 		}
 	}
 }
