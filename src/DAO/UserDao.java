@@ -205,7 +205,7 @@ public class UserDao {
 				if(name.equals(name2)&&email.equals(email2)&&id.equals(id2)) {
 
 					try {
-						Parent parent = FXMLLoader.load(getClass().getResource("search_password2.fxml"));
+						Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password2.fxml"));
 						Scene scene = new Scene(parent);
 						Stage stage = new Stage();
 						stage.setScene(scene);
