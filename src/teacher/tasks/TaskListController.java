@@ -147,7 +147,7 @@ public class TaskListController extends Main_Master_Controller implements Initia
 				if (selected != null) { // 상단제목바 누르면 null임
 					System.out.println(selected.toString());
 					int selectedNo = selected.getTcNo();
-					Navigator.loadPages("../fxml/tasks/TaskListDetail.fxml");
+					Navigator.loadPages("../fxml/teacher/tasks/TaskListDetail.fxml");
 				}
 			}
 		}
