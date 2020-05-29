@@ -7,25 +7,21 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.collections.*?>
 
-<AnchorPane prefHeight="583.0" prefWidth="382.0"
-			xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-			fx:controller="login.signupController">
+<AnchorPane prefHeight="583.0" prefWidth="382.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.signupController">
    <children>
       <Label layoutX="53.0" layoutY="153.0" text="아이디" />
       <Label layoutX="93.0" layoutY="146.0" text="*" textFill="#e80d0d" />
       <Label layoutX="79.0" layoutY="208.0" text="*" textFill="#e80d0d" />
       <Label layoutX="58.0" layoutY="215.0" text="이름" />
-      <TextField fx:id="idfield" layoutX="145.0" layoutY="145.0" prefHeight="32.0" prefWidth="181.0" promptText="내용을 입력해주세요" />
+      <TextField fx:id="idfield" layoutX="145.0" layoutY="145.0" prefHeight="32.0" prefWidth="128.0" promptText="내용을 입력해주세요" />
       <Separator layoutX="59.0" layoutY="199.0" prefHeight="2.0" prefWidth="267.0" />
       <TextField fx:id="namefield" layoutX="145.0" layoutY="208.0" prefHeight="32.0" prefWidth="181.0" promptText="내용을 입력해주세요" />
       <Separator layoutX="59.0" layoutY="262.0" prefHeight="3.0" prefWidth="267.0" />
-      <TextField fx:id="passfield" layoutX="145.0" layoutY="269.0" prefHeight="32.0" prefWidth="181.0" promptText="내용을 입력해주세요" />
       <Separator layoutX="59.0" layoutY="321.0" prefHeight="3.0" prefWidth="267.0" />
       <Label layoutX="60.0" layoutY="276.0" text="비밀번호" />
       <Label layoutX="105.0" layoutY="269.0" text="*" textFill="#e80d0d" />
       <Label layoutX="62.0" layoutY="343.0" text="비밀번호 확인" />
       <Label layoutX="135.0" layoutY="336.0" text="*" textFill="#e80d0d" />
-      <TextField fx:id="repassfield" layoutX="145.0" layoutY="331.0" prefHeight="32.0" prefWidth="181.0" promptText="내용을 입력해주세요" />
       <Separator layoutX="59.0" layoutY="384.0" prefHeight="3.0" prefWidth="267.0" />
       <Label layoutX="62.0" layoutY="400.0" text="이메일" />
       <TextField fx:id="emailfield" layoutX="145.0" layoutY="394.0" prefHeight="32.0" prefWidth="76.0" promptText="내용을 입력해주세요" />
@@ -95,8 +91,13 @@
                <String fx:value="naver.com" />
                <String fx:value="daum.net" />
                <String fx:value="google.com" />
+               <String fx:value="직접입력" />
             </FXCollections>
+            
          </items>
       </ComboBox>
+      <Button fx:id="check" layoutX="275.0" layoutY="150.0" mnemonicParsing="false" text="중복체크" />
+      <PasswordField fx:id="passfield" layoutX="145.0" layoutY="273.0" prefHeight="32.0" prefWidth="181.0" promptText="비밀번호를 입력해주세요" />
+      <PasswordField fx:id="repassfield" layoutX="145.0" layoutY="335.0" prefHeight="32.0" prefWidth="181.0" promptText="비밀번호를 입력해주세요" />
    </children>
 </AnchorPane>

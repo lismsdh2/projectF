@@ -13,15 +13,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import launch.AppMain;
 
 public class LoginController implements Initializable {
 	
 	@FXML private TextField id;
-	@FXML private TextField password;
+	@FXML private PasswordField password;
 	@FXML private Button idsearch;
 	@FXML private Button passsearch;
 	@FXML private Button signup;
@@ -63,10 +66,12 @@ public class LoginController implements Initializable {
 		UserDto user = bDao.selectOne(new UserDto(loginid, loginpas, logintype));
 
 		if (user == null) {
-			System.out.println("아이디 또는 비밀번호가 틀렸습니다.");
+				Alert alert =new Alert(AlertType.INFORMATION);
+				alert.setContentText("로그인 실패: 아이디 혹은 비밀번호가 틀립니다.");
+			    alert.show();
 			return;
-
-		} else { // user != null
+		} 
+		else { // user != null
 			// 로그인한 유저정보 넘겨주기
 			AppMain.app.setUser(user);
 			Parent root = null;

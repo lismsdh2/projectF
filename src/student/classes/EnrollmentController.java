@@ -42,7 +42,7 @@ public class EnrollmentController implements Initializable{
 	
 	private ObservableList<EnrollmentDto> list;
 //	private Stage enrollmentStage;				//현재로서는 필요 없는 부분이지만, 전체 연동 시 필요 함
-	public EnrollmentDao eDao = new EnrollmentDao();
+	private EnrollmentDao eDao = new EnrollmentDao();
 	private EnrollmentPopupController popupController = new EnrollmentPopupController(this);
 
 	//생성자

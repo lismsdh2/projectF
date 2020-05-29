@@ -71,7 +71,7 @@ public class JdbcUtil {
 	public void disconnect(Connection connection, PreparedStatement pstmt, ResultSet rs) {
 		
 		try {
-			if(rs != null & !rs.isClosed()) rs.close();									//ResultSet 종료
+			if(rs != null && !rs.isClosed()) rs.close();									//ResultSet 종료
 			if(pstmt != null && !pstmt.isClosed()) pstmt.close();						//PreparedStatement 종료
 			if(connection != null && !connection.isClosed()) connection.close();		//Connection 종료
 			System.out.println("드라이버 종료 성공");

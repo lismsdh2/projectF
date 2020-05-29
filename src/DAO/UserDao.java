@@ -257,4 +257,41 @@ public class UserDao {
 			ju.disconnect(connection, pstmt, rs);
 		}
 	}
+	 public void check(String id) { //중복체크
+		 
+		    connectionJDBC(); //DB연결
+		    
+			int count=0;
+			
+			String sql = "select count(*) from user where user_id=?;";
+	
+			Alert alert =new Alert(AlertType.INFORMATION);
+	
+			try {
+				//학생
+				pstmt = connection.prepareStatement(sql);
+				pstmt.setString(1, id);				 
+				ResultSet rs = pstmt.executeQuery();
+				
+		
+				 if (rs.next()) {  
+		            	String count2 = rs.getString("count(*)");
+		            	count = Integer.parseInt(count2);
+				 }
+				 
+				 System.out.println(count);
+				 
+				 if(count>=1) {
+					    alert.setContentText("이미 사용 중인 아이디 입니다.");
+					    alert.show();
+					 throw new Exception();
+				 }
+				 else {
+					    alert.setContentText("사용가능 한 아이디 입니다.");
+					    alert.show();
+				    }
+			     }catch (Exception e) {
+				   System.out.println("중복체크 에러");
+				} 
+		}
 }

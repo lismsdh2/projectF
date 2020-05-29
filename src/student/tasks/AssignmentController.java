@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import DAO.AssignmentDao;
 import DTO.AssignmentDto;
+import DTO.UserDto;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -24,6 +25,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import launch.AppMain;
 import student.tasks.popup.AssignmentPopupController_no;
 import student.tasks.popup.AssignmentPopupController_yes;
 
@@ -45,16 +47,17 @@ public class AssignmentController implements Initializable{
     @FXML private Label lblMyScore;
     @FXML private Label lblPerfectScore;
 
-    private int class_no = 1001;						//강의번호 - 추후 연동 필요
-//    private int task_no = 10001;						//과제번호 - 추후 연동 필요
-    private String student_id = "abcabc";				//학생ID - 추후 연동 필요
     private Task<Void> task;
     private ObservableList<AssignmentDto> list;
 	private Stage assignmentStage;				//현재로서는 필요 없는 부분이지만, 전체 연동 시 필요 함
-    AssignmentDto assign = new AssignmentDto();
-	public AssignmentDao aDao = new AssignmentDao();
+    private AssignmentDto assign = new AssignmentDto();
+	private AssignmentDao aDao = new AssignmentDao();
+	private UserDto uDto = AppMain.app.getUser();
 	private AssignmentPopupController_no popupController_no = new AssignmentPopupController_no(this);
 	private AssignmentPopupController_yes popupController_yes = new AssignmentPopupController_yes(this); 
+	private int class_no = 1001;						//강의번호 - 추후 연동 필요
+//    private int task_no = 10001;						//과제번호 - 추후 연동 필요
+	private String student_id = uDto.getId();				//학생ID - 추후 연동 필요
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -108,7 +111,6 @@ public class AssignmentController implements Initializable{
 							//과제번호 생성
 							int c_no = 1001;					//연동해야됨
 							int t_no = assign.getTask_no();		//테이블에서 과제번호 연동 완료
-							String stu_id = "abcabc";			//연동해야됨
 							if(assign.getSubmitornot().equals("N")) {
 								
 								System.out.println("처음 제출");
@@ -123,7 +125,6 @@ public class AssignmentController implements Initializable{
 								System.out.println("assign : " + t_no);
 								popupController_yes.setClassno(c_no);
 								popupController_yes.setTaskno(t_no);
-								popupController_yes.setStu_id(stu_id);
 								openPopupWindow_yes();							//재 제출시 상세화면창 열기
 								refreshTable();									//저장 후 리스트 새로 고침
 							}
@@ -167,7 +168,6 @@ public class AssignmentController implements Initializable{
 		
 		int c_no = 1001;					//연동해야됨
 		int t_no = assign.getTask_no();		//연동해야됨
-		String stu_id = "abcabc";			//연동해야됨
 		if (event.getButton().equals(MouseButton.PRIMARY)) {
 			
 			if (event.getClickCount() == 2) {
@@ -187,7 +187,6 @@ public class AssignmentController implements Initializable{
 					System.out.println("assign : " + t_no);
 					popupController_yes.setClassno(c_no);
 					popupController_yes.setTaskno(t_no);
-					popupController_yes.setStu_id(stu_id);
 					openPopupWindow_yes();							//재 제출시 상세화면창 열기
 					refreshTable();									//저장 후 리스트 새로 고침
 					
@@ -279,4 +278,3 @@ public class AssignmentController implements Initializable{
 	}
 	
 }
-

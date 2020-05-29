@@ -17,8 +17,10 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import DAO.AssignmentDao;
 import DTO.AssignmentDto;
 import DTO.AssignmentPopupDto;
+import DTO.UserDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,6 +35,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import launch.AppMain;
 import student.tasks.AssignmentController;
 
 public class AssignmentPopupController_yes implements Initializable {
@@ -51,12 +54,14 @@ public class AssignmentPopupController_yes implements Initializable {
 	@FXML private Button btnSubmit;
 	@FXML private Button btnCancle;
 
+	private AssignmentController assignmentController;
+	private AssignmentDao aDao = new AssignmentDao();
+	private AssignmentDto assign = new AssignmentDto();
+	private UserDto uDto = AppMain.app.getUser();
+	private Stage popupStage;
 	private int c_no;
 	private int t_no;
-	private String Stu_id;
-	private AssignmentController assignmentController;
-	private AssignmentDto assign = new AssignmentDto();
-	private Stage popupStage;
+	private String Stu_id = uDto.getId();
 	
 	public AssignmentPopupController_yes(AssignmentController assignmentController) {
 		
@@ -77,7 +82,8 @@ public class AssignmentPopupController_yes implements Initializable {
 
 	//과제제출 상세화면 띄우기
 	public void showStage() {
-	
+		System.out.println("t_no : " + t_no);
+		System.out.println("Stu_id : " + Stu_id);
 		assignView(this.t_no, this.Stu_id);
 //		popupStage.initModality(Modality.NONE);
 		try {
@@ -101,18 +107,12 @@ public class AssignmentPopupController_yes implements Initializable {
 		this.t_no = t_no;
 	}
 	
-	// 학생 ID 받기
-	
-	public void setStu_id(String Stu_id) {
-		
-		this.Stu_id = Stu_id;
-	}
-	
 	//화면에 정보 뿌리기
 	
 	public void assignView(int t_no, String Stu_id) {
-	
-		assign = assignmentController.aDao.assignment_selectOne(t_no, Stu_id);
+
+		assign = aDao.assignment_selectOne(t_no, Stu_id);
+
 		lblTaskName.setText(assign.getTask_name());									//과제명
 		lblTaskDesc.setText(assign.getTask_desc());									//과제설명
 		lblMyScore.setText(Integer.toString(assign.getMyScore()));					//내 점수
@@ -231,14 +231,14 @@ public class AssignmentPopupController_yes implements Initializable {
             	
             	int class_no = 1001;						// 강의번호연동해야됨
             	int task_no = this.t_no;					// 과제번호연동해야됨
-            	String stu_id = "abcabc"; 					// 학생ID연동해야됨
+            	String stu_id = uDto.getId(); 					// 학생ID연동해야됨
             	String taskQuestion = txtQuestion.getText();
             	byte[] taskFile = assign.getTaskFile();
             	String taskFile_name = assign.getTaskFile_name();
             	
             	//submitTask DTO
             	AssignmentPopupDto sTask = new AssignmentPopupDto(class_no, task_no, stu_id, taskQuestion, taskFile, taskFile_name);
-            	assignmentController.aDao.resubmit_Assignment(sTask);
+            	aDao.resubmit_Assignment(sTask);
             	alertInformation("제출되었습니다");
             }
 		} catch (SQLException e) {
@@ -286,7 +286,4 @@ public class AssignmentPopupController_yes implements Initializable {
 			popupStage.close();
 		}
 	}
-	
-	
 }
-

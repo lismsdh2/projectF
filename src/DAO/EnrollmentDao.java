@@ -41,15 +41,10 @@ public class EnrollmentDao {
 		//DB연결
 		connectionJDBC();
 	
-			//접속종료
-			ju.disconnect(connection, pstmt, rs);
 		try {
 			
 			String sql = "insert into request_class values (?,?);";
 			pstmt = connection.prepareStatement(sql);
-			
-			System.out.println(rCls.getStu_id());
-			System.out.println(rCls.getClass_no());
 			pstmt.setString(1, rCls.getStu_id());			//학생 ID
 			pstmt.setInt(2, rCls.getClass_no());			//강의 no
 			pstmt.executeUpdate();

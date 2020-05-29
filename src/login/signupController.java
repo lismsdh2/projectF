@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 
 import DAO.UserDao;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -12,6 +13,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -20,8 +22,8 @@ public class signupController implements Initializable {
 	
 	@FXML private TextField idfield;
 	@FXML private TextField namefield;
-	@FXML private TextField passfield;
-	@FXML private TextField repassfield;
+	@FXML private PasswordField passfield;
+	@FXML private PasswordField repassfield;
 	@FXML private TextField emailfield;
 	@FXML private ComboBox combobox;
 	@FXML private ComboBox email2;
@@ -31,6 +33,7 @@ public class signupController implements Initializable {
 	@FXML private Button cancle; 
 	@FXML private Button student;
 	@FXML private Button teacher;
+	@FXML private Button check;
 	@FXML private Label idlabel;
 	@FXML private Label namelabel;
 	@FXML private Label emaillabel;
@@ -38,10 +41,13 @@ public class signupController implements Initializable {
 	@FXML private Label repasslabel;
 	@FXML private Label numberlabel;
 	@FXML private Label passchecklabel;
+	@FXML private Label label;
 	
 	private Stage pop;
+	private int recheck;
 	private boolean type;
 	UserDao bDao = new UserDao();
+	Alert alert =new Alert(AlertType.INFORMATION);
 	
 	public void initialize(URL location, ResourceBundle resources) {
 		
@@ -57,6 +63,7 @@ public class signupController implements Initializable {
 		cancle.setOnAction(e->handlecancle(e));
 		student.setOnAction(e->handlestudent(e));
 		teacher.setOnAction(e->handleteacher(e));
+		check.setOnAction(e->handlecheck(e));
 	}
 
 	//교사신분 선택
@@ -80,6 +87,7 @@ public class signupController implements Initializable {
 		repasslabel.setVisible(false);
 		numberlabel.setVisible(false);
 		passchecklabel.setVisible(false);
+
 		
 		try {
 			//아이디 입력 확인
@@ -151,9 +159,14 @@ public class signupController implements Initializable {
 				System.out.println("핸드폰 번호 4자리를 입력해 주세요.");
 				throw new Exception();
 			}
+			if(recheck==0) { //중복체크를 안 했을시
+				alert.setContentText("중복체크를 해 주세요.");
+			    alert.show();
+			    throw new Exception();
+			}
 			
 			bDao.insertBoard(id, pass, name, email, phone ,type);	
-			Alert alert =new Alert(AlertType.INFORMATION);
+	
 			alert.setContentText("회원가입완료");
 			alert.show();
 			
@@ -175,4 +188,18 @@ public class signupController implements Initializable {
 		pop = (Stage)cancle.getScene().getWindow(); // 버튼을 통해서 현재 스테이지를 알아냄
         pop.close();
 	}
+    public void handlecheck(ActionEvent e) {
+		
+	    try {
+		String id = idfield.getText();
+		if(id.length()==0) {
+			 alert.setContentText("아이디를 입력해주세요.");
+			 alert.show();
+			 throw new Exception();
+		}
+		bDao.check(id);
+		
+		recheck=1;
+	   }catch(Exception ex) {System.out.println("회원가입 중복체크 에러");}
+     }
 }

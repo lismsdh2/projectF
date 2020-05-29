@@ -17,8 +17,10 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import DAO.AssignmentDao;
 import DTO.AssignmentDto;
 import DTO.AssignmentPopupDto;
+import DTO.UserDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,6 +35,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import launch.AppMain;
 import student.tasks.AssignmentController;
 
 public class AssignmentPopupController_no implements Initializable {
@@ -54,7 +57,9 @@ public class AssignmentPopupController_no implements Initializable {
 	private int c_no;
 	private int t_no;
 	private AssignmentController assignmentController;
+	private AssignmentDao aDao = new AssignmentDao();
 	private AssignmentDto assign = new AssignmentDto();
+	private UserDto uDto = AppMain.app.getUser();
 	private Stage popupStage;
 	
 	public AssignmentPopupController_no(AssignmentController assignmentController) {
@@ -107,7 +112,7 @@ public class AssignmentPopupController_no implements Initializable {
 	
 	public void assignView(int c_no, int t_no) {
 
-		assign = assignmentController.aDao.assignment_selectOne(c_no, t_no);
+		assign = aDao.assignment_selectOne(c_no, t_no);
 		lblTaskName.setText(assign.getTask_name());								//과제명
 		lblTaskDesc.setText(assign.getTask_desc());								//과제설명
 		lblMyScore.setText(Integer.toString(assign.getMyScore()));				//나의 과제 점수
@@ -179,7 +184,6 @@ public class AssignmentPopupController_no implements Initializable {
 				new ExtensionFilter("AllFiles","*.*")
 		);
 		
-		
 		try {
 			
 			//첨부할 파일 지정
@@ -227,7 +231,7 @@ public class AssignmentPopupController_no implements Initializable {
           
             	int class_no = 1001;						// 강의번호연동해야됨
             	int task_no = this.t_no;					// 과제번호연동해야됨
-            	String stu_id = "abcabc"; 					// 학생ID연동해야됨
+            	String stu_id = uDto.getId(); 					// 학생ID연동해야됨
             	String taskQuestion = txtQuestion.getText();
             	byte[] taskFile = assign.getTaskFile();
             	String taskFile_name = assign.getTaskFile_name();
@@ -235,7 +239,7 @@ public class AssignmentPopupController_no implements Initializable {
             	
             	//submitTask DTO
             	AssignmentPopupDto sTask = new AssignmentPopupDto(class_no, task_no, stu_id, taskQuestion, taskFile, taskFile_name);
-            	assignmentController.aDao.submit_Assignment(sTask);
+            	aDao.submit_Assignment(sTask);
             	alertInformation("제출되었습니다");
             }
 		} catch (SQLException e) {

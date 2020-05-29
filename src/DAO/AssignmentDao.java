@@ -38,13 +38,21 @@ public class AssignmentDao {
 	
 		//DB연결
 		connectionJDBC();
-		
+	
 		try {
-			
 			//강의번호, 과제번호, 학생ID, 과제제출여부, 과제제출일시, 문의사항, 과제파일, 과제파일명
-			String sql = "insert into submission_task(class_no,task_no, student_id, tasksubmit, tasksubmit_date, taskquestion, taskfile, taskfile_name)"
+			String sql = "insert into submission_task("
+					+ "class_no,task_no, student_id, tasksubmit, tasksubmit_date,"
+					+ "taskquestion, taskfile, taskfile_name)"
 					+ "values (?, ?, ?, 'Y' ,sysdate(),? ,?, ?);";
 			pstmt = connection.prepareStatement(sql);
+			System.out.println(sTask.getClass_no());
+			System.out.println(sTask.getTask_no());
+			System.out.println(sTask.getStudent_id());
+			System.out.println(sTask.getTaskQuestion());
+			System.out.println(sTask.getTaskFile());
+			System.out.println(sTask.getTaskFile_name());
+
 			pstmt.setInt(1, sTask.getClass_no());
 			pstmt.setInt(2, sTask.getTask_no());
 			pstmt.setString(3, sTask.getStudent_id());
@@ -53,7 +61,7 @@ public class AssignmentDao {
 			pstmt.setString(6, sTask.getTaskFile_name());
 			pstmt.executeUpdate();
 			System.out.println("과제 제출 성공");
-		} catch (Exception e) {
+		} finally {
 			//접속종료
 			ju.disconnect(connection, pstmt, rs);
 		}

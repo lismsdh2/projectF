@@ -8,14 +8,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 
 public class search_pass2_Controller implements Initializable {
 	
-	@FXML private TextField passfield;
-	@FXML private TextField repassfield;
+	@FXML private PasswordField passfield;
+	@FXML private PasswordField repassfield;
 	@FXML private Button done;
 	@FXML private Button cancle; 
 	

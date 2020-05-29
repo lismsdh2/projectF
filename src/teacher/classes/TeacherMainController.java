@@ -1,8 +1,8 @@
-﻿/* 작성자 : 이성원
+﻿package teacher.classes;
+/*
+ *  작성자 : 이성원
  * 설명 : 선생님메인컨트롤러(강의리스트출력, 강의만들기, 강의수정및삭제, 강의검색)
  */
-
-package teacher.classes;
 
 import java.io.IOException;
 import java.net.URL;

@@ -10,14 +10,14 @@
 			fx:controller="login.LoginController">
    <children>
       <TextField fx:id="id" layoutX="57.0" layoutY="154.0" prefHeight="36.0" prefWidth="286.0" promptText="아이디를 입력해주세요" />
-      <TextField fx:id="password" layoutX="57.0" layoutY="222.0" prefHeight="36.0" prefWidth="286.0" promptText="비밀번호를 입력해주세요" />
       <Label layoutX="57.0" layoutY="270.0" textFill="#d72222" />
-      <Button fx:id="login" layoutX="58.0" layoutY="323.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="286.0" text="로그인" />
+      <PasswordField fx:id="password" layoutX="57.0" layoutY="228.0" prefHeight="36.0" prefWidth="280.0" promptText="비밀번호를 입력해주세요" />
+      <Button fx:id="login" layoutX="57.0" layoutY="323.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="286.0" text="로그인" />
       <Separator layoutY="377.0" prefHeight="0.0" prefWidth="400.0" />
-      <Button fx:id="idsearch" layoutX="58.0" layoutY="392.0" mnemonicParsing="false" text="아이디 찾기" />
-      <Button fx:id="passsearch" layoutX="155.0" layoutY="392.0" mnemonicParsing="false" text="비밀번호 찾기" />
-      <Button fx:id="signup" layoutX="263.0" layoutY="392.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="80.0" text="회원가입 " />
-      <Button fx:id="student" layoutX="71.0" layoutY="78.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="100.0" text="학생 " />
-      <Button fx:id="teacher" layoutX="218.0" layoutY="78.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="100.0" text="교사" />
+      <Button fx:id="idsearch" layoutX="57.0" layoutY="392.0" text="아이디 찾기" />
+      <Button fx:id="passsearch" layoutX="155.0" layoutY="392.0" text="비밀번호 찾기" />
+      <Button fx:id="signup" layoutX="263.0" layoutY="392.0" prefHeight="23.0" prefWidth="80.0" text="회원가입 " />
+      <Button fx:id="student" layoutX="71.0" layoutY="78.0"  prefHeight="36.0" prefWidth="100.0" text="학생 " />
+      <Button fx:id="teacher" layoutX="218.0" layoutY="78.0" prefHeight="36.0" prefWidth="100.0" text="교사" />
    </children>
 </AnchorPane>

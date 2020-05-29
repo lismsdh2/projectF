@@ -9,8 +9,10 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import DAO.EnrollmentDao;
 import DTO.EnrollmentDto;
 import DTO.EnrollmentPopupDto;
+import DTO.UserDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import launch.AppMain;
 import student.classes.EnrollmentController;
 
 public class EnrollmentPopupController implements Initializable {
@@ -37,6 +40,8 @@ public class EnrollmentPopupController implements Initializable {
 	private Stage popupStage;
 	private EnrollmentController enrollmentController;
 	private EnrollmentDto enroll = new EnrollmentDto();
+	private EnrollmentDao eDao = new EnrollmentDao();
+	private UserDto uDto = AppMain.app.getUser();
 	
 	public EnrollmentPopupController(EnrollmentController enrollmentController) {
 		
@@ -77,7 +82,7 @@ public class EnrollmentPopupController implements Initializable {
 	
 	// 화면에 정보 뿌리기
 	public void enrollView(int c_no) {
-		enroll = enrollmentController.eDao.enrollment_selectOne(c_no);
+		enroll = eDao.enrollment_selectOne(c_no);
 		lblClassname.setText(enroll.getClassname());	
 		lblTeachername.setText(enroll.getTeachername());
 		lblClassdescription.setText(enroll.getClassdescription());
@@ -94,17 +99,16 @@ public class EnrollmentPopupController implements Initializable {
             // OK누르면 신청 후 알림창 출력
             if (result.get().equals(ButtonType.OK)) {
             	
-            	String stu_id = "abcabc"; 				// 학생ID연동해야됨
+            	String stu_id = uDto.getId(); 				// 학생ID연동해야됨
             	int class_no = enroll.getClassno();
             	EnrollmentPopupDto rCls = new EnrollmentPopupDto(stu_id, class_no);
-            	enrollmentController.eDao.submit_Enrollment(rCls);
+            	eDao.submit_Enrollment(rCls);
             	alertInformation("신청되었습니다");
             }
 		} catch (SQLException e) {
 //			e.printStackTrace();
 			System.out.println("[SQL Error : " + e.getMessage() + "]");
 			System.out.println("강의 신청 실패");
-			System.out.println("중복 신청 ");
 			alertError("이미 신청되어 있습니다.");
 		}
 	}
