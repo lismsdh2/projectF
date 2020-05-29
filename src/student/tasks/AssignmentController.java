@@ -75,7 +75,7 @@ public class AssignmentController implements Initializable{
 	//테이블 내용 출력
 	private void assignTableView() {
 		
-		list = aDao.assignment_selectAll(this.class_no);
+		list = aDao.assignment_selectAll(this.student_id, this.class_no);
 		colTaskNo.setCellValueFactory(new PropertyValueFactory<>("taskList_no"));
 		colTaskName.setCellValueFactory(new PropertyValueFactory<>("task_name"));
 		colTaskSubmit.setCellValueFactory(new PropertyValueFactory<>("submitornot"));
@@ -199,7 +199,7 @@ public class AssignmentController implements Initializable{
 	//데이터 저장 후 리스트 새로고침
 	public void refreshTable() {
 		
-		list = aDao.assignment_selectAll(this.class_no);
+		list = aDao.assignment_selectAll(this.student_id, this.class_no);
 		tableView.setItems(list);
 		viewProgressScore();
 		viewTaskCount();
