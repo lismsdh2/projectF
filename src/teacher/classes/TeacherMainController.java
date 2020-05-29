@@ -185,8 +185,6 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							Button btnUpdate = (Button) parent.lookup("#update");
 							Button btnCancel = (Button) parent.lookup("#cancel");
 							
-							txtDescription.setWrapText(true);
-							
 							txtLimitStudent.textProperty().addListener(new ChangeListener<String>() {
 								@Override
 								public void changed(ObservableValue<? extends String> observable, String oldValue,
@@ -353,9 +351,6 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							Label localDateEndDate = (Label) parent.lookup("#endDate");
 							Label txtLimitStudent = (Label) parent.lookup("#limitStudent");
 									
-							txtDescription.setWrapText(true);
-							txtDescription.setEditable(false);
-							
 							//기존에 저장되어있던 강의정보 가져오기
 							String className = classDto.getClassName();
 							String description = classDto.getClassDescription();
@@ -410,8 +405,6 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		DatePicker localDateEndDate = (DatePicker) parent.lookup("#endDate");
 		TextField txtLimitStudent = (TextField) parent.lookup("#limitStudent");
 		Button btnSave = (Button) parent.lookup("#save");
-		
-		txtDescription.setWrapText(true);
 		
 		txtLimitStudent.textProperty().addListener(new ChangeListener<String>() {
 			@Override

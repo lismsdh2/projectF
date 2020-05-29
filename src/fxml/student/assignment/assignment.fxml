@@ -38,4 +38,3 @@
 		<Label fx:id="lblTotalTask" layoutX="934" layoutY="610.0" prefWidth="40.0" />
    </children>
 </AnchorPane>
-

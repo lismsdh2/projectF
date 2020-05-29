@@ -233,7 +233,7 @@ public class signupController implements Initializable {
 		}
 		catch (Exception ex){
 			System.out.println("회원가입 실패");
-			ex.printStackTrace();
+//			ex.printStackTrace();
 		}
 	}
 

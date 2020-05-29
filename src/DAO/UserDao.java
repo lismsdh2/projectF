@@ -21,7 +21,7 @@ public class UserDao {
 	private PreparedStatement pstmt;
 	private ResultSet rs;
 	private JdbcUtil ju;
-	private int id_count = 1;
+//	private int id_count = 1;
     private String private_id;
     private boolean private_type;
 
@@ -71,7 +71,7 @@ public class UserDao {
             System.out.println("이름:"+ name);
             System.out.println("이메일:"+email);
             System.out.println("핸드폰번호:"+phone);
-            id_count++;
+//            id_count++;
             
          } catch (SQLException e) {            
             System.out.println("데이터 삽입 실패");

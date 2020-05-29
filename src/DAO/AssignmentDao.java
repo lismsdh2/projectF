@@ -97,21 +97,22 @@ public class AssignmentDao {
 	}
 	
 	//과제 전체 조회
-	public ObservableList<AssignmentDto> assignment_selectAll(String student_id, int class_no){
+	public ObservableList<AssignmentDto> assignment_selectAll(int class_no, String stu_id){
 		
 		//DB연결
 		connectionJDBC();
-		
+	
 		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score"
 						+ " from task t"
 						+ " left outer join submission_task ts"
-						+ " on t.task_no = ts.task_no and ts.student_id=?"
+						+ " on t.task_no = ts.task_no"
+						+ " and ts.student_id = ?"
 						+ " where t.class_no = ?";
 		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
 		
 		try {
 			pstmt = connection.prepareStatement(sql);
-			pstmt.setString(1, student_id);
+			pstmt.setString(1, stu_id);
 			pstmt.setInt(2, class_no);
 			rs = pstmt.executeQuery();
 			int i = 0;										//연번을 나타내기 위한 변수

@@ -41,7 +41,7 @@ import student.tasks.AssignmentController;
 public class AssignmentPopupController_no implements Initializable {
 
 	@FXML private Label lblTaskName;
-	@FXML private Label lblTaskDesc;
+	@FXML private TextArea txtTaskDesc;
 	@FXML private Label lblMyScore;
 	@FXML private Label lblPerfectScore;
 	@FXML private Label lblExpireDate;
@@ -114,7 +114,7 @@ public class AssignmentPopupController_no implements Initializable {
 
 		assign = aDao.assignment_selectOne(c_no, t_no);
 		lblTaskName.setText(assign.getTask_name());								//과제명
-		lblTaskDesc.setText(assign.getTask_desc());								//과제설명
+		txtTaskDesc.setText(assign.getTask_desc());								//과제설명
 		lblMyScore.setText(Integer.toString(assign.getMyScore()));				//나의 과제 점수
 		lblPerfectScore.setText(Integer.toString(assign.getPerfect_score()));	//과제 만점 점수
 		lblExpireDate.setText(assign.getExpire_date().toString());				//과제 마김일
@@ -122,6 +122,10 @@ public class AssignmentPopupController_no implements Initializable {
 		txtQuestion.setText("");												//문의사항
 		lblAnswer.setText("");													//답변
 		lblTaskFilename.setText(assign.getTaskFile_name());						//과제제출
+		//과제설명 줄바꿈
+		txtTaskDesc.setWrapText(true);
+		//과제설명 입력 제한
+		txtTaskDesc.setEditable(false);
 		//다운로드할 파일 없을 경우 버튼 비활성화
 		if(assign.getAttachedFile() == null) {
 

@@ -144,16 +144,20 @@ public class EnrollmentController implements Initializable{
 	private void handleDoubleClicked(MouseEvent event) {
 
 		EnrollmentDto enroll = tableView.getSelectionModel().getSelectedItem();
-		if (event.getButton().equals(MouseButton.PRIMARY)) {
-			
-			if (event.getClickCount() == 2) {
+		if(enroll == null) {
+			//빈화면일 때 더블클릭 시 아무것도 안하기
+		} else {
+			if (event.getButton().equals(MouseButton.PRIMARY)) {
 				
-				System.out.println("selectedData(더블) : " + enroll.toString());
-				//클래스번호 생성
-				int c_no = enroll.getClassno();
-				System.out.println("enroll : " + c_no);
-				popupController.setClassno(c_no);
-				openPopupWindow();
+				if (event.getClickCount() == 2) {
+					
+					System.out.println("selectedData(더블) : " + enroll.toString());
+					//클래스번호 생성
+					int c_no = enroll.getClassno();
+					System.out.println("enroll : " + c_no);
+					popupController.setClassno(c_no);
+					openPopupWindow();
+				}
 			}
 		}
 	}

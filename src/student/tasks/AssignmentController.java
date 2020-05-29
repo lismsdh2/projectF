@@ -75,7 +75,7 @@ public class AssignmentController implements Initializable{
 	//테이블 내용 출력
 	private void assignTableView() {
 		
-		list = aDao.assignment_selectAll(this.student_id, this.class_no);
+		list = aDao.assignment_selectAll(this.class_no, this.student_id);
 		colTaskNo.setCellValueFactory(new PropertyValueFactory<>("taskList_no"));
 		colTaskName.setCellValueFactory(new PropertyValueFactory<>("task_name"));
 		colTaskSubmit.setCellValueFactory(new PropertyValueFactory<>("submitornot"));
@@ -165,31 +165,35 @@ public class AssignmentController implements Initializable{
 	private void handleDoubleClicked(MouseEvent event) {
 		
 		AssignmentDto assign = tableView.getSelectionModel().getSelectedItem();
+		if(assign == null) { 
+			//아무것도 없을 때 더블클릭 하면 아무것도 안하기
+		} else {
 		
-		int c_no = 1001;					//연동해야됨
-		int t_no = assign.getTask_no();		//연동해야됨
-		if (event.getButton().equals(MouseButton.PRIMARY)) {
-			
-			if (event.getClickCount() == 2) {
+			int c_no = 1001;					//연동해야됨
+			int t_no = assign.getTask_no();		//연동해야됨
+			if (event.getButton().equals(MouseButton.PRIMARY)) {
 				
-				System.out.println("selectedData(버튼) : " + assign.getSubmitornot());
-				if(assign.getSubmitornot().equals("N")) {
+				if (event.getClickCount() == 2) {
 					
-					System.out.println("처음 제출");
-					System.out.println("assign : " + t_no);
-					popupController_no.setClassno(c_no);
-					popupController_no.setTaskno(t_no);
-					openPopupWindow_no();							//처음 제출시 상세화면창 열기
-					refreshTable();									//저장 후 리스트 새로 고침
-				} else if(assign.getSubmitornot().equals("Y")){
-					
-					System.out.println("수정 제출");
-					System.out.println("assign : " + t_no);
-					popupController_yes.setClassno(c_no);
-					popupController_yes.setTaskno(t_no);
-					openPopupWindow_yes();							//재 제출시 상세화면창 열기
-					refreshTable();									//저장 후 리스트 새로 고침
-					
+					System.out.println("selectedData(버튼) : " + assign.getSubmitornot());
+					if(assign.getSubmitornot().equals("N")) {
+						
+						System.out.println("처음 제출");
+						System.out.println("assign : " + t_no);
+						popupController_no.setClassno(c_no);
+						popupController_no.setTaskno(t_no);
+						openPopupWindow_no();							//처음 제출시 상세화면창 열기
+						refreshTable();									//저장 후 리스트 새로 고침
+					} else if(assign.getSubmitornot().equals("Y")){
+						
+						System.out.println("수정 제출");
+						System.out.println("assign : " + t_no);
+						popupController_yes.setClassno(c_no);
+						popupController_yes.setTaskno(t_no);
+						openPopupWindow_yes();							//재 제출시 상세화면창 열기
+						refreshTable();									//저장 후 리스트 새로 고침
+						
+					}
 				}
 			}
 		}
@@ -199,7 +203,7 @@ public class AssignmentController implements Initializable{
 	//데이터 저장 후 리스트 새로고침
 	public void refreshTable() {
 		
-		list = aDao.assignment_selectAll(this.student_id, this.class_no);
+		list = aDao.assignment_selectAll(this.class_no, this.student_id);
 		tableView.setItems(list);
 		viewProgressScore();
 		viewTaskCount();

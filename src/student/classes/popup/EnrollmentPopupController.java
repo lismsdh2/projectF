@@ -22,6 +22,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import launch.AppMain;
 import student.classes.EnrollmentController;
@@ -30,7 +31,7 @@ public class EnrollmentPopupController implements Initializable {
 
 	@FXML private Label lblClassname;
 	@FXML private Label lblTeachername;
-	@FXML private Label lblClassdescription;
+	@FXML private TextArea txtClassdescription;
 	@FXML private Label lblClassdate;
 	@FXML private Label lblLimitclass;
 	@FXML private Button btnSubmit;
@@ -85,9 +86,14 @@ public class EnrollmentPopupController implements Initializable {
 		enroll = eDao.enrollment_selectOne(c_no);
 		lblClassname.setText(enroll.getClassname());	
 		lblTeachername.setText(enroll.getTeachername());
-		lblClassdescription.setText(enroll.getClassdescription());
+		txtClassdescription.setText(enroll.getClassdescription());
 		lblClassdate.setText(enroll.getStartdate().toString() + " ~ " + enroll.getEnddate().toString());
 		lblLimitclass.setText(Integer.toString(enroll.getLimitstudent()));
+		
+		//강좌설명 자동줄바꿈
+		txtClassdescription.setWrapText(true);
+		//강좌설명 입력제한
+		txtClassdescription.setEditable(false);
 	}
 
 	// 신청 버튼
