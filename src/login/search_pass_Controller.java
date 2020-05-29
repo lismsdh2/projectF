@@ -7,9 +7,11 @@ import DAO.UserDao;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 
@@ -27,6 +29,7 @@ public class search_pass_Controller implements Initializable {
 	private boolean type;
 	private Stage pop;
 	UserDao bDao = new UserDao();
+	Alert alert =new Alert(AlertType.INFORMATION);
 	
 	public void initialize(URL location, ResourceBundle resources) {
 
@@ -48,7 +51,6 @@ public class search_pass_Controller implements Initializable {
 
 	public void handledone(ActionEvent e) {
 		try {
-		
 			if(namefield.getText().length()==0) {
 				System.out.println("아이디를 입력해주세요");
 			}
@@ -73,16 +75,17 @@ public class search_pass_Controller implements Initializable {
 			String id = idfield.getText();
 			String email = emailfield.getText()+"@"+(String)email2.getValue();
 			
-			
-			
-			bDao.search_pass(id,name,email,this.type);
+			String success = bDao.search_pass(id,name,email,this.type);
 			
 			System.out.println(email);
-			System.out.println("없음");
+			
+			if(success.equals("fail")) {
+				alert.setContentText("일치하는 회원 정보가 없습니다.");
+				alert.show();
+			}
 		
-		    namefield.setText(null);
-		    emailfield.setText(null);
-		    idfield.setText(null);
+			pop = (Stage)cancle.getScene().getWindow(); // 버튼을 통해서 현재 스테이지를 알아냄
+	        pop.close();
 	
 		
 		}

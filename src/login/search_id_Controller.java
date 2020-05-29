@@ -78,9 +78,8 @@ public class search_id_Controller implements Initializable {
 			
 			System.out.println("완료");
 		
-		    namefield.setText(null);
-		    emailfield.setText(null);
-		    phonefield.setText(null);
+			pop = (Stage)cancle.getScene().getWindow(); // 버튼을 통해서 현재 스테이지를 알아냄
+	        pop.close();
 	
 		
 		}

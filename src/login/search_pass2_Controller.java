@@ -53,7 +53,8 @@ public class search_pass2_Controller implements Initializable {
 			
 			bDao.search_pass2(pass);
 			
-			System.out.println("완료(?)");
+			pop = (Stage)cancle.getScene().getWindow(); // 버튼을 통해서 현재 스테이지를 알아냄
+	        pop.close();
 			
 		}
 		catch (Exception ex){

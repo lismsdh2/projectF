@@ -4,8 +4,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import DAO.UserDao;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -64,6 +65,57 @@ public class signupController implements Initializable {
 		student.setOnAction(e->handlestudent(e));
 		teacher.setOnAction(e->handleteacher(e));
 		check.setOnAction(e->handlecheck(e));
+		
+	      //폰 번호 가운데자리수 제한
+	      phonefield1.lengthProperty().addListener(new ChangeListener<Number>() {
+	         @Override
+	         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+	            
+	            if(newValue.intValue() > oldValue.intValue()) {
+	               
+	               if(phonefield1.getText().length()>=5) {
+	                  
+	                  phonefield1.setText(phonefield1.getText().substring(0, 4));
+	               }
+	            }
+	         }
+	      });
+	      
+	      //폰번호 숫자만 입력
+	      phonefield1.textProperty().addListener(new ChangeListener<String>() {
+
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					if (!newValue.matches("\\d*")) {
+						phonefield1.setText(newValue.replaceAll("[^\\d]", ""));
+					}
+				}
+			});
+	      //폰 번호 마지막자리수 제한
+	      phonefield2.lengthProperty().addListener(new ChangeListener<Number>() {
+	         @Override
+	         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+	            
+	            if(newValue.intValue() > oldValue.intValue()) {
+	               
+	               if(phonefield2.getText().length()>=5) {
+	                  
+	                  phonefield2.setText(phonefield2.getText().substring(0, 4));
+	               }
+	            }
+	         }
+	      });
+	      
+	      //폰번호 숫자만 입력
+	      phonefield2.textProperty().addListener(new ChangeListener<String>() {
+
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					if (!newValue.matches("\\d*")) {
+						phonefield2.setText(newValue.replaceAll("[^\\d]", ""));
+					}
+				}
+			});
 	}
 
 	//교사신분 선택
@@ -176,6 +228,8 @@ public class signupController implements Initializable {
 			emailfield.setText(null);
 			phonefield1.setText(null);
 			phonefield2.setText(null);
+			pop = (Stage)cancle.getScene().getWindow(); 
+	        pop.close();
 		}
 		catch (Exception ex){
 			System.out.println("회원가입 실패");

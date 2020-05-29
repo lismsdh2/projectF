@@ -354,6 +354,8 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							Label txtLimitStudent = (Label) parent.lookup("#limitStudent");
 									
 							txtDescription.setWrapText(true);
+							txtDescription.setEditable(false);
+							
 							//기존에 저장되어있던 강의정보 가져오기
 							String className = classDto.getClassName();
 							String description = classDto.getClassDescription();

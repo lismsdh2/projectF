@@ -173,60 +173,60 @@ public class UserDao {
     }
    
     //비밀번호 찾기
-      public void search_pass(String id, String name, String email, boolean type) {
-    	
-		//DB연결
-		connectionJDBC();
-		
-    	String sql = "select user_id, user_name, email from student where user_id =? and user_name = ? and email=?;";
-    	if(type==true) {
-    		sql = "select user_id, user_name, email from teacher where user_id = ? and user_name = ? and email=?;";
-    	}
+    public String search_pass(String id, String name, String email, boolean type) {
         
-        try {
-            pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, id);
-            pstmt.setString(2, name);
-            pstmt.setString(3, email);
-            
-            System.out.println(email);
-            
-            this.private_id=id;
-        	this.private_type=type;
-            
-            rs = pstmt.executeQuery();
-            if (rs.next()) {  
-            	String name2 = rs.getString("user_name");
-            	String email2 = rs.getString("email");
-            	String id2 = rs.getString("user_id");
+        //DB연결
+        connectionJDBC();
+        
+        String success = "fail"; //비밀번호 찾기 성공 여부
+         String sql = "select user_id, user_name, email from student where user_id =? and user_name = ? and email=?;";
+         if(type==true) {
+            sql = "select user_id, user_name, email from teacher where user_id = ? and user_name = ? and email=?;";
+         }
           
-            	System.out.println(email2);
-            	
-				if(name.equals(name2)&&email.equals(email2)&&id.equals(id2)) {
-
-					try {
-						Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password2.fxml"));
-						Scene scene = new Scene(parent);
-						Stage stage = new Stage();
-						stage.setScene(scene);
-						stage.show();
-
-					} catch (IOException ex) {  	         
-						ex.printStackTrace();
-						System.out.println("비밀번호 찾기 실패");
-					}
-				}
-			}
-		} catch (SQLException e) {
-//			e.printStackTrace();
-			System.out.println("[SQL Error : " + e.getMessage() + "]");
-			System.out.println("비밀번호 찾기실패");
-		} finally {
-	
-			//접속종료
-			ju.disconnect(connection, pstmt, rs);
-		}
-    }
+          try {
+              pstmt = connection.prepareStatement(sql);
+              pstmt.setString(1, id);
+              pstmt.setString(2, name);
+              pstmt.setString(3, email);
+              
+              System.out.println(email);
+              
+              this.private_id=id;
+             this.private_type=type;
+              
+              rs = pstmt.executeQuery();
+              if (rs.next()) {  
+                 String name2 = rs.getString("user_name");
+                 String email2 = rs.getString("email");
+                 String id2 = rs.getString("user_id");
+            
+                 System.out.println(email2);
+                 
+              if(name.equals(name2)&&email.equals(email2)&&id.equals(id2)) {
+                 success="success";
+                 try {
+                    Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password2.fxml"));
+                    Scene scene = new Scene(parent);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.show();
+                 } catch (IOException ex) {              
+                    ex.printStackTrace();
+                    System.out.println("비밀번호 찾기 실패");
+                 }
+              }
+           }
+        } catch (SQLException e) {
+//           e.printStackTrace();
+           System.out.println("[SQL Error : " + e.getMessage() + "]");
+           System.out.println("비밀번호 찾기실패");
+        } finally {
+           //접속종료
+           ju.disconnect(connection, pstmt, rs);
+        }
+          return success;
+      }
       
 	//비밀번호 재설정
 	public void search_pass2(String pass) {
