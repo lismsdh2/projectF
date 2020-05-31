@@ -12,11 +12,11 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import launch.AppMain;
-import util.JdbcUtil;
 
 /**
  * @author 김지현
@@ -26,22 +26,18 @@ public class Main_Master_Controller implements Initializable {
 
 	public static Main_Master_Controller mmc;
 
-	@FXML
-	private BorderPane borderPane;
-	@FXML
-	protected Button btn4;
-	@FXML
-	private Label lbl;
-	@FXML
-	private StackPane innerPane;
-	@FXML
-	protected Button btn2;
-	@FXML
-	protected Button btn3;
-	@FXML
-	private ImageView imgView;
-	@FXML
-	protected Button btn1;
+	@FXML private BorderPane borderPane;
+	@FXML private StackPane innerPane;
+	@FXML private AnchorPane subMenu;
+	@FXML private Label lbl;
+	@FXML protected Button btn1;
+	@FXML protected Button btn2;
+	@FXML protected Button btn3;
+	@FXML protected Button btn4;
+	@FXML protected Button btn1_1;
+	@FXML protected Button btn1_2;
+	@FXML protected Button btn1_3;
+	@FXML private ImageView imgView;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -86,6 +82,11 @@ public class Main_Master_Controller implements Initializable {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	// subMenu에 fxml 넣기
+	public void setSubMenu(Node node) {
+		subMenu.getChildren().add(node);
 	}
 
 	// innerpane에 fxml 넣기

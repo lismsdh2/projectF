@@ -14,10 +14,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import launch.AppMain;
 
@@ -42,6 +42,7 @@ public class LoginController implements Initializable {
 		teacher.setOnAction(e->handleteacher(e));
 		idsearch.setOnAction(e->handleidsearch(e));
 		passsearch.setOnAction(e->handlepasssearch(e));
+		
 	}
 
 	//교사버튼
@@ -101,7 +102,6 @@ public class LoginController implements Initializable {
 			((Node) (event.getSource())).getScene().getWindow().hide();
 		}
 	}
-
 	
 	public void popupWindow(ActionEvent event) {
 

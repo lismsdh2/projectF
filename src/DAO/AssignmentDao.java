@@ -102,13 +102,13 @@ public class AssignmentDao {
 		//DB연결
 		connectionJDBC();
 	
+		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
 		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score"
 						+ " from task t"
 						+ " left outer join submission_task ts"
 						+ " on t.task_no = ts.task_no"
 						+ " and ts.student_id = ?"
 						+ " where t.class_no = ?";
-		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
 		
 		try {
 			pstmt = connection.prepareStatement(sql);
@@ -119,7 +119,7 @@ public class AssignmentDao {
 		
 			while(rs.next()) {
 				i++;
-				AssignmentDto assign = new AssignmentDto();
+				AssignmentDto assign = new AssignmentDto();			//DTO객체가 밖에 있는 경우 출력값이 통일됨
 				//제출여부 표시(null이거나 N 이면 N표시, 아니면 Y표시)
 				String yorn = "";
 				if(rs.getString(3)==null ||rs.getString(3).equals("N")) {

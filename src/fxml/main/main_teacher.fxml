@@ -19,15 +19,15 @@
 		  <HBox alignment="CENTER_LEFT" prefHeight="68.0" prefWidth="1024.0" BorderPane.alignment="CENTER">
 			 <children>
 				<ImageView fx:id="imgView" fitHeight="68.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-				<Button fx:id="btn1" minWidth="80.0" mnemonicParsing="false" prefHeight="68.0" text="강의" />
-				<Button fx:id="btn2" minWidth="80.0" mnemonicParsing="false" prefHeight="68.0" text="과제" />
-				<Button fx:id="btn3" minWidth="80.0" mnemonicParsing="false" prefHeight="68.0" text="Button" />
-				<Label fx:id="lbl" minWidth="100.0" text="Label">
+				<Button fx:id="btn1" prefWidth="80.0" prefHeight="68.0" text="강의" />
+				<Button fx:id="btn2" prefWidth="80.0" prefHeight="68.0" text="과제" />
+				<Button fx:id="btn3" prefWidth="80.0" prefHeight="68.0" text="Button" />
+				<Label fx:id="lbl" prefWidth="100.0" text="Label">
 				   <HBox.margin>
-					  <Insets left="400.0" />
+					  <Insets left="385.0" />
 				   </HBox.margin>
 				</Label>
-				<Button fx:id="btn4" minWidth="80.0" mnemonicParsing="false" prefHeight="68.0" text="로그아웃" />
+				<Button fx:id="btn4" prefWidth="80.0" mnemonicParsing="false" prefHeight="68.0" text="로그아웃" />
 			 </children>
 		  </HBox>
             <AnchorPane prefHeight="32" prefWidth="1024.0">

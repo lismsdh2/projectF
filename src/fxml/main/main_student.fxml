@@ -23,21 +23,15 @@
 					<Button fx:id="btn1" prefWidth="80" prefHeight="68.0" text="강의" />
 					<Button fx:id="btn2" prefWidth="80" prefHeight="68.0" text="과제" />
 					<Button fx:id="btn3" prefWidth="80" prefHeight="68.0" text="기타" />
-					<Label fx:id="lbl" minWidth="100.0" text="Label">
+					<Label fx:id="lbl" prefWidth="100.0" text="Label">
 						<HBox.margin>
-							<Insets left="400.0" />
+							<Insets left="385.0" />
 						</HBox.margin>
 					</Label>
-					<Button fx:id="btn4" minWidth="80.0" mnemonicParsing="false" prefHeight="68.0" text="로그아웃" />
+					<Button fx:id="btn4" prefHeight="68.0" prefWidth="80" text="로그아웃" />
 				</children>
 			</HBox>
-            <AnchorPane prefHeight="32" prefWidth="1024.0">
-               <children>
-   					<Button fx:id="btn1_1" layoutX="200.0" layoutY="1.0" prefWidth="100" prefHeight="30" text="현재강의" />
-   					<Button fx:id="btn1_2" layoutX="300.0" layoutY="1.0" prefWidth="100" prefHeight="30" text="지난강의" />
-   					<Button fx:id="btn1_3" layoutX="400.0" layoutY="1.0" prefWidth="100" prefHeight="30" text="수강신청" />
-               </children>
-            </AnchorPane>
+            <AnchorPane fx:id="subMenu" prefHeight="32" prefWidth="1024.0"/>
          </children>
       </VBox>
    </top>

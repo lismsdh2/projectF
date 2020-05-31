@@ -23,6 +23,7 @@ public class EnrollmentDto {
 	private final ObjectProperty<Date> enddate = new SimpleObjectProperty<Date>();
 	private final IntegerProperty limitstudent = new SimpleIntegerProperty();
 	private final StringProperty str = new SimpleStringProperty();
+	private final StringProperty status = new SimpleStringProperty(); 
 	
 	public String getStr() {
 		return str.get();
@@ -153,5 +154,20 @@ public class EnrollmentDto {
 	public IntegerProperty limitstudentProperty() {
 		
 		return this.limitstudent;
+	}
+	
+	public String getStatus() {
+		
+		return this.status.get();
+	}
+	
+	public void setStatus(String value) {
+		
+		this.status.set(value);
+	}
+	
+	public StringProperty statusProperty() {
+		
+		return this.status;
 	}
 }

@@ -50,7 +50,7 @@ public class EnrollmentPopupController implements Initializable {
 		//수강신청 상세화면 설정 
 		popupStage = new Stage();
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/enrollment/enrollment_popup.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/classes/enrollment_popup.fxml"));
 			loader.setController(this);
 			popupStage.setScene(new Scene(loader.load()));
 			popupStage.setTitle("수강 신청");

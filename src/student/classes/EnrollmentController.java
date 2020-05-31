@@ -18,6 +18,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
@@ -41,39 +42,22 @@ public class EnrollmentController implements Initializable{
 	@FXML private Button btnSearch;
 	
 	private ObservableList<EnrollmentDto> list;
-//	private Stage enrollmentStage;				//현재로서는 필요 없는 부분이지만, 전체 연동 시 필요 함
 	private EnrollmentDao eDao = new EnrollmentDao();
 	private EnrollmentPopupController popupController = new EnrollmentPopupController(this);
-
-	//생성자
-	public EnrollmentController() {
-
-		//현재로서는 필요 없는 부분이지만, 전체 연동 시 필요 함
-//		//수강신청 화면 설정
-//		enrollmentStage = new Stage();
-//		try {
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/student/enrollment/enrollment.fxml"));
-//			loader.setController(this);
-//			enrollmentStage.setScene(new Scene(loader.load()));
-//			enrollmentStage.setTitle("수강 신청");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-	}
-
-	//현재로서는 필요 없는 부분이지만, 전체 연동 시 필요 함
-//	//수강신청 화면 호출
-//	public void showStage() {
-//		
-//		enrollmentStage.showAndWait();
-//	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
 		enrollTableView();												//DB내용 출력
 		tableView.setOnMouseClicked(e -> handleDoubleClicked(e));		//더블클릭
-		btnSearch.setOnAction(e-> handleBtnSearch());
+		btnSearch.setOnAction(e-> handleBtnSearch());					//검색단추 클릭
+		//검색 시 엔터 효과
+		txtSearch.setOnKeyPressed(e ->{ 
+			if(e.getCode() == KeyCode.ENTER) {
+				
+				handleBtnSearch();
+			}
+		});
 	}
 	
 	//table에 내용 출력하기
@@ -85,7 +69,7 @@ public class EnrollmentController implements Initializable{
 		colClassDate.setCellValueFactory(new PropertyValueFactory<>("str"));
 		colClassTeacher.setCellValueFactory(new PropertyValueFactory<>("teachername"));
 		colClassPeople.setCellValueFactory(new PropertyValueFactory<>("limitstudent"));
-		addButton();							//버튼 추가
+		addButton();													//버튼 추가
 		tableView.setItems(list);
 	}
 	
@@ -164,9 +148,19 @@ public class EnrollmentController implements Initializable{
 
 	//검색단추
 	private void handleBtnSearch() {
-		
-		System.out.println(choiceField.getValue());
-		//Dao 추가하기
+	
+		String search_word = txtSearch.getText();
+		list = eDao.search_selectAll(search_word);
+		tableView.setItems(list);
 	}
+//	날짜 지난거 체크소스
+//	long diff = 0;
+//	//date타입을 localDate타입으로 변경
+//	LocalDate endDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//	if(endDate!=null) {
+//		diff = ChronoUnit.DAYS.between(today,endDate);
+//	}
+//	System.out.println(diff);
+
 }
 

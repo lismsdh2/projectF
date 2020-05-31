@@ -19,10 +19,18 @@ public class Main_Student_Controller extends Main_Master_Controller implements I
 		super.initialize(location, resources);
 		
 		// 초기화면
-		Navigator.loadPages(Navigator.STUDENT_CLASS_LIST);
+		Navigator.loadSubMenu(Navigator.STUDENT_CLASS_MENU);
+		Navigator.loadPages(Navigator.STUDENT_CURRENT_CLASS_LIST);
 
 		// 버튼 누르면 inner fxml 바꾸기
-		btn1.setOnAction(e -> Navigator.loadPages(Navigator.STUDENT_CLASS_LIST));
+		//강의버튼
+		btn1.setOnAction(e -> {
+			Navigator.loadSubMenu(Navigator.STUDENT_CLASS_MENU);
+			Navigator.loadPages(Navigator.STUDENT_CURRENT_CLASS_LIST);
+		});
+		
+		
+		//과제버튼
 		btn2.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override

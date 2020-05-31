@@ -38,6 +38,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -93,6 +94,13 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 
 		// 테이블뷰 클릭시 이벤트
 		classTableView.setOnMouseClicked(e -> handleClicked(e));
+		//검색 시 엔터 효과
+		txtSearch.setOnKeyPressed(e ->{ 
+			if(e.getCode() == KeyCode.ENTER) {
+				
+				btnSearch();
+			}
+		});
 
 	}
 
@@ -494,7 +502,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 	}
 	
 	//검색버튼 이벤트
-	public void btnSearch(ActionEvent event) {
+	public void btnSearch() {
 		String search = txtSearch.getText();
 		classList = cDao.searchClassList(search);
 		classTableView.setItems(classList);

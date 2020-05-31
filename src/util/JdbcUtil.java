@@ -62,6 +62,7 @@ public class JdbcUtil {
 		try {
 			if(connection != null && !connection.isClosed()) connection.close();		//Connection 종료
 			System.out.println("드라이버 종료 성공");
+			System.out.println("------------------------------");
 		} catch (SQLException e) {
 //			e.printStackTrace();
 			System.out.println("[SQL Error : " + e.getMessage() + "]");
@@ -75,6 +76,7 @@ public class JdbcUtil {
 			if(pstmt != null && !pstmt.isClosed()) pstmt.close();						//PreparedStatement 종료
 			if(connection != null && !connection.isClosed()) connection.close();		//Connection 종료
 			System.out.println("드라이버 종료 성공");
+			System.out.println("------------------------------");
 		} catch (SQLException e) {
 //			e.printStackTrace();
 			System.out.println("[SQL Error : " + e.getMessage() + "]");
