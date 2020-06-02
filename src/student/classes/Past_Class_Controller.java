@@ -27,7 +27,7 @@ public class Past_Class_Controller implements Initializable{
 	@FXML private TableColumn<EnrollmentDto, String> colClassName;
 	@FXML private TableColumn<EnrollmentDto, String> colClassDate;
 	@FXML private TableColumn<EnrollmentDto, String> colClassTeacher;
-	@FXML private TableColumn<EnrollmentDto, Integer> colClassPeople;
+	@FXML private TableColumn<EnrollmentDto, Integer> colClassTask;
 	@FXML private TableColumn<EnrollmentDto, String> colClassStatus;	
     @FXML private ComboBox<String> choiceField;
     @FXML private TextField txtSearch;
@@ -58,9 +58,9 @@ public class Past_Class_Controller implements Initializable{
 		list = eDao.past_selectAll(stu_id);
 		colClassNo.setCellValueFactory(new PropertyValueFactory<>("classno"));
 		colClassName.setCellValueFactory(new PropertyValueFactory<>("classname"));
-		colClassDate.setCellValueFactory(new PropertyValueFactory<>("str"));
+		colClassDate.setCellValueFactory(new PropertyValueFactory<>("period"));
 		colClassTeacher.setCellValueFactory(new PropertyValueFactory<>("teachername"));
-		colClassPeople.setCellValueFactory(new PropertyValueFactory<>("limitstudent"));
+		colClassTask.setCellValueFactory(new PropertyValueFactory<>("taskCount"));
 		colClassStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 		tableView.setItems(list);
 	}

@@ -20,7 +20,6 @@ public class AppMain extends Application {
 
 	public void start(Stage primaryStage) throws Exception {
 		app = this;
-
 		showLogin(primaryStage);
 	}
 
@@ -31,7 +30,7 @@ public class AppMain extends Application {
 		primaryStage.setTitle("LOGIN");
 
 		primaryStage.setScene(scene);
-//		primaryStage.setResizable(false);
+		primaryStage.setResizable(false);
 		primaryStage.show();
 	}
 

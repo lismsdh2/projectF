@@ -118,7 +118,6 @@ public class AssignmentController implements Initializable{
 								popupController_no.setClassno(c_no);
 								popupController_no.setTaskno(t_no);
 								openPopupWindow_no();							//처음 제출시 상세화면창 열기
-								refreshTable();									//저장 후 리스트 새로 고침
 							} else if(assign.getSubmitornot().equals("Y")) {
 								
 								System.out.println("수정 제출");
@@ -126,7 +125,6 @@ public class AssignmentController implements Initializable{
 								popupController_yes.setClassno(c_no);
 								popupController_yes.setTaskno(t_no);
 								openPopupWindow_yes();							//재 제출시 상세화면창 열기
-								refreshTable();									//저장 후 리스트 새로 고침
 							}
 						});
 					}
@@ -153,12 +151,14 @@ public class AssignmentController implements Initializable{
 	private void openPopupWindow_no() {
 		
 		popupController_no.showStage();
+		refreshTable();											//저장 후 리스트 새로 고침
 	}
 	
 	//버튼 클릭시 수강신청 상세화면 띄우기
 	private void openPopupWindow_yes() {
 		
 		popupController_yes.showStage();
+		refreshTable();											//저장 후 리스트 새로 고침
 	}
 	
 	//더블클릭 핸들러

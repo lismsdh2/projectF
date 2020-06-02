@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import DAO.UserDao;
 import DTO.UserDto;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,11 +19,14 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import launch.AppMain;
 
 public class LoginController implements Initializable {
-	
+
+	@FXML private AnchorPane anchorPane;
 	@FXML private TextField id;
 	@FXML private PasswordField password;
 	@FXML private Button idsearch;
@@ -35,30 +39,54 @@ public class LoginController implements Initializable {
 	UserDao bDao = new UserDao();
 	
 	public void initialize(URL location, ResourceBundle resources) {
-		
+	
+		handleStudent();
 		login.setOnAction(e -> handleLogin(e));
 		signup.setOnAction(e->popupWindow(e));
-		student.setOnAction(e->handlestudent(e));
-		teacher.setOnAction(e->handleteacher(e));
+		student.setOnAction(e->handleStudent());
+		teacher.setOnAction(e->handleTeacher());
 		idsearch.setOnAction(e->handleidsearch(e));
 		passsearch.setOnAction(e->handlepasssearch(e));
+		
+		id.setOnKeyPressed(e->{
+			
+			if(e.getCode() == KeyCode.F2) {				//F2 학생선택
+				handleStudent();
+			}else if(e.getCode() == KeyCode.F3) {		//F3 교사선택
+				handleTeacher();
+			}else if(e.getCode() == KeyCode.ENTER) {	//로그인 시 엔터 효과
+				handleLogin(e);
+			}
+		});
+		
+		password.setOnKeyPressed(e->{
+			
+			if(e.getCode() == KeyCode.F2) {				//F2 학생선택
+				handleStudent();
+			}else if(e.getCode() == KeyCode.F3) {		//F3 교사선택
+				handleTeacher();
+			}else if(e.getCode() == KeyCode.ENTER) {	//로그인 시 엔터 효과
+				handleLogin(e);
+			}
+		});
+		
 		
 	}
 
 	//교사버튼
-	public void handleteacher(ActionEvent e) {
+	public void handleTeacher() {
 		this.type=true;
 		System.out.println("교사로 전환");
 	}
 
 	//학생버튼
-	public void handlestudent(ActionEvent e) {
+	public void handleStudent() {
 		this.type=false;
 		System.out.println("학생으로 전환");
 	}
-
+	
 	//로그인버튼
-	public void handleLogin(ActionEvent event) {
+	public void handleLogin(Event event) {
 
 		String loginid = id.getText();
 		String loginpas = password.getText();

@@ -69,7 +69,7 @@ public class AssignmentPopupController_no implements Initializable {
 		popupStage = new Stage(StageStyle.UTILITY);
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/assignment/assignment_popup.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/tasks/assignment_popup.fxml"));
 			loader.setController(this);
 			popupStage.setScene(new Scene(loader.load()));
 			popupStage.setResizable(false);
@@ -140,6 +140,10 @@ public class AssignmentPopupController_no implements Initializable {
 		btnSubmitFile.setOnAction(e -> {handleBtnSubmitFile();});
 		btnSubmit.setOnAction(e -> { handleBtnSubmit(); });
 		btnCancle.setOnAction(e -> { handleBtnCancle(); });
+		//강좌설명 자동줄바꿈
+		txtTaskDesc.setWrapText(true);
+		//강좌설명 입력제한
+		txtTaskDesc.setEditable(false);
 	}
 	
 	//참고파일 다운로드 버튼

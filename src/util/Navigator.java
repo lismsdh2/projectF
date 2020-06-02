@@ -14,10 +14,13 @@ public class Navigator {
 	public static final String TEACHER_CLASS_LIST = "../fxml/teacher/classes/teacher_main.fxml";
 	public static final String TEACHER_TASK_LIST = "../fxml/teacher/tasks/TaskList.fxml";
 	public static final String STUDENT_CLASS_MENU = "../fxml/student/classes/class_menu.fxml";
+	public static final String STUDENT_TASK_MENU = "../fxml/student/tasks/task_menu.fxml";
 	public static final String STUDENT_CURRENT_CLASS_LIST = "../fxml/student/classes/current_class.fxml";
 	public static final String STUDENT_PAST_CLASS_LIST = "../fxml/student/classes/past_class.fxml";
 	public static final String STUDENT_FULL_CLASS_LIST = "../fxml/student/classes/enrollment.fxml";
-	public static final String STUDENT_TASK_LIST = "../fxml/student/assignment/assignment.fxml";
+	public static final String STUDENT_CURRENT_TASK_LIST = "../fxml/student/tasks/assignment.fxml";
+	public static final String STUDENT_PAST_TASK_LIST = "../fxml/student/tasks/assignment.fxml";
+	public static final String STUDENT_CLASSES_TASK_LIST = "../fxml/student/tasks/assignment.fxml";
 
 	//하위메뉴
 	public static void loadSubMenu(String fxml) {

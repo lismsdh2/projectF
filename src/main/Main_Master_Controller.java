@@ -49,6 +49,7 @@ public class Main_Master_Controller implements Initializable {
 		setUserInfoLabel(user);
 		// 로그아웃
 		btn4.setOnAction(e -> handleBtn4(e));
+	
 	}
 
 	// 로그인 시 사용자 정보 라벨링

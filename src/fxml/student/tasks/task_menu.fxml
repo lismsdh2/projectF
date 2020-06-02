@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="32" prefWidth="1024.0" style="-fx-background-color: #F4F4F4;" 
+			xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+			fx:controller="student.classes.Class_Submenu2_Controller">
+	<children>
+		<Button fx:id="btn1_1" layoutX="200.0" layoutY="1.0" prefHeight="30" prefWidth="100" text="현재과제" />
+		<Button fx:id="btn1_2" layoutX="300.0" layoutY="1.0" prefHeight="30" prefWidth="100" text="지난과제" />
+		<ComboBox fx:id="combo" layoutX="400.0" layoutY="1.0" prefHeight="30" prefWidth="150.0" promptText="강의별 과제" />
+	</children>
+</AnchorPane>

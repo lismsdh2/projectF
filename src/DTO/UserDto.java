@@ -2,11 +2,12 @@
 
 public class UserDto {
 
-	private String id;
-	private String password;
-	private String name;
-	
-	private boolean type2;
+	private String id;						//아이디
+	private String password;				//비밀번호
+	private String name;					//이름
+	private boolean type2;					//신분(false-학생/true-강사)
+	private int class_no;					//강의번호
+	private int task_no;					//과제번호
 	
 	public UserDto() {
 		
@@ -43,4 +44,20 @@ public class UserDto {
 		this.name = name;
 	}
 	
+	
+	public int getClass_no() {
+		return this.class_no;
+	}
+	
+	public void setClass_no(int class_no) {
+		this.class_no = class_no;
+	}
+	
+	public int getTask_no() {
+		return this.task_no;
+	}
+	
+	public void setTask_no(int task_no) {
+		this.task_no = task_no;
+	}
 }
