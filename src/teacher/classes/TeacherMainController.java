@@ -48,7 +48,6 @@ import javafx.stage.StageStyle;
 import launch.AppMain;
 import main.Main_Master_Controller;
 import util.Navigator;
-
 public class TeacherMainController extends Main_Master_Controller implements Initializable {
 	
 	UserDto user = AppMain.app.getUser();
@@ -82,18 +81,20 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 	ObservableList<ClassDto> classList = FXCollections.observableArrayList();
 	ClassDao cDao = new ClassDao();
 	Stage classListStage;
-
+	
+	public int btnNo = Submenu_Controller.btnNo;
+	
 	public void setPrimaryStage(Stage classListStage) {
 		this.classListStage = classListStage;
 	}
 
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		viewClassList();
-
+		
 		// 테이블뷰 클릭시 이벤트
 		classTableView.setOnMouseClicked(e -> handleClicked(e));
+		
 		//검색 시 엔터 효과
 		txtSearch.setOnKeyPressed(e ->{ 
 			if(e.getCode() == KeyCode.ENTER) {
@@ -101,27 +102,28 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 				btnSearch();
 			}
 		});
-
+		
+		if(btnNo != 2) {
+			txtSearch.setPromptText("강의명 입력");			
+		}
 	}
 
 	// 테이블뷰 더블클릭시 이벤트
 	private void handleClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
-			System.out.println("과제리스트로 이동");
-			//loadPage("../tasks/TaskList.fxml");
+			
 			ClassDto selectedRowClass = classTableView.getSelectionModel().getSelectedItem();
-			//AppMain.app.setClass1(selectedRowClass);
-			if (selectedRowClass != null) {
+			
+			if (selectedRowClass != null && selectedRowClass.getTeacherId().contentEquals(userid)) {
+				System.out.println("과제리스트로 이동");
 				AppMain.app.setClassno(selectedRowClass.getClassNo());
-				//Information.info.setClassNo(selectedRowClass.getClassNo());
-				Navigator.loadPages("../fxml/teacher/tasks/TaskList.fxml");
+				Navigator.loadPages("../fxml/teacher/tasks/TaskList.fxml");					
 			}
 		}
 	}
 
 	// 강의리스트불러오기
 	public void viewClassList() {
-
 		tcClassNo.setCellValueFactory(new PropertyValueFactory<>("classNo"));
 		tcClassName.setCellValueFactory(new PropertyValueFactory<>("className"));
 		tcTeacherName.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
@@ -373,7 +375,8 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							localDateStartDate.setText(startDate + "");
 							localDateEndDate.setText(endDate + "");
 							txtLimitStudent.setText(limitStudent + "");
-									
+							txtDescription.setEditable(false);
+							
 							Scene scene = new Scene(parent);
 							dialog.setScene(scene);
 							dialog.setResizable(false);
@@ -387,11 +390,6 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		});		
 		
 		refreshTable();
-	}
-	
-	public void refreshTable() {
-		classList = cDao.selectMyClassList(userid);
-		classTableView.setItems(classList);
 	}
 	
 	//강의추가버튼
@@ -500,11 +498,26 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		dialog.show();
 		
 	}
+
+	//테이블 새로고침
+	public void refreshTable() {
+		//btnNo(0:현재강의, 1:지난강의, 2:전체강의)
+		if(btnNo==0 || btnNo==1) {
+			classList = cDao.selectMyClassList(userid,btnNo);			
+		} else {
+			classList = cDao.searchClassList("");
+		}
+		classTableView.setItems(classList);
+	}
 	
 	//검색버튼 이벤트
 	public void btnSearch() {
 		String search = txtSearch.getText();
-		classList = cDao.searchClassList(search);
+		if(btnNo==0 || btnNo==1) {
+			classList = cDao.searchClassList(userid,search,this.btnNo);
+		} else {
+			classList = cDao.searchClassList(search);			
+		}
 		classTableView.setItems(classList);
 	}
 
