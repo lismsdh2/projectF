@@ -1,6 +1,5 @@
 ﻿package DTO;
 
-import java.io.OutputStream;
 import java.time.LocalDate;
 
 import javafx.beans.property.ObjectProperty;
@@ -20,9 +19,10 @@ public class TaskDto {
 	private SimpleStringProperty tcDesc;
 	private SimpleObjectProperty<LocalDate> tcRegdate;
 	private SimpleObjectProperty<LocalDate> tcExpireDate;
-	private ObjectProperty<OutputStream> attachedFile = new SimpleObjectProperty<OutputStream>();
+	private ObjectProperty<byte[]> attachedFile;
 	private SimpleStringProperty tcFile;
-	private SimpleIntegerProperty perfectScore;
+	private SimpleObjectProperty<Integer> perfectScore;
+//	private SimpleIntegerProperty perfectScore;
 	private SimpleBooleanProperty dateCheck;
 
 	public TaskDto() {
@@ -31,46 +31,46 @@ public class TaskDto {
 		this.tcDesc = new SimpleStringProperty();
 		this.tcRegdate = new SimpleObjectProperty<LocalDate>();
 		this.tcExpireDate = new SimpleObjectProperty<LocalDate>();
-		this.attachedFile = new SimpleObjectProperty<OutputStream>();
+		this.attachedFile = new SimpleObjectProperty<byte[]>();
 		this.tcFile = new SimpleStringProperty();
-		this.perfectScore = new SimpleIntegerProperty();
+		this.perfectScore = new SimpleObjectProperty<Integer>();
 		this.dateCheck = new SimpleBooleanProperty();
 	}
 
 	public TaskDto(Integer tcNo, String tcTitle, String tcDesc, LocalDate tcRegdate, LocalDate tcExpireDate,
-			OutputStream attachedFile ,String tcFile,Integer perfectScore) {
+			byte[] attachedFile, String tcFile, Integer perfectScore) {
 		this.tcNo = new SimpleIntegerProperty(tcNo);
 		this.tcTitle = new SimpleStringProperty(tcTitle);
 		this.tcDesc = new SimpleStringProperty(tcDesc);
 		this.tcRegdate = new SimpleObjectProperty<LocalDate>(tcRegdate);
 		this.tcExpireDate = new SimpleObjectProperty<LocalDate>(tcExpireDate);
-		this.attachedFile = new SimpleObjectProperty<OutputStream>(attachedFile);
+		this.attachedFile = new SimpleObjectProperty<byte[]>(attachedFile);
 		this.tcFile = new SimpleStringProperty(tcFile);
-		this.perfectScore = new SimpleIntegerProperty(perfectScore);
-	}
-	
-	public TaskDto(Integer tcNo, String tcTitle, String tcDesc, LocalDate tcRegdate, LocalDate tcExpireDate, 
-			 String tcFile, Integer perfectScore) {
-		super();
-		this.tcNo = new SimpleIntegerProperty(tcNo);
-		this.tcTitle = new SimpleStringProperty(tcTitle);
-		this.tcDesc = new SimpleStringProperty(tcDesc);
-		this.tcRegdate = new SimpleObjectProperty<LocalDate>(tcRegdate);
-		this.tcExpireDate = new SimpleObjectProperty<LocalDate>(tcExpireDate);
-		this.tcFile = new SimpleStringProperty(tcFile);
-		this.perfectScore = new SimpleIntegerProperty(perfectScore);
+		this.perfectScore = new SimpleObjectProperty<Integer>(perfectScore);
 	}
 
-	public TaskDto(String tcTitle, String tcDesc, LocalDate tcRegdate, LocalDate tcExpireDate, 
-			OutputStream attachedFile, String tcFile, Integer perfectScore) {
+	public TaskDto(Integer tcNo, String tcTitle, String tcDesc, LocalDate tcRegdate, LocalDate tcExpireDate,
+			String tcFile, Integer perfectScore) {
+		super();
+		this.tcNo = new SimpleIntegerProperty(tcNo);
+		this.tcTitle = new SimpleStringProperty(tcTitle);
+		this.tcDesc = new SimpleStringProperty(tcDesc);
+		this.tcRegdate = new SimpleObjectProperty<LocalDate>(tcRegdate);
+		this.tcExpireDate = new SimpleObjectProperty<LocalDate>(tcExpireDate);
+		this.tcFile = new SimpleStringProperty(tcFile);
+		this.perfectScore = new SimpleObjectProperty<Integer>(perfectScore);
+	}
+
+	public TaskDto(String tcTitle, String tcDesc, LocalDate tcRegdate, LocalDate tcExpireDate,
+			byte[] attachedFile, String tcFile, Integer perfectScore) {
 		super();
 		this.tcTitle = new SimpleStringProperty(tcTitle);
 		this.tcDesc = new SimpleStringProperty(tcDesc);
 		this.tcRegdate = new SimpleObjectProperty<LocalDate>(tcRegdate);
 		this.tcExpireDate = new SimpleObjectProperty<LocalDate>(tcExpireDate);
-		this.attachedFile = new SimpleObjectProperty<OutputStream>(attachedFile);
+		this.attachedFile = new SimpleObjectProperty<byte[]>(attachedFile);
 		this.tcFile = new SimpleStringProperty(tcFile);
-		this.perfectScore = new SimpleIntegerProperty(perfectScore);
+		this.perfectScore = new SimpleObjectProperty<Integer>(perfectScore);
 	}
 
 	// getter
@@ -105,8 +105,8 @@ public class TaskDto {
 	public boolean getDateCheck() {
 		return dateCheck.get();
 	}
-	
-	public OutputStream getAttachedFile() {
+
+	public byte[] getAttachedFile() {
 		return attachedFile.get();
 	}
 
@@ -142,8 +142,8 @@ public class TaskDto {
 	public void setDateCheck(boolean dateCheck) {
 		this.dateCheck.set(dateCheck);
 	}
-	
-	public void setAttachedFile(OutputStream attachedFile) {
+
+	public void setAttachedFile(byte[] attachedFile) {
 		this.attachedFile.set(attachedFile);
 	}
 
@@ -172,15 +172,15 @@ public class TaskDto {
 		return tcFile;
 	}
 
-	public SimpleIntegerProperty perfectScoreProperty() {
+	public SimpleObjectProperty<Integer> perfectScoreProperty() {
 		return perfectScore;
 	}
 
 	public SimpleBooleanProperty dateCheckProperty() {
 		return dateCheck;
 	}
-	
-	public ObjectProperty<OutputStream> attachedFileProperty() {
+
+	public ObjectProperty<byte[]> attachedFileProperty() {
 		return attachedFile;
 	}
 

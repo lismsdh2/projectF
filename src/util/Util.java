@@ -1,7 +1,10 @@
 ﻿package util;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextField;
 
 public class Util {
 
@@ -13,5 +16,18 @@ public class Util {
 		alert.setContentText(msg);
 
 		alert.show();
+	}
+	
+	//txtfield에 숫자만 오도록
+	public static ChangeListener<String> numberOnlyListener(TextField textField) {
+		return new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					textField.setText(newValue.replaceAll("[^\\d]", ""));
+				}
+			}
+		};
 	}
 }

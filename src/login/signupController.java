@@ -67,51 +67,51 @@ public class signupController implements Initializable {
 		check.setOnAction(e->handlecheck(e));
 		
 	      //폰 번호 가운데자리수 제한
-	      phonefield1.lengthProperty().addListener(new ChangeListener<Number>() {
-	         @Override
-	         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-	            
-	            if(newValue.intValue() > oldValue.intValue()) {
-	               
-	               if(phonefield1.getText().length()>=5) {
-	                  
-	                  phonefield1.setText(phonefield1.getText().substring(0, 4));
-	               }
-	            }
-	         }
-	      });
+//	      phonefield1.lengthProperty().addListener(new ChangeListener<Number>() {
+//	         @Override
+//	         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+//	            
+//	            if(newValue.intValue() > oldValue.intValue()) {
+//	               
+//	               if(phonefield1.getText().length()>=5) {
+//	                  
+//	                  phonefield1.setText(phonefield1.getText().substring(0, 4));
+//	               }
+//	            }
+//	         }
+//	      });
 	      
 	      //폰번호 숫자만 입력
 	      phonefield1.textProperty().addListener(new ChangeListener<String>() {
 
 				@Override
 				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					if (!newValue.matches("\\d*")) {
-						phonefield1.setText(newValue.replaceAll("[^\\d]", ""));
+					if (!newValue.matches("\\d{3,4}$")) {
+						phonefield1.setText(newValue.replaceAll("[^\\d{3,4}$]", ""));
 					}
 				}
 			});
 	      //폰 번호 마지막자리수 제한
-	      phonefield2.lengthProperty().addListener(new ChangeListener<Number>() {
-	         @Override
-	         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-	            
-	            if(newValue.intValue() > oldValue.intValue()) {
-	               
-	               if(phonefield2.getText().length()>=5) {
-	                  
-	                  phonefield2.setText(phonefield2.getText().substring(0, 4));
-	               }
-	            }
-	         }
-	      });
+//	      phonefield2.lengthProperty().addListener(new ChangeListener<Number>() {
+//	         @Override
+//	         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+//	            
+//	            if(newValue.intValue() > oldValue.intValue()) {
+//	               
+//	               if(phonefield2.getText().length()>=5) {
+//	                  
+//	                  phonefield2.setText(phonefield2.getText().substring(0, 4));
+//	               }
+//	            }
+//	         }
+//	      });
 	      
 	      //폰번호 숫자만 입력
 	      phonefield2.textProperty().addListener(new ChangeListener<String>() {
 
 				@Override
 				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					if (!newValue.matches("\\d*")) {
+					if (!newValue.matches("\\d{4}$")) {
 						phonefield2.setText(newValue.replaceAll("[^\\d]", ""));
 					}
 				}

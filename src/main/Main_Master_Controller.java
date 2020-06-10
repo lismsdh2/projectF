@@ -25,6 +25,7 @@ import launch.AppMain;
 public class Main_Master_Controller implements Initializable {
 
 	public static Main_Master_Controller mmc;
+
 	@FXML private BorderPane borderPane;
 	@FXML private StackPane innerPane;
 	@FXML private AnchorPane subMenu;

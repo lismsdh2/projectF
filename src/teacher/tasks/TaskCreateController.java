@@ -1,12 +1,18 @@
 ﻿package teacher.tasks;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ResourceBundle;
 
+import DAO.TaskDao;
 import DTO.ClassDto;
 import DTO.TaskDto;
 import javafx.beans.value.ChangeListener;
@@ -24,6 +30,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
+import util.Util;
 
 /**
  * @author 김지현
@@ -31,13 +39,19 @@ import javafx.stage.Stage;
  */
 public class TaskCreateController implements Initializable {
 	@FXML
-	private TextField txtTitle;
-
-	@FXML
 	private TextField txtFile;
 
 	@FXML
+	private Button btnFileDel;
+
+	@FXML
+	private Button btnDateDel;
+
+	@FXML
 	private DatePicker dateExpire;
+
+	@FXML
+	private Label txtClassName;
 
 	@FXML
 	private TextArea txtDesc;
@@ -49,135 +63,167 @@ public class TaskCreateController implements Initializable {
 	private Button btnSubmit;
 
 	@FXML
-	private TextField txtPerfectScore;
+	private TextField txtTitle;
 
 	@FXML
-	private Label txtClassName;
-	Stage createStage;
-	TaskListController rController;
-	ClassDto nowClass;
+	private TextField txtPerfectScore;
 
-	public void setCreateStage(Stage createStage) {
-		this.createStage = createStage;
-	}
+	ClassDto currentClass;
+	byte[] arr;
+	TaskListController tlc = new TaskListController();
 
-	public TaskCreateController(TaskListController rController) {
-		this.rController = rController;
-
-		try {
-			createStage = new Stage();
-			createStage.initModality(Modality.WINDOW_MODAL); // 모달이 안되는거같은데;
-			createStage.initOwner(rController.reportListStage);
-
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../fxml/teacher/tasks/TaskCreate.fxml"));
-			loader.setController(this);
-			createStage.setScene(new Scene(loader.load()));
-			createStage.setTitle("과제생성");
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public TaskCreateController(ClassDto currentClass) {
+		this.currentClass = currentClass;
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		nowClass = rController.nowClass;
-		
-		txtClassName.setText(nowClass.getClassName());
-		btnSubmit.setOnAction(e -> handleSubmitBtn());
-		
-		// 숫자만 입력할 수 있도록 제한
-		txtPerfectScore.textProperty().addListener(new ChangeListener<String>() {
+		// 현재 강의명 표시
+		txtClassName.setText(currentClass.getClassName());
 
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (!newValue.matches("\\d*")) {
-					txtPerfectScore.setText(newValue.replaceAll("[^\\d]", ""));
-				}
-			}
-		});
+		// 점수필드 - 숫자만 입력할 수 있도록 제한
+//		txtPerfectScore.textProperty().addListener(numberOnlyListener());
+		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));
 
 		// 첨부파일 버튼
-		btnFile.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("첨부파일 등록");
+		btnFile.setOnAction(e -> handleAttachedFileBtn());
 
-			Scene scene = btnSubmit.getScene();
-			File file = fc.showOpenDialog(scene.getWindow());
-			if (file != null) {
-				txtFile.setText(file.getPath());
+		// 등록버튼
+		btnSubmit.setOnAction(e -> handleSubmitBtn());
+
+		// 날짜 삭제버튼
+		btnDateDel.setOnAction(e -> dateExpire.setValue(null));
+
+		// 첨부파일 삭제 버튼
+		btnFileDel.setOnAction(e -> {
+			arr = null;
+			txtFile.clear();
+			if (arr == null) {
+				System.out.println("arr remove");
 			}
 		});
+
 	}
 
+//	private ChangeListener<String> numberOnlyListener() {
+//		return new ChangeListener<String>() {
+//
+//			@Override
+//			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+//				if (!newValue.matches("\\d*")) {
+//					txtPerfectScore.setText(newValue.replaceAll("[^\\d]", ""));
+//				}
+//			}
+//		};
+//	}
+
+	// 첨부파일 버튼 -> fileChooser dialog
+	private void handleAttachedFileBtn() {
+		FileChooser fc = new FileChooser();
+		fc.getExtensionFilters().addAll(new ExtensionFilter("AllFiles", "*.*"));
+		fc.setTitle("첨부파일 등록");
+
+		Scene scene = btnSubmit.getScene();
+		File file = fc.showOpenDialog(scene.getWindow());
+
+		// 선택된 파일이 있을 경우
+		if (file != null) {
+			try {
+				FileInputStream fis = new FileInputStream(file);
+				BufferedInputStream bis = new BufferedInputStream(fis);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+				int data = 0;
+				byte[] readData = new byte[10000];
+				while ((data = bis.read(readData)) != -1) {
+					baos.write(readData, 0, data);
+				}
+
+				arr = baos.toByteArray();
+
+				String filePath = file.getPath();
+				System.out.println("selected file path : " + filePath);
+
+				String fileName = filePath.substring(filePath.lastIndexOf("\\") + 1, filePath.length());
+				System.out.println("selected file name : " + fileName);
+
+				txtFile.setText(fileName);
+
+				baos.close();
+				bis.close();
+				fis.close();
+				System.out.println("file write 성공");
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				System.out.println("파일 선택 오류");
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("file write 실패");
+			}
+		}
+
+	}
+
+	// 과제 등록 버튼
 	private void handleSubmitBtn() {
+		System.out.println("**과제 등록 버튼 클릭");
 
 		try {
+			// 각 필드에서 값 읽기
 			String name = txtTitle.getText();
 			String desc = txtDesc.getText();
 			String strPftScore = txtPerfectScore.getText();
-			Integer perfectScore = 0;
-//			Integer perfectScore = Integer.parseInt(txtPerfectScore.getText());
-			LocalDate expireDate = null;
+			Integer perfectScore = null;
+			LocalDate expireDate = dateExpire.getValue();
 			LocalDate cDate = LocalDate.now();
+			String filename = txtFile.getText();
 
-			if (txtPerfectScore.getText().isEmpty()) {
-				System.out.println("점수가없어!");
-			} else {
-				perfectScore = Integer.parseInt(strPftScore);
-			}
-
-			if (dateExpire.getValue() != null) {
-				expireDate = dateExpire.getValue();
-				// 과제 제출 날짜>현재 날짜 제한
-				Period period = Period.between(cDate, expireDate);
-				int diff = period.getDays();
-				if (diff < 0) {
-					// 팝업 넣기
-					Alert expireDateAlert = new Alert(Alert.AlertType.ERROR);
-					expireDateAlert.setTitle("날짜 오류");
-					expireDateAlert.setContentText("오늘 이전 날짜로는 설정 할 수 없습니다.");
-					expireDateAlert.showAndWait();
-//					throw new Exception("오늘 이전 날짜로는 설정 불가");
-					return;
-				}
-			}
-
-			// 과제명은 비울 수 없다
+			// 과제명 is not null
 			if (name.equals("")) {
 				// 팝업 넣기
 				Alert titleAlert = new Alert(Alert.AlertType.ERROR);
 				titleAlert.setTitle("과제명 없음");
 				titleAlert.setContentText("과제명이 입력되지 않았습니다.");
 				titleAlert.showAndWait();
-//				throw new Exception("과제명이 입력되지 않았습니다.");
 				return;
 			}
 
-			String filename = txtFile.getText();
+			// 점수입력 검사
+			if (strPftScore.isEmpty()) {
+				System.out.println("입력된 점수 없음");
+			} else {
+				perfectScore = Integer.parseInt(strPftScore);
+			}
 
-			System.out.println("**과제생성버튼 클릭");
-//			System.out.println(name);
-//			System.out.println(desc);
-//			System.out.println(cDate);
-//			System.out.println(expireDate);
-//			System.out.println(filename);
-//			System.out.println(perfectScore);
+			// 과제 제출 날짜를 설정하지 않으면 자동으로 클래스의 종료일로 설정
+			if (dateExpire.getValue() == null) {
+				expireDate = currentClass.getEndDate();
+			}
 
-			//첨부파일 내용 받아와야함 - 일단 null로 설정
-			TaskDto report = new TaskDto(name, desc, cDate, expireDate, null, filename, perfectScore);
-			System.out.println(report.toString());
+			// 과제 제출 날짜 검사
 
-			// db에 데이터 저장하고, 불러와서 테이블에 보여주기
-			rController.tDao.insertTask(report, nowClass.getClassNo());
-			rController.refreshTable();
+			// 과제 제출 날짜>현재 날짜 제한
+			Period period = Period.between(cDate, expireDate);
+			int diff = period.getDays();
+			if (diff < 0) {
+				// 팝업 넣기
+				Alert expireDateAlert = new Alert(Alert.AlertType.ERROR);
+				expireDateAlert.setTitle("날짜 오류");
+				expireDateAlert.setContentText("오늘 이전 날짜로는 설정 할 수 없습니다.");
+				expireDateAlert.showAndWait();
+				return;
+			}
+
+			// DTO에 읽은 값들 저장
+			TaskDto task = new TaskDto(name, desc, cDate, expireDate, arr, filename, perfectScore);
+
+			// db에 데이터 저장
+			TaskDao tDao = new TaskDao();
+			tDao.insertTask(task, currentClass.getClassNo());
 
 			// 입력창 클리어
-			txtTitle.clear();
-			txtDesc.clear();
-			txtPerfectScore.clear();
-			dateExpire.setValue(null);
-			txtFile.clear();
+			clear();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -186,8 +232,12 @@ public class TaskCreateController implements Initializable {
 
 	}
 
-	public void showStage() {
-		createStage.show();
+	private void clear() {
+		txtTitle.clear();
+		txtDesc.clear();
+		txtPerfectScore.clear();
+		dateExpire.setValue(null);
+		txtFile.clear();
 	}
 
 }

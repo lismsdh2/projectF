@@ -1,27 +1,37 @@
 ﻿package teacher.tasks;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
+import DAO.TaskDao;
 import DTO.TaskDto;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import util.Util;
 
 /**
  * @author 김지현
@@ -29,54 +39,43 @@ import javafx.stage.Stage;
  */
 public class TaskModifyController implements Initializable {
 	@FXML
-	private TextField txtTitle;
-	@FXML
 	private TextField txtFile;
+
+	@FXML
+	private Button btnFileDel;
+
+	@FXML
+	private Button btnDateDel;
+
 	@FXML
 	private DatePicker dateExpire;
+
 	@FXML
 	private TextArea txtDesc;
+
 	@FXML
 	private Button btnFile;
+
 	@FXML
 	private Button btnSubmit;
+
+	@FXML
+	private TextField txtTitle;
+
 	@FXML
 	private TextField txtPerfectScore;
 
-	Stage modifyStage;
-	TaskListController rController;
+	TaskDao tDao = new TaskDao();
+	int selectedTaskNo;
+	byte[] arr;
 
-	int selectedReportNo;
-
-	public void setCreateStage(Stage modifyStage) {
-		this.modifyStage = modifyStage;
-	}
-
-	public void setReportNo(int selectedReportNo) {
-		this.selectedReportNo = selectedReportNo;
-	}
-
-	public TaskModifyController(TaskListController rController) {
-		this.rController = rController;
-
-		try {
-			modifyStage = new Stage();
-
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../fxml/teacher/tasks/TaskModify.fxml"));
-			loader.setController(this);
-			modifyStage.initOwner(rController.reportListStage);
-			modifyStage.initModality(Modality.WINDOW_MODAL); // 모달이 안되는거같은데;
-			modifyStage.setTitle("과제 수정");
-			modifyStage.setScene(new Scene(loader.load()));
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public TaskModifyController(int selectedTaskNo) {
+		this.selectedTaskNo = selectedTaskNo;
+		setContents();
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		btnSubmit.setOnAction(e -> handleSubmitBtn());
 
 		// 숫자만 입력할 수 있도록 제한
 		txtPerfectScore.textProperty().addListener(new ChangeListener<String>() {
@@ -90,70 +89,120 @@ public class TaskModifyController implements Initializable {
 		});
 
 		// 첨부파일 버튼
-		btnFile.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("첨부파일 등록");
+		btnFile.setOnAction(e -> handleAttachedFileBtn());
 
-			Scene scene = btnSubmit.getScene();
-			File file = fc.showOpenDialog(scene.getWindow());
-			if (file != null) {
-				txtFile.setText(file.getPath());
+		// 수정버튼
+		btnSubmit.setOnAction(e -> handleSubmitBtn());
+
+		// 날짜 삭제버튼
+		btnDateDel.setOnAction(e -> dateExpire.setValue(null));
+
+		// 첨부파일 삭제 버튼
+		btnFileDel.setOnAction(e -> {
+			arr = null;
+			txtFile.clear();
+			if (arr == null) {
+				System.out.println("arr remove");
 			}
 		});
+	}
+
+	// 첨부파일 버튼
+	private void handleAttachedFileBtn() {
+		FileChooser fc = new FileChooser();
+		fc.getExtensionFilters().addAll(new ExtensionFilter("AllFiles", "*.*"));
+		fc.setTitle("첨부파일 등록");
+
+		Scene scene = btnSubmit.getScene();
+		File file = fc.showOpenDialog(scene.getWindow());
+
+		// 선택된 파일이 있을 경우
+		if (file != null) {
+			try {
+				FileInputStream fis = new FileInputStream(file);
+				BufferedInputStream bis = new BufferedInputStream(fis);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+				int data = 0;
+				byte[] readData = new byte[10000];
+				while ((data = bis.read(readData)) != -1) {
+					baos.write(readData, 0, data);
+				}
+
+				arr = baos.toByteArray();
+
+				String filePath = file.getPath();
+				System.out.println("selected file path : " + filePath);
+
+				String fileName = filePath.substring(filePath.lastIndexOf("\\") + 1, filePath.length());
+				System.out.println("selected file name : " + fileName);
+
+				txtFile.setText(fileName);
+
+				baos.close();
+				bis.close();
+				fis.close();
+				System.out.println("file write 성공");
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				System.out.println("파일 선택 오류");
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("file write 실패");
+			}
+		}
 
 	}
 
+	// 과제 수정 버튼
 	private void handleSubmitBtn() {
-
-		TaskDto selectedReport = rController.tDao.selectTask(selectedReportNo);
+		System.out.println("**과제수정버튼 클릭!");
+		TaskDto selectedReport = tDao.selectTask(selectedTaskNo);
 
 		try {
+			// 각 필드에서 값 읽기
 			String name = txtTitle.getText();
 			String desc = txtDesc.getText();
-			int perfectScore = Integer.parseInt(txtPerfectScore.getText());
-
-			LocalDate expireDate = dateExpire.getValue();
-			LocalDate cDate = selectedReport.getTcRegdate();
-
-			// 과제명은 비울 수 없다
-			if (name.equals("")) {
-				// 팝업 넣기
-				Alert titleAlert = new Alert(Alert.AlertType.ERROR);
-				titleAlert.setTitle("과제명 없음");
-				titleAlert.setContentText("과제명이 입력되지 않았습니다.");
-				titleAlert.showAndWait();
-//						throw new Exception("과제명이 입력되지 않았습니다.");
-				return;
-			}
-
-			// 과제 제출 날짜>현재 날짜 제한
-			Period period = Period.between(cDate, expireDate);
-			int diff = period.getDays();
-			if (diff < 0) {
-				// 팝업 넣기
-				Alert expireDateAlert = new Alert(Alert.AlertType.ERROR);
-				expireDateAlert.setTitle("날짜 오류");
-				expireDateAlert.setContentText("오늘 이전 날짜로는 설정 할 수 없습니다.");
-				expireDateAlert.showAndWait();
-//						throw new Exception("오늘 이전 날짜로는 설정 불가");
-				return;
-			}
-
+			String strPftScore = txtPerfectScore.getText();
+			Integer perfectScore = null;
+			LocalDate expireDate = null;
+			LocalDate regDate = selectedReport.getTcRegdate();
 			String filename = txtFile.getText();
 
-			System.out.println("**과제수정버튼 클릭");
-//					System.out.println(name);
-//					System.out.println(desc);
-//					System.out.println(cDate);
-//					System.out.println(expireDate);
-//					System.out.println(filename);
-//					System.out.println(perfectScore);
+			// 과제명 is not null
+			if (name.equals("")) {
+				// 팝업
+				Util.showAlert("과제명 오류", "과제명이 입력되지 않았습니다.", AlertType.ERROR);
+				return;
+			}
 
-			TaskDto modifiedReport = new TaskDto(selectedReportNo, name, desc, cDate, expireDate, filename, perfectScore);
+			// 점수입력
+			if (!strPftScore.isEmpty()) {
+				perfectScore = Integer.parseInt(strPftScore);
+			}
 
-			// db에 데이터 저장하고, 불러와서 테이블에 보여주기
-			rController.tDao.updateReport(modifiedReport);
-			rController.refreshTable();
+			// 과제 제출 날짜 검사
+			if (dateExpire.getValue() != null) {
+				expireDate = dateExpire.getValue();
+
+				// 과제 제출 날짜>현재 날짜 제한
+				Period period = Period.between(LocalDate.now(), expireDate);
+				int diff = period.getDays();
+				if (diff < 0) {
+					// 팝업
+					Util.showAlert("날짜 오류", "오늘 이전 날짜로는 설정할 수 없습니다.", AlertType.ERROR);
+					return;
+				}
+			}
+
+			// DTO에 수정된 값들 저장
+			System.out.println("score- " + perfectScore);
+			TaskDto modifiedReport = new TaskDto(selectedTaskNo, name, desc, regDate, expireDate, arr, filename,
+					perfectScore);
+
+			// db에 데이터 저장
+			tDao.updateReport(modifiedReport);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -162,18 +211,24 @@ public class TaskModifyController implements Initializable {
 
 	}
 
-	public void showStage() {
-		System.out.println("sh" + selectedReportNo);
-		TaskDto selectedReport = rController.tDao.selectTask(selectedReportNo);
+	// 선택된 과제 정보 입력
+	private void setContents() {
+		System.out.println("selected Task : " + selectedTaskNo);
+		TaskDto selectedReport = tDao.selectTask(selectedTaskNo);
 
-		// 선택된 값 불러오기
-		txtTitle.setText(selectedReport.getTcTitle());
-		txtDesc.setText(selectedReport.getTcDesc());
-		txtPerfectScore.setText(selectedReport.getPerfectScore().toString());
-		dateExpire.setValue(selectedReport.getTcExpireDate());
-		txtFile.setText(selectedReport.getTcFile());
+		Platform.runLater(() -> {
+			txtTitle.setText(selectedReport.getTcTitle());
+			txtDesc.setText(selectedReport.getTcDesc());
 
-		modifyStage.show();
+			if (selectedReport.getPerfectScore() != null) {
+				txtPerfectScore.setText(selectedReport.getPerfectScore().toString());
+			} else {
+				txtPerfectScore.setText("");
+			}
+
+			dateExpire.setValue(selectedReport.getTcExpireDate());
+			txtFile.setText(selectedReport.getTcFile());
+		});
+
 	}
-
 }

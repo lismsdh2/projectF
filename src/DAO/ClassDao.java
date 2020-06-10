@@ -177,18 +177,13 @@ public class ClassDao {
 	}
 
 	// 본인강의만 조회(id로 조회)
-	public ObservableList<ClassDto> selectMyClassList(String teacherid, int btnNo) {
+	public ObservableList<ClassDto> selectMyClassList(String teacherid) {
 		//DB연결
 		connectionJDBC();
 		
 		ObservableList<ClassDto> list = FXCollections.observableArrayList();
 		try {
-			//디폴트 값(btnNo==0)으로 현재강의를 조회
-			String sql = "select * from class where teacher_id=? and end_date >= sysdate();";
-			//btnNo == 1이면 지난강의를 조회
-			if(btnNo == 1) {
-				sql = "select * from class where teacher_id=? and end_date < sysdate();";
-			}
+			String sql = "select * from class where teacher_id=?;";
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, teacherid);
 			rs = pstmt.executeQuery();
@@ -218,7 +213,7 @@ public class ClassDao {
 		return list;
 	}
 
-	// 전체 강의검색하기(강의명 or 선생님명)
+	// 강의검색하기(강의명 or 선생님명)
 	public ObservableList<ClassDto> searchClassList(String str) {
 		//DB연결
 		connectionJDBC();
@@ -227,9 +222,8 @@ public class ClassDao {
 		
 		try {
 			String sql = "select * from class where class_name like ? or teacher_name like ?;";
-			
-			String temp = "%" + str + "%";
 			pstmt = connection.prepareStatement(sql);
+			String temp = "%" + str + "%";
 			pstmt.setString(1, temp);
 			pstmt.setString(2, temp);
 			ResultSet re = pstmt.executeQuery();
@@ -258,49 +252,4 @@ public class ClassDao {
 		}
 		return list;
 	}
-	
-	// 자신의 강의검색하기(강의명)
-		public ObservableList<ClassDto> searchClassList(String userid,String str, int btnNo) {
-			//DB연결
-			connectionJDBC();
-			
-			ObservableList<ClassDto> list = FXCollections.observableArrayList();
-			
-			try {
-				//디폴트값(btnNo=0)일때 현재강의 범위에서 검색
-				String sql = "select * from class where teacher_id=? and class_name like ? and end_date >= sysdate();";
-				//btnNo == 1이면 지난강의 범위에서 검색
-				if(btnNo == 1) {
-					sql = "select * from class where teacher_id=? and class_name like ? and end_date <= sysdate();";
-				} 
-				String temp = "%" + str + "%";
-				pstmt = connection.prepareStatement(sql);
-				pstmt.setString(1, userid);
-				pstmt.setString(2, temp);
-				ResultSet re = pstmt.executeQuery();
-
-				while (re.next()) {
-					ClassDto classDto = new ClassDto();
-
-					classDto.setClassNo(re.getInt("class_no"));
-					classDto.setClassName(re.getString("class_name"));
-					classDto.setTeacherName(re.getString("teacher_name"));
-					classDto.setTeacherId(re.getString("teacher_id"));
-					classDto.setClassDescription(re.getString("class_desc"));
-					classDto.setStartDate(LocalDate.parse(re.getString("start_date"), DateTimeFormatter.ISO_DATE));
-					classDto.setEndDate(LocalDate.parse(re.getString("end_date"), DateTimeFormatter.ISO_DATE));
-					classDto.setLimitStudent(re.getInt("limitstudent"));
-
-					list.add(classDto);
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-
-			} finally {
-				//접속종료
-				ju.disconnect(connection, pstmt, rs);
-			}
-			return list;
-		}
 }
