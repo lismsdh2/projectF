@@ -1,4 +1,4 @@
-﻿package student.tasks;
+package student.tasks;
 /*
  * 작성자 : 도현호
  */
@@ -10,12 +10,9 @@ import DAO.AssignmentDao;
 import DTO.AssignmentDto;
 import DTO.UserDto;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -26,10 +23,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import launch.AppMain;
-import student.tasks.popup.AssignmentPopupController_no;
-import student.tasks.popup.AssignmentPopupController_yes;
 
-public class AssignmentController implements Initializable{
+public class Past_Task_Controller implements Initializable{
 
 	@FXML private AnchorPane assignPane;
 	@FXML private TableView<AssignmentDto> tableView;
@@ -40,21 +35,14 @@ public class AssignmentController implements Initializable{
     @FXML private TableColumn<AssignmentDto, Date> colTaskDeadlineDate;
     @FXML private TableColumn<AssignmentDto, Integer> colTaskScore;	
     @FXML private TableColumn<AssignmentDto, Void> colTaskAssign;
-    @FXML private ProgressBar pgbSubmitCnt;
-    @FXML private ProgressBar pgbScore;
-    @FXML private Label lblSubmitTask;
-    @FXML private Label lblTotalTask;
-    @FXML private Label lblMyScore;
-    @FXML private Label lblPerfectScore;
 
-    private Task<Void> task;
     private ObservableList<AssignmentDto> list;
-	private Stage assignmentStage;
+	private Stage assignmentStage;				//현재로서는 필요 없는 부분이지만, 전체 연동 시 필요 함
     private AssignmentDto assign = new AssignmentDto();
 	private AssignmentDao aDao = new AssignmentDao();
 	private UserDto uDto = AppMain.app.getUser();
-	private AssignmentPopupController_no popupController_no = new AssignmentPopupController_no(this);
-	private AssignmentPopupController_yes popupController_yes = new AssignmentPopupController_yes(this); 
+//	private AssignmentPopupController_no popupController_no = new AssignmentPopupController_no(this);
+//	private AssignmentPopupController_yes popupController_yes = new AssignmentPopupController_yes(this); 
 	private int class_no = 1001;						//강의번호 - 추후 연동 필요
 //    private int task_no = 10001;						//과제번호 - 추후 연동 필요
 	private String student_id = uDto.getId();				//학생ID - 추후 연동 필요
@@ -84,8 +72,6 @@ public class AssignmentController implements Initializable{
 		colTaskScore.setCellValueFactory(new PropertyValueFactory<>("Score"));
 		addButton();								//버튼생성
 		tableView.setItems(list);
-		viewTaskCount();							//과제제출현황 보여주기
-		viewProgressScore();						//과제 획득 점수 보여주기
 	}
 	
 	//상세정보 버튼 만들기
@@ -115,15 +101,15 @@ public class AssignmentController implements Initializable{
 								
 								System.out.println("처음 제출");
 								System.out.println("assign : " + t_no);
-								popupController_no.setClassno(c_no);
-								popupController_no.setTaskno(t_no);
+//								popupController_no.setClassno(c_no);
+//								popupController_no.setTaskno(t_no);
 								openPopupWindow_no();							//처음 제출시 상세화면창 열기
 							} else if(assign.getSubmitornot().equals("Y")) {
 								
 								System.out.println("수정 제출");
 								System.out.println("assign : " + t_no);
-								popupController_yes.setClassno(c_no);
-								popupController_yes.setTaskno(t_no);
+//								popupController_yes.setClassno(c_no);
+//								popupController_yes.setTaskno(t_no);
 								openPopupWindow_yes();							//재 제출시 상세화면창 열기
 							}
 						});
@@ -150,14 +136,14 @@ public class AssignmentController implements Initializable{
 	//버튼 클릭시 수강신청 상세화면 띄우기
 	private void openPopupWindow_no() {
 		
-		popupController_no.showStage();
+//		popupController_no.showStage();
 		refreshTable();											//저장 후 리스트 새로 고침
 	}
 	
 	//버튼 클릭시 수강신청 상세화면 띄우기
 	private void openPopupWindow_yes() {
 		
-		popupController_yes.showStage();
+//		popupController_yes.showStage();
 		refreshTable();											//저장 후 리스트 새로 고침
 	}
 	
@@ -180,16 +166,16 @@ public class AssignmentController implements Initializable{
 						
 						System.out.println("처음 제출");
 						System.out.println("assign : " + t_no);
-						popupController_no.setClassno(c_no);
-						popupController_no.setTaskno(t_no);
+//						popupController_no.setClassno(c_no);
+//						popupController_no.setTaskno(t_no);
 						openPopupWindow_no();							//처음 제출시 상세화면창 열기
 						refreshTable();									//저장 후 리스트 새로 고침
 					} else if(assign.getSubmitornot().equals("Y")){
 						
 						System.out.println("수정 제출");
 						System.out.println("assign : " + t_no);
-						popupController_yes.setClassno(c_no);
-						popupController_yes.setTaskno(t_no);
+//						popupController_yes.setClassno(c_no);
+//						popupController_yes.setTaskno(t_no);
 						openPopupWindow_yes();							//재 제출시 상세화면창 열기
 						refreshTable();									//저장 후 리스트 새로 고침
 						
@@ -205,80 +191,6 @@ public class AssignmentController implements Initializable{
 		
 		list = aDao.assignment_selectAll(this.class_no, this.student_id);
 		tableView.setItems(list);
-		viewProgressScore();
-		viewTaskCount();
-	}
-
-	//점수 현황 보여주기
-	public void viewProgressScore() {
-		
-		assign = aDao.score_select(this.class_no, this.student_id);
-		int MyScore = assign.getSumMyScore();  
-		int PerfectScore = assign.getSumPerfectScore();
-		//progressBar 지정
-		task = new Task<Void>() {
-			
-			@Override
-			protected Void call() throws Exception {
-			
-				for(int i = 1; i< 10 ; i++) {
-					
-					if(isCancelled()) { break; }
-					
-					updateProgress(MyScore, PerfectScore);
-					
-					try { Thread.sleep(100); } catch (Exception e) { }
-					
-					if(isCancelled()) { break; }
-				}
-				
-				return null;
-			}
-		};
-		pgbScore.progressProperty().bind(task.progressProperty());
-		
-		Thread thread = new Thread(task);
-		thread.setDaemon(true);
-		thread.start();
-		
-		lblMyScore.setText(Integer.toString(MyScore));
-		lblPerfectScore.setText(Integer.toString(PerfectScore));
-	}
-
-	//과제 제출 현황 보여주기
-	public void viewTaskCount() {
-	
-		assign = aDao.myCount_select(this.class_no, this.student_id);
-		int MyAssign = assign.getCntMyAssign();
-		int TotalAssign = assign.getCntTotalAssign();
-	
-		//progressBar 지정
-		task = new Task<Void>() {
-			
-			@Override
-			protected Void call() throws Exception {
-			
-				for(int i = 1; i< 10 ; i++) {
-					
-					if(isCancelled()) { break; }
-					
-					updateProgress(MyAssign, TotalAssign);
-					
-					try { Thread.sleep(100); } catch (Exception e) { }
-					
-					if(isCancelled()) { break; }
-				}
-				
-				return null;
-			}
-		};
-		pgbSubmitCnt.progressProperty().bind(task.progressProperty());
-		
-		Thread thread = new Thread(task);
-		thread.setDaemon(true);
-		thread.start();
-		lblSubmitTask.setText(Integer.toString(MyAssign));
-		lblTotalTask.setText(Integer.toString(TotalAssign));
 	}
 	
 }

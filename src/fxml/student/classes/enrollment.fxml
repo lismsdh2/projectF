@@ -12,7 +12,7 @@
 
 <AnchorPane prefHeight="668.0" prefWidth="1024.0" style="-fx-background-color: #F4F4F4;"
 			xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-			fx:controller = "student.classes.Enrollment_Controller"
+			fx:controller = "student.classes.Enrollment_Controller" fx:id="anchorPane"
 			stylesheets = "@../../../css/student/classes/enrollment.css">
 	<children>
 		<!-- 창크기 좌우 15px여백을 위해 x좌표 15와 1024에서 30만큼 뺀 가로크기 지정 -->

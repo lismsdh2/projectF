@@ -340,4 +340,41 @@ public class AssignmentDao {
 		}
 		return assign;
 	}
+	
+	//과제명 조회
+//	public AssignmentDto className_selectAll(String stu_id) {
+//		
+//		//DB연결
+//		connectionJDBC();
+//		
+//		AssignmentDto assign = new AssignmentDto();
+//		String sql = "select count(*), (select count(*) from task where class_no = ?)"
+//						+ " from submission_task"
+//					    + " where class_no = ?"
+//					    + " and student_id = ?"
+//					    + " and tasksubmit = 'Y';";
+//			
+//		try {
+//			pstmt = connection.prepareStatement(sql);
+//			pstmt.setInt(1, class_no);
+//			pstmt.setInt(2, class_no);
+//			pstmt.setString(3, stu_id);
+//			ResultSet rs = pstmt.executeQuery();
+//			
+//			if(rs.next()) {
+//				
+//				assign.setCntMyAssign(rs.getInt(1));
+//				assign.setCntTotalAssign(rs.getInt(2));
+//				System.out.println("과제 개수 조회 완료");
+//			}
+//			
+//		} catch (SQLException e) {
+////			e.printStackTrace();
+//				System.out.println("과제 개수 조회 실패");
+//		} finally {
+//			//접속종료
+//			ju.disconnect(connection, pstmt, rs);
+//		}
+//		return assign;
+//	}
 }

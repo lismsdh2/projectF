@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import launch.AppMain;
 import student.classes.Enrollment_Controller;
@@ -54,6 +55,9 @@ public class EnrollmentPopupController implements Initializable {
 			loader.setController(this);
 			popupStage.setScene(new Scene(loader.load()));
 			popupStage.setTitle("수강 신청");
+			popupStage.initModality(Modality.WINDOW_MODAL);
+//			popupStage.initOwner(this.enrollmentController.getStage());
+			
 			System.out.println("수강신청 화면 열기 성공");
 		} catch (IOException e) {
 			e.printStackTrace();

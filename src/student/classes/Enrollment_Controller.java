@@ -6,6 +6,8 @@
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javax.swing.text.TabExpander;
+
 import DAO.EnrollmentDao;
 import DTO.EnrollmentDto;
 import javafx.collections.ObservableList;
@@ -21,11 +23,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import student.classes.popup.EnrollmentPopupController;
 
 public class Enrollment_Controller implements Initializable{
 
+	@FXML private AnchorPane anchorPane;
 	@FXML private Button currentClass;
 	@FXML private Button lastClass;
 	@FXML private Button allClass;
@@ -40,11 +45,11 @@ public class Enrollment_Controller implements Initializable{
 	@FXML private ComboBox<String> choiceField;
 	@FXML private TextField txtSearch;
 	@FXML private Button btnSearch;
-	
+
 	private ObservableList<EnrollmentDto> list;
 	private EnrollmentDao eDao = new EnrollmentDao();
 	private EnrollmentPopupController popupController = new EnrollmentPopupController(this);
-
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
@@ -160,5 +165,5 @@ public class Enrollment_Controller implements Initializable{
 		list = eDao.enrollment_selectAll();
 		tableView.setItems(list);
 	}
-
+	
 }

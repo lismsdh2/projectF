@@ -493,4 +493,47 @@ public class EnrollmentDao {
 			ju.disconnect(connection, pstmt, rs);
 		}
 	}
+	
+	//콤보박스 과제명 출력
+	public ObservableList<String> current_className_selectAll(String stu_id) {
+	
+		//DB연결
+		connectionJDBC();
+		
+		ObservableList<String> list = FXCollections.observableArrayList();
+		String sql = "select c.class_no, c.class_name"
+					+"  from request_class rc"
+					+" inner join class c"
+					+"    on rc.class_no = c.class_no"
+					+" where rc.student_id = ?"
+					+"   and c.end_date >= curdate();";
+		
+		try {
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, stu_id);
+			rs = pstmt.executeQuery();
+		
+			int class_No = 0;
+			String class_Name = null;
+			String class_Info = null;
+			while(rs.next()) {
+				
+				class_No = rs.getInt(1);							//강의번호
+				class_Name = rs.getString(2);						//강의명
+				class_Info = "[" + class_No + "] " + class_Name;	//강의정보
+				
+				list.add(class_Info);
+			}
+			System.out.println("현재 수강 중인 강좌 조회 성공");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("[SQL Error : " + e.getMessage() + "]");
+			System.out.println("현재 수강 중인 강좌 조회 실패");
+		} finally {
+			
+			//접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
+		return list;
+	}
 }

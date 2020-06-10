@@ -34,6 +34,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import launch.AppMain;
 import main.Main_Master_Controller;
+import teacher.classes.TeacherMainController;
 import util.Navigator;
 
 /**
@@ -67,6 +68,7 @@ public class TaskListController extends Main_Master_Controller implements Initia
 
 	UserDto user = AppMain.app.getUser();
 	String userid = user.getId();
+
 	int classno = AppMain.app.getClassno();
 	ClassDao cDao = new ClassDao();
 	ClassDto nowClass = cDao.selectClassOne(classno);
