@@ -3,7 +3,7 @@ package login;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import DAO.UserDao;
+import DAO.BasicDao;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,7 +20,7 @@ public class search_pass2_Controller implements Initializable {
 	@FXML private Button cancle; 
 	
 	private Stage pop;
-	UserDao bDao = new UserDao();
+	BasicDao bDao = new BasicDao();
 	
 	public void initialize(URL location, ResourceBundle resources) {
 

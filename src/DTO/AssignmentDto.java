@@ -29,6 +29,7 @@ public class AssignmentDto {
 	private final ObjectProperty<InputStream> attachedFile = new SimpleObjectProperty<InputStream>();		//첨부파일
 	private final StringProperty attachedFile_name = new SimpleStringProperty();			//첨부파일명
 	private final IntegerProperty class_no = new SimpleIntegerProperty();					//강의번호
+	private final StringProperty class_name = new SimpleStringProperty();					//강의명
 	private final IntegerProperty perfect_score = new SimpleIntegerProperty();				//만점
 	private final StringProperty taskQuestion = new SimpleStringProperty();					//문의사항
 	private final StringProperty taskAnswer = new SimpleStringProperty();					//답변
@@ -231,6 +232,22 @@ public class AssignmentDto {
 	public IntegerProperty class_no_Property() {
 		
 		return this.class_no;
+	}
+
+	//강의명
+	public void setClass_name(String value) {
+		
+		this.class_name.set(value);
+	}
+	
+	public String getClass_name() {
+		
+		return this.class_name.get();
+	}
+	
+	public StringProperty class_name_Property() {
+		
+		return this.class_name;
 	}
 
 	//과제 만점

@@ -9,9 +9,9 @@ import java.util.ResourceBundle;
 
 import DAO.ClassDao;
 import DAO.TaskDao;
+import DTO.BasicDto;
 import DTO.ClassDto;
 import DTO.TaskDto;
-import DTO.UserDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -71,9 +71,9 @@ public class TaskListController extends Main_Master_Controller implements Initia
 	@FXML
 	private ComboBox<String> combo;
 
-	UserDto user = AppMain.app.getUser();
+	BasicDto user = AppMain.app.getBasic();
 	String userid = user.getId();
-	int classno = AppMain.app.getClassno();
+	int classno = AppMain.app.getBasic().getClass_no();
 	ClassDao cDao = new ClassDao();
 	ClassDto currentClass = cDao.selectClassOne(classno);
 	TaskDao tDao = new TaskDao();
@@ -143,7 +143,7 @@ public class TaskListController extends Main_Master_Controller implements Initia
 			String selectedCombo = combo.getSelectionModel().getSelectedItem();
 			int selectedNo = Integer.valueOf(selectedCombo.substring(1, 5));
 			// 선택된강의로 데이터변경
-			AppMain.app.setClassno(selectedNo);
+			AppMain.app.getBasic().setClass_no(selectedNo);
 			classno = selectedNo;
 			currentClass = cDao.selectClassOne(classno);
 			refreshTable();

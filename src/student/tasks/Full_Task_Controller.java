@@ -28,7 +28,7 @@ import launch.AppMain;
 import student.tasks.popup.AssignmentPopupController_no;
 import student.tasks.popup.AssignmentPopupController_yes;
 
-public class Current_Task_Controller implements Initializable{
+public class Full_Task_Controller implements Initializable{
 
 	@FXML private AnchorPane assignPane;
 	@FXML private TableView<AssignmentDto> tableView;
@@ -63,16 +63,17 @@ public class Current_Task_Controller implements Initializable{
 	
 		assignTableView();												//DB값 불러오기
 		tableView.setOnMouseClicked(e -> handleDoubleClicked(e));		//더블클릭 event 처리
-		setCombo();														//콤보박스
+		setCombo();
+		
 	}
 	
 	//테이블 내용 출력
 	private void assignTableView() {
 		
 		if(this.class_no==0) {								//강의가 지정 안된 경우
-			list = aDao.assignment_selectAll(this.student_id);
+			list = aDao.assignment_selectAll_Full(this.student_id);
 		} else {											//강의가 지정 된 경우
-			list = aDao.assignment_selectAll(this.class_no, this.student_id);
+			list = aDao.assignment_selectAll_Full(this.class_no, this.student_id);
 		}
 		colTaskNo.setCellValueFactory(new PropertyValueFactory<>("taskList_no"));
 		colClassName.setCellValueFactory(new PropertyValueFactory<>("class_name"));
@@ -81,7 +82,7 @@ public class Current_Task_Controller implements Initializable{
 		colTaskSubmissionDate.setCellValueFactory(new PropertyValueFactory<>("reg_date"));		//수정필요
 		colTaskDeadlineDate.setCellValueFactory(new PropertyValueFactory<>("expire_date"));
 		colTaskScore.setCellValueFactory(new PropertyValueFactory<>("Score"));
-		addButton();													//버튼생성
+		addButton();								//버튼생성
 		tableView.setItems(list);
 		viewProgressScore();
 		viewTaskCount();
@@ -105,19 +106,15 @@ public class Current_Task_Controller implements Initializable{
 							
 							assign = getTableView().getItems().get(getIndex());
 							System.out.println("selectedData(버튼) : " + assign.getSubmitornot());
-						
+							
 							//과제번호 생성
-							AppMain.app.getBasic().setClass_no(assign.getClass_no());
-							AppMain.app.getBasic().setTask_no(assign.getTask_no());
-							System.out.println("컨트롤러:"+assign.getClass_no());
-							System.out.println("컨트롤러:"+assign.getTask_no());
+							int t_no = assign.getTask_no();							//테이블에서 과제번호 연동 완료
+							AppMain.app.getBasic().setTask_no(t_no);
 							
 							if(assign.getSubmitornot().equals("N")) {
 								openPopupWindow_no();							//처음 제출시 상세화면창 열기
-								refreshTable();									//저장 후 리스트 새로 고침
 							} else if(assign.getSubmitornot().equals("Y")) {
 								openPopupWindow_yes();							//재 제출시 상세화면창 열기
-								refreshTable();									//저장 후 리스트 새로 고침
 							}
 						});
 					}
@@ -139,24 +136,10 @@ public class Current_Task_Controller implements Initializable{
 		colTaskAssign.setCellFactory(cellFactory);
 	}
 	
-	//버튼 클릭시 수강신청 상세화면 띄우기
-	private void openPopupWindow_no() {
-		
-		popupController_no.showStage();
-		refreshTable();											//저장 후 리스트 새로 고침
-	}
-	
-	//버튼 클릭시 수강신청 상세화면 띄우기
-	private void openPopupWindow_yes() {
-		
-		popupController_yes.showStage();
-		refreshTable();											//저장 후 리스트 새로 고침
-	}
-	
 	//강의별 과제 목록
 	public void setCombo() {
 		
-		classList = aDao.current_className_selectAll(this.student_id);
+		classList = aDao.full_className_selectAll(student_id);
 //		classList.add(0,"전체보기");
 		combo.setItems(classList);
 
@@ -178,15 +161,29 @@ public class Current_Task_Controller implements Initializable{
 
 			String selectedCombo = combo.getSelectionModel().getSelectedItem();
 			int selectedNo = Integer.valueOf(selectedCombo.substring(1, 5));
-		
+	
+			System.out.println(selectedNo);
 			AppMain.app.getBasic().setClass_no(selectedNo);
 			refreshTable();
 		});
 	}
+	//버튼 클릭시 수강신청 상세화면 띄우기
+	private void openPopupWindow_no() {
+		
+		popupController_no.showStage();
+		refreshTable();											//저장 후 리스트 새로 고침
+	}
+	
+	//버튼 클릭시 수강신청 상세화면 띄우기
+	private void openPopupWindow_yes() {
+		
+		popupController_yes.showStage();
+		refreshTable();											//저장 후 리스트 새로 고침
+	}
 	
 	//더블클릭 핸들러
 	private void handleDoubleClicked(MouseEvent event) {
-	
+		
 		AssignmentDto assign = tableView.getSelectionModel().getSelectedItem();
 		if(assign == null) { 
 			//아무것도 없을 때 더블클릭 하면 아무것도 안하기
@@ -196,9 +193,9 @@ public class Current_Task_Controller implements Initializable{
 				
 				if (event.getClickCount() == 2) {
 					
-					AppMain.app.getBasic().setClass_no(assign.getClass_no());
 					//테이블에서 과제번호 연동 완료
-					AppMain.app.getBasic().setTask_no(assign.getTask_no());
+					int t_no = assign.getTask_no();							
+					AppMain.app.getBasic().setTask_no(t_no);
 					
 					System.out.println("selectedData(더블클릭) : " + assign.getSubmitornot());
 					if(assign.getSubmitornot().equals("N")) {
@@ -216,9 +213,8 @@ public class Current_Task_Controller implements Initializable{
 	}
 
 	//데이터 저장 후 리스트 새로고침
-	private void refreshTable() {
-	
-		this.class_no = AppMain.app.getBasic().getClass_no();
+	public void refreshTable() {
+		AppMain.app.getBasic().getClass_no();
 		if(this.class_no==0) {								//강의가 지정 안된 경우
 			list = aDao.assignment_selectAll(this.student_id);
 		} else {											//강의가 지정 된 경우
@@ -300,5 +296,4 @@ public class Current_Task_Controller implements Initializable{
 		lblSubmitTask.setText(Integer.toString(MyAssign));
 		lblTotalTask.setText(Integer.toString(TotalAssign));
 	}
-	
 }

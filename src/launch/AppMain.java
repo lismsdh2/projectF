@@ -4,7 +4,7 @@
  */
 import java.io.IOException;
 
-import DTO.UserDto;
+import DTO.BasicDto;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,8 +13,7 @@ import javafx.stage.Stage;
 
 public class AppMain extends Application {
 	public static AppMain app;
-	UserDto user;
-	int classno;
+	BasicDto user;
 	
 	@Override
 
@@ -38,19 +37,12 @@ public class AppMain extends Application {
 		Application.launch(args);
 	}
 
-	public void setUser(UserDto user) {
+	//BasicDTO Getter/Setter
+	public void setBasic(BasicDto user) {
 		this.user = user;
 	}
 
-	public UserDto getUser() {
+	public BasicDto getBasic() {
 		return user;
-	}
-
-	public void setClassno(int classno) {
-		this.classno = classno;
-	}
-
-	public int getClassno() {
-		return classno;
 	}
 }

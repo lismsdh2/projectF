@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.Initializable;
+import launch.AppMain;
 import util.Navigator;
 
 /*
@@ -29,8 +30,9 @@ public class Main_Student_Controller extends Main_Master_Controller implements I
 		
 		//과제버튼
 		btn2.setOnAction(e->{
+			AppMain.app.getBasic().setClass_no(0);							//과제버튼 클릭시 강의번호 0으로 초기화
 			Navigator.loadSubMenu(Navigator.STUDENT_TASK_MENU);
-			Navigator.loadPages(Navigator.STUDENT_CLASSES_TASK_LIST);
+			Navigator.loadPages(Navigator.STUDENT_CURRENT_TASK_LIST);
 		});
 	}
 }

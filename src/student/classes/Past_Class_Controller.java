@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 
 import DAO.EnrollmentDao;
 import DTO.EnrollmentDto;
-import DTO.UserDto;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,7 +17,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import launch.AppMain;
+import util.Navigator;
 
 public class Past_Class_Controller implements Initializable{
 	
@@ -33,10 +34,9 @@ public class Past_Class_Controller implements Initializable{
     @FXML private TextField txtSearch;
     @FXML private Button btnSearch;
    
-    private UserDto uDto = AppMain.app.getUser();
     private ObservableList<EnrollmentDto> list;
     private EnrollmentDao eDao = new EnrollmentDao();
-    private String stu_id = uDto.getId();
+    private String stu_id = AppMain.app.getBasic().getId();
     
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -50,6 +50,8 @@ public class Past_Class_Controller implements Initializable{
 				handleBtnSearch();
 			}
 		});
+		//더블클릭시 효과
+		tableView.setOnMouseClicked(e->{handleClicked(e);});
 	}
 	
 	//table에 내용 출력하기
@@ -72,5 +74,22 @@ public class Past_Class_Controller implements Initializable{
 		System.out.println(search_word);
 		list = eDao.search_past_selectAll(stu_id, search_word);
 		tableView.setItems(list);
+	}
+	
+	//더블클릭 시 이벤트->과제리스트로 넘어가기
+	private void handleClicked(MouseEvent e) {
+	
+		if(e.getClickCount()==2) {
+			
+			System.out.println("과제리스트로 이동");
+			EnrollmentDto selectedRowClass = tableView.getSelectionModel().getSelectedItem();
+			
+			if(selectedRowClass != null) {
+			
+				//AppMain에 강의번호 입력
+				AppMain.app.getBasic().setClass_no(selectedRowClass.getClassno());
+				Navigator.loadPages(Navigator.STUDENT_FULL_TASK_LIST);
+			}
+		}
 	}
 }

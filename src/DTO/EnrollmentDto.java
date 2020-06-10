@@ -26,8 +26,7 @@ public class EnrollmentDto {
 	private final StringProperty period = new SimpleStringProperty();							//강의시작일~강의종요일
 	private final StringProperty str = new SimpleStringProperty(); 								//수강신청인원/수강가능인원
 	private final IntegerProperty taskCount = new SimpleIntegerProperty();						//과제 수
-	private String stu_id;																		//아이디
-	private int class_no;																		//강좌번호
+	private String stu_id;																		//학생아이디
 	private boolean check = false;																//수강신청여부
 	
 	//강의번호
@@ -251,13 +250,5 @@ public class EnrollmentDto {
 
 	public void setStu_id(String stu_id) {
 		this.stu_id = stu_id;
-	}
-	//강좌번호
-	public int getClass_no() {
-		return class_no;
-	}
-
-	public void setClass_no(int class_no) {
-		this.class_no = class_no;
 	}
 }

@@ -12,8 +12,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import DAO.ClassDao;
+import DTO.BasicDto;
 import DTO.ClassDto;
-import DTO.UserDto;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -50,7 +50,7 @@ import main.Main_Master_Controller;
 import util.Navigator;
 public class TeacherMainController extends Main_Master_Controller implements Initializable {
 	
-	UserDto user = AppMain.app.getUser();
+	BasicDto user = AppMain.app.getBasic();
 	//LoginUser user = Information.info.getUser();
 	String userid = user.getId();
 	String username = user.getName();
@@ -116,7 +116,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 			
 			if (selectedRowClass != null && selectedRowClass.getTeacherId().contentEquals(userid)) {
 				System.out.println("과제리스트로 이동");
-				AppMain.app.setClassno(selectedRowClass.getClassNo());
+				AppMain.app.getBasic().setClass_no(selectedRowClass.getClassNo());
 				Navigator.loadPages("../fxml/teacher/tasks/TaskList.fxml");					
 			}
 		}

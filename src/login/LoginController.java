@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import DAO.UserDao;
-import DTO.UserDto;
+import DAO.BasicDao;
+import DTO.BasicDto;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -36,7 +36,7 @@ public class LoginController implements Initializable {
 	@FXML private Button student;
 	@FXML private Button teacher;
 	private boolean type;
-	UserDao bDao = new UserDao();
+	BasicDao bDao = new BasicDao();
 	
 	public void initialize(URL location, ResourceBundle resources) {
 	
@@ -92,7 +92,7 @@ public class LoginController implements Initializable {
 		String loginpas = password.getText();
 		boolean logintype = type;
 
-		UserDto user = bDao.selectOne(new UserDto(loginid, loginpas, logintype));
+		BasicDto user = bDao.selectOne(new BasicDto(loginid, loginpas, logintype));
 
 		if (user == null) {
 				Alert alert =new Alert(AlertType.INFORMATION);
@@ -102,7 +102,7 @@ public class LoginController implements Initializable {
 		} 
 		else { // user != null
 			// 로그인한 유저정보 넘겨주기
-			AppMain.app.setUser(user);
+			AppMain.app.setBasic(user);
 			Parent root = null;
 			Stage stage = new Stage();
 
@@ -124,6 +124,7 @@ public class LoginController implements Initializable {
 			}
 
 			stage.setScene(new Scene(root));
+			stage.setResizable(false);
 			stage.show();
 
 			// 로그인창 숨기기

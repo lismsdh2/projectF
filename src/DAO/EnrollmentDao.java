@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import DTO.EnrollmentDto;
 import javafx.collections.FXCollections;
@@ -152,6 +155,14 @@ public class EnrollmentDao {
 		connectionJDBC();
 		
 		ObservableList<EnrollmentDto> list = FXCollections.observableArrayList();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date currentTime = new Date();
+		String current = sdf.format(currentTime);
+		Date today = null;
+		try {
+			today = sdf.parse(current);
+		} catch (ParseException e1) {}
+		
 		String sql = "select rc.class_no, c.class_name, c.start_date, c.end_date, c.teacher_name, c.limitstudent, count(t.task_no)"
 					+"  from request_class rc"
 					+" inner join class c"
@@ -160,7 +171,8 @@ public class EnrollmentDao {
 					+ "   on c.class_no=t.class_no"
 					+" where rc.student_id = ?"
 					+"   and c.end_date >= curdate()"
-					+" group by c.class_no;";
+					+" group by c.class_no"
+					+" order by c.start_date asc, rc.class_no;";
 		
 		try {
 			pstmt = connection.prepareStatement(sql);
@@ -177,8 +189,16 @@ public class EnrollmentDao {
 				enroll.setTeachername(rs.getString(5));						//강사명
 				enroll.setLimitstudent(rs.getInt(6));						//수강가능인원
 				enroll.setTaskCount(rs.getInt(7));							//과제수
-				enroll.setStatus("진행 중");
-				
+	
+				//날짜비교
+				int date_compare = today.compareTo(enroll.getStartdate());
+				if(date_compare>=0) {
+					
+					enroll.setStatus("진행 중");
+				} else {
+					
+					enroll.setStatus("수업 대기 중");
+				}
 				list.add(enroll);
 			}
 			System.out.println("현재 수강 중인 강좌 조회 성공");
@@ -494,46 +514,4 @@ public class EnrollmentDao {
 		}
 	}
 	
-	//콤보박스 과제명 출력
-	public ObservableList<String> current_className_selectAll(String stu_id) {
-	
-		//DB연결
-		connectionJDBC();
-		
-		ObservableList<String> list = FXCollections.observableArrayList();
-		String sql = "select c.class_no, c.class_name"
-					+"  from request_class rc"
-					+" inner join class c"
-					+"    on rc.class_no = c.class_no"
-					+" where rc.student_id = ?"
-					+"   and c.end_date >= curdate();";
-		
-		try {
-			pstmt = connection.prepareStatement(sql);
-			pstmt.setString(1, stu_id);
-			rs = pstmt.executeQuery();
-		
-			int class_No = 0;
-			String class_Name = null;
-			String class_Info = null;
-			while(rs.next()) {
-				
-				class_No = rs.getInt(1);							//강의번호
-				class_Name = rs.getString(2);						//강의명
-				class_Info = "[" + class_No + "] " + class_Name;	//강의정보
-				
-				list.add(class_Info);
-			}
-			System.out.println("현재 수강 중인 강좌 조회 성공");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("[SQL Error : " + e.getMessage() + "]");
-			System.out.println("현재 수강 중인 강좌 조회 실패");
-		} finally {
-			
-			//접속종료
-			ju.disconnect(connection, pstmt, rs);
-		}
-		return list;
-	}
 }

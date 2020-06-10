@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 
 import DAO.EnrollmentDao;
 import DTO.EnrollmentDto;
-import DTO.UserDto;
+import DTO.BasicDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -41,9 +41,8 @@ public class EnrollmentPopupController implements Initializable {
 	private Enrollment_Controller enrollmentController;
 	private EnrollmentDto enroll = new EnrollmentDto();
 	private EnrollmentDao eDao = new EnrollmentDao();
-	private UserDto uDto = AppMain.app.getUser();
-	private	String stu_id = uDto.getId();					//학생ID
-	private int c_no;										//강좌번호
+	private	String stu_id = AppMain.app.getBasic().getId();					//학생ID
+	private int c_no;														//강좌번호
 	
 	public EnrollmentPopupController(Enrollment_Controller enrollmentController) {
 		

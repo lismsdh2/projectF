@@ -14,7 +14,6 @@ public class Navigator {
 	//강사
 	public static final String TEACHER_CLASS_LIST = "../fxml/teacher/classes/teacher_main.fxml";
 	public static final String TEACHER_TASK_LIST = "../fxml/teacher/tasks/TaskList.fxml";
-	
 	//강사-메뉴
 	public static final String TEACHER_CLASS_MENU = "../fxml/teacher/classes/class_menu.fxml";
 	
@@ -27,8 +26,7 @@ public class Navigator {
 	public static final String STUDENT_FULL_CLASS_LIST = "../fxml/student/classes/enrollment.fxml";
 	//학생-리스트(과제)
 	public static final String STUDENT_CURRENT_TASK_LIST = "../fxml/student/tasks/current_task.fxml";
-	public static final String STUDENT_PAST_TASK_LIST = "../fxml/student/tasks/assignment.fxml";
-	public static final String STUDENT_CLASSES_TASK_LIST = "../fxml/student/tasks/assignment.fxml";
+	public static final String STUDENT_FULL_TASK_LIST = "../fxml/student/tasks/full_task.fxml";
 
 	//하위메뉴
 	public static void loadSubMenu(String fxml) {

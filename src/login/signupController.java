@@ -3,7 +3,7 @@
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import DAO.UserDao;
+import DAO.BasicDao;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -47,7 +47,7 @@ public class signupController implements Initializable {
 	private Stage pop;
 	private int recheck;
 	private boolean type;
-	UserDao bDao = new UserDao();
+	BasicDao bDao = new BasicDao();
 	Alert alert =new Alert(AlertType.INFORMATION);
 	
 	public void initialize(URL location, ResourceBundle resources) {

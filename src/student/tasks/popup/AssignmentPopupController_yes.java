@@ -20,7 +20,6 @@ import java.util.ResourceBundle;
 import DAO.AssignmentDao;
 import DTO.AssignmentDto;
 import DTO.AssignmentPopupDto;
-import DTO.UserDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -36,7 +35,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import launch.AppMain;
-import student.tasks.AssignmentController;
 
 public class AssignmentPopupController_yes implements Initializable {
 
@@ -54,18 +52,15 @@ public class AssignmentPopupController_yes implements Initializable {
 	@FXML private Button btnSubmit;
 	@FXML private Button btnCancle;
 
-	private AssignmentController assignmentController;
 	private AssignmentDao aDao = new AssignmentDao();
 	private AssignmentDto assign = new AssignmentDto();
-	private UserDto uDto = AppMain.app.getUser();
 	private Stage popupStage;
-	private int c_no;
-	private int t_no;
-	private String Stu_id = uDto.getId();
+	private String student_id = AppMain.app.getBasic().getId();				//학생ID
+	private int class_no = AppMain.app.getBasic().getClass_no();				//강의번호
+	private int task_no;												//과제번호				
 	
-	public AssignmentPopupController_yes(AssignmentController assignmentController) {
+	public AssignmentPopupController_yes() {
 		
-		this.assignmentController =  assignmentController;
 		//과제제출 상세화면 설정 
 		popupStage = new Stage(StageStyle.UTILITY);
 		try {
@@ -82,33 +77,20 @@ public class AssignmentPopupController_yes implements Initializable {
 
 	//과제제출 상세화면 띄우기
 	public void showStage() {
-		System.out.println("t_no : " + t_no);
-		System.out.println("Stu_id : " + Stu_id);
-		assignView(this.t_no, this.Stu_id);
-//		popupStage.initModality(Modality.NONE);
+		
+		this.task_no = AppMain.app.getBasic().getTask_no();
+		//과제번호는 받기전 인스턴스가 생성되기에 task_no은 0으로 초기화되어 있음, 별도로 받아야 함
+
+		assignView(this.task_no, this.student_id);
 		try {
 			
 			popupStage.showAndWait();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		
-	}
-	
-	//강의 번호 받기
-	public void setClassno(int c_no) {
-		
-		this.c_no = c_no;
-	}
-
-	// 과제 번호 받기
-	public void setTaskno(int t_no) {
-		
-		this.t_no = t_no;
 	}
 	
 	//화면에 정보 뿌리기
-	
 	public void assignView(int t_no, String Stu_id) {
 
 		assign = aDao.assignment_selectOne(t_no, Stu_id);
@@ -126,6 +108,8 @@ public class AssignmentPopupController_yes implements Initializable {
 		txtTaskDesc.setWrapText(true);
 		//과제설명 입력 제한
 		txtTaskDesc.setEditable(false);
+		//질문사항 줄바꿈
+		txtQuestion.setWrapText(true);
 		//다운로드할 파일 없을 경우 버튼 비활성화
 		if(assign.getAttachedFile() == null) {
 	
@@ -237,15 +221,12 @@ public class AssignmentPopupController_yes implements Initializable {
             // OK누르면 신청 후 알림창 출력
             if (result.get().equals(ButtonType.OK)) {
             	
-            	int class_no = 1001;						// 강의번호연동해야됨
-            	int task_no = this.t_no;					// 과제번호연동해야됨
-            	String stu_id = uDto.getId(); 					// 학생ID연동해야됨
             	String taskQuestion = txtQuestion.getText();
             	byte[] taskFile = assign.getTaskFile();
             	String taskFile_name = assign.getTaskFile_name();
             	
             	//submitTask DTO
-            	AssignmentPopupDto sTask = new AssignmentPopupDto(class_no, task_no, stu_id, taskQuestion, taskFile, taskFile_name);
+            	AssignmentPopupDto sTask = new AssignmentPopupDto(this.class_no, this.task_no, this.student_id, taskQuestion, taskFile, taskFile_name);
             	aDao.resubmit_Assignment(sTask);
             	alertInformation("제출되었습니다");
             }

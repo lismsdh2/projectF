@@ -22,7 +22,6 @@
 					<ImageView fx:id="imgView" fitHeight="68.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
 					<Button fx:id="btn1" prefWidth="80" prefHeight="68.0" text="강의" />
 					<Button fx:id="btn2" prefWidth="80" prefHeight="68.0" text="과제" />
-					<Button fx:id="btn3" prefWidth="80" prefHeight="68.0" text="기타" />
 					<Label fx:id="lbl" prefWidth="100.0" text="Label">
 						<HBox.margin>
 							<Insets left="385.0" />

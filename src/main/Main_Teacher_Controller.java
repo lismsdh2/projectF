@@ -19,25 +19,19 @@ public class Main_Teacher_Controller extends Main_Master_Controller implements I
 		super.initialize(location, resources);
 		
 		// 초기화면
-		Navigator.loadSubMenu(Navigator.TEACHER_CLASS_MENU);
 		Navigator.loadPages(Navigator.TEACHER_CLASS_LIST);
+//		Navigator.loadPages("/teacher/classes/teacher_main.fxml");
 
 		// 버튼 누르면 inner fxml 바꾸기
-		//btn1.setOnAction(e -> Navigator.loadPages(Navigator.TEACHER_CLASS_LIST));
-		btn1.setOnAction(e -> {
-			Navigator.loadSubMenu(Navigator.TEACHER_CLASS_MENU);
-			Navigator.loadPages(Navigator.TEACHER_CLASS_LIST);
-		});
-		
+		btn1.setOnAction(e -> Navigator.loadPages(Navigator.TEACHER_CLASS_LIST));
+		//btn2.setOnAction(e -> Navigator.loadPages(Navigator.TASK_LIST));
 		btn2.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				AppMain.app.setClassno(0);
+				AppMain.app.getBasic().setClass_no(0);
 				Navigator.loadPages(Navigator.TEACHER_TASK_LIST);
 			}
 		});
-
 	}
-
 }

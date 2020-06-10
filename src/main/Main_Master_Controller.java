@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import DTO.UserDto;
+import DTO.BasicDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,6 +25,7 @@ import launch.AppMain;
 public class Main_Master_Controller implements Initializable {
 
 	public static Main_Master_Controller mmc;
+
 	@FXML private BorderPane borderPane;
 	@FXML private StackPane innerPane;
 	@FXML private AnchorPane subMenu;
@@ -43,7 +44,7 @@ public class Main_Master_Controller implements Initializable {
 
 		mmc = this;
 		// 현재 로그인한 유저 정보 받아오기
-		UserDto user = AppMain.app.getUser();
+		BasicDto user = AppMain.app.getBasic();
 		// 현재 로그인 사용자 정보
 		setUserInfoLabel(user);
 		// 로그아웃
@@ -52,7 +53,7 @@ public class Main_Master_Controller implements Initializable {
 	}
 
 	// 로그인 시 사용자 정보 라벨링
-	   private void setUserInfoLabel(UserDto u) {
+	   private void setUserInfoLabel(BasicDto u) {
 	      // 신분 식별 - true:강사, false:학생
 	      boolean type = u.gettype2();
 	      String position = "";
