@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.collections.*?>
+
+<AnchorPane prefHeight="625.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.signupController">
+   <children>
+   		<!-- 버튼 -->
+      <Button fx:id="student" layoutX="15.0" layoutY="20.0" prefHeight="30.0" prefWidth="150.0" text="학생" />
+      <Button fx:id="teacher" layoutX="165.0" layoutY="20.0" prefHeight="30.0" prefWidth="150.0" text="교사" />
+      
+      	<!-- 아이디 -->
+      <Label layoutX="15.0" layoutY="80.0" prefHeight="30.0" prefWidth="80" text="아이디" />
+      <TextField fx:id="idfield" layoutX="105.0" layoutY="80.0" prefHeight="30.0" prefWidth="135.0" promptText="내용을 입력해주세요" />
+      <Button fx:id="check" layoutX="245.0" layoutY="80.0" prefHeight="30.0" prefWidth="70.0" text="중복체크" />
+      
+     	<!-- 이름 --> 
+      <Label layoutX="15.0" layoutY="162.0" prefHeight="30.0" prefWidth="80.0" text="이름" />
+      <TextField fx:id="namefield" layoutX="105.0" layoutY="162.0" prefHeight="30.0" prefWidth="210.0" promptText="내용을 입력해주세요" />
+      
+		<!-- 비밀번호 -->      
+      <Label layoutX="15.0" layoutY="244.0" prefHeight="30.0" prefWidth="80.0" text="비밀번호" />
+      <PasswordField fx:id="passfield" layoutX="105.0" layoutY="244.0" prefHeight="30.0" prefWidth="210.0" promptText="비밀번호를 입력해주세요" />
+      
+		<!-- 비밀번호 확인 -->
+      <Label layoutX="15.0" layoutY="326.0" prefHeight="30.0" prefWidth="80.0" text="비밀번호 확인" />
+      <PasswordField fx:id="repassfield" layoutX="105.0" layoutY="326.0" prefHeight="30.0" prefWidth="210.0" promptText="비밀번호를 입력해주세요" />
+      
+		<!-- 이메일 -->	
+      <Label layoutX="15.0" layoutY="408.0" prefHeight="30.0" prefWidth="80.0" text="이메일" />
+      <TextField fx:id="emailfield" layoutX="105.0" layoutY="408.0" prefHeight="32.0" prefWidth="95.0" promptText="내용을 입력해주세요" />
+      <Label alignment="CENTER" layoutX="200.0" layoutY="408.0" prefHeight="30.0" prefWidth="20.0" text="\@" />
+      <ComboBox fx:id="email2" layoutX="220.0" layoutY="408.0" prefHeight="30.0" prefWidth="95.0" promptText="선택">
+         <items>
+            <FXCollections fx:factory="observableArrayList">
+               <String fx:value="naver.com" />
+               <String fx:value="daum.net" />
+               <String fx:value="google.com" />
+               <String fx:value="nate.com" />
+               <String fx:value="kakao.com" />
+               <String fx:value="직접입력" />
+            </FXCollections>
+         </items>
+      </ComboBox>
+
+     	<!-- 연락처 --> 
+      <Label layoutX="12.0" layoutY="490.0" prefHeight="30.0" prefWidth="80.0" text="연락처" />
+		<ComboBox fx:id="combobox" layoutX="105.0" layoutY="490.0" prefHeight="30.0" prefWidth="70.0" promptText="선택">
+			<items>
+				<FXCollections fx:factory="observableArrayList">
+					<String fx:value="010" />
+					<String fx:value="011" />
+					<String fx:value="016" />
+					<String fx:value="017" />
+					<String fx:value="019" />
+				</FXCollections>
+			</items>
+		</ComboBox>  
+      <TextField fx:id="phonefield1" layoutX="175.0" layoutY="490.0" prefHeight="30.0" prefWidth="70.0" />
+      <TextField fx:id="phonefield2" layoutX="245.0" layoutY="490.0" prefHeight="30.0" prefWidth="70.0" />
+      
+		<!-- 버튼 -->		
+      <Button fx:id="done" layoutX="15.0" layoutY="575.0" prefHeight="30.0" prefWidth="150.0" text="완료" />
+      <Button fx:id="cancle" layoutX="165.0" layoutY="575.0" prefHeight="30.0" prefWidth="150.0" text="취소" />
+      
+		<!-- 별표 -->	
+      <Label layoutX="49.0" layoutY="83.0" text="*" textFill="#e80d0d" />
+      <Label layoutX="37.0" layoutY="165.0" text="*" textFill="#e80d0d" />
+      <Label layoutX="62.0" layoutY="247.0" text="*" textFill="#e80d0d" />
+      <Label layoutX="89.0" layoutY="329.0" text="*" textFill="#e80d0d" />
+      <Label layoutX="49.0" layoutY="411.0" text="*" textFill="#e80d0d" />
+      <Label layoutX="46.0" layoutY="493.0" text="*" textFill="#e80d0d" />
+      
+		<!-- 구분자 -->	
+      <Separator layoutX="15.0" layoutY="140.0" prefHeight="2.0" prefWidth="300.0" />
+      <Separator layoutX="15.0" layoutY="222.0" prefHeight="2.0" prefWidth="300.0" />
+      <Separator layoutX="15.0" layoutY="304.0" prefHeight="2.0" prefWidth="300.0" />
+      <Separator layoutX="15.0" layoutY="386.0" prefHeight="2.0" prefWidth="300.0" />
+      <Separator layoutX="15.0" layoutY="468.0" prefHeight="2.0" prefWidth="300.0" />
+      
+      <Separator layoutY="550.0" prefHeight="3.0" prefWidth="330.0" />
+		<!-- 경고문구 -->	
+      <Label fx:id="idlabel" layoutX="105.0" layoutY="115.0" prefHeight="15.0" prefWidth="120.0" text="아이디를 입력해주세요." textFill="#ee0202">
+         <font>
+            <Font size="11.0" />
+         </font></Label>
+      <Label fx:id="namelabel" layoutX="105.0" layoutY="197.0" text="이름을 입력해주세요." textFill="#ee0202">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="passlabel" layoutX="105.0" layoutY="279.0" text="비밀번호를 입력해주세요." textFill="#ee0202">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="repasslabel" layoutX="105.0" layoutY="361.0" text="비밀번호를 입력해주세요." textFill="#ee0202">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="emaillabel" layoutX="105.0" layoutY="443.0" text="이메일을 입력해주세요." textFill="#ee0202">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="numberlabel" layoutX="105.0" layoutY="525.0" text="전화번호를 입력해주세요." textFill="#ee0202">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="passchecklabel" layoutX="105.0" layoutY="361.0" text="비밀번호가 틀립니다. 다시 확인해 주세요." textFill="#ee0202">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

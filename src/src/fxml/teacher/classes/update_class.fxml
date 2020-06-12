@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="500.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="132.0" layoutY="24.0" text="강의 수정">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="42.0" layoutY="76.0" text="강의명" />
+      <Label layoutX="42.0" layoutY="108.0" text="강사명" />
+      <Label layoutX="42.0" layoutY="145.0" text="강의설명" />
+      <Label layoutX="42.0" layoutY="332.0" text="강의기간" />
+      <TextField id="className" layoutX="121.0" layoutY="72.0" prefHeight="23.0" prefWidth="178.0" />
+      <Label id="teacherName" layoutX="121.0" layoutY="108.0" prefWidth="40.0" />
+      <TextArea id="description" layoutX="121.0" layoutY="143.0" prefHeight="164.0" prefWidth="211.0" />
+      <Separator layoutX="32.0" layoutY="102.0" prefHeight="3.0" prefWidth="303.0" />
+      <Separator layoutX="32.0" layoutY="132.0" prefHeight="3.0" prefWidth="303.0" />
+      <Separator layoutX="32.0" layoutY="317.0" prefHeight="3.0" prefWidth="303.0" />
+      <DatePicker id="startDate" layoutX="121.0" layoutY="328.0" />
+      <Label layoutX="96.0" layoutY="366.0" text="~" />
+      <DatePicker id="endDate" layoutX="121.0" layoutY="362.0" />
+      <Separator layoutX="32.0" layoutY="395.0" prefHeight="3.0" prefWidth="303.0" />
+      <Label layoutX="42.0" layoutY="415.0" text="수강인원" />
+      <TextField id="limitStudent" layoutX="168.0" layoutY="411.0" prefHeight="23.0" prefWidth="69.0" />
+      <Button id="update" layoutX="69.0" layoutY="455.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="100.0" text="수정하기" />
+      <Button id="cancel" layoutX="210.0" layoutY="455.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="100.0" text="취소" />
+      <Separator layoutX="32.0" layoutY="447.0" prefHeight="3.0" prefWidth="303.0" />
+      <Label id="currentStudent" layoutX="120.0" layoutY="415.0" />
+      <Label layoutX="152.0" layoutY="415.0" text="/" />
+   </children>
+</AnchorPane>
