@@ -37,6 +37,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import launch.AppMain;
+import util.Util;
 
 public class AssignmentPopupController_yes implements Initializable {
 
@@ -252,7 +253,7 @@ public class AssignmentPopupController_yes implements Initializable {
 	private void handleBtnSubmit() {
 		
 		try {
-			Alert alert = alertConfirmation("제출하시겠습니까?");
+			Alert alert = Util.showAlert("과제제출 확인", "제출하시겠습니까?", AlertType.CONFIRMATION);
 			Optional<ButtonType> result = alert.showAndWait();
             // OK누르면 신청 후 알림창 출력
             if (result.get().equals(ButtonType.OK)) {
@@ -265,13 +266,18 @@ public class AssignmentPopupController_yes implements Initializable {
             	this.class_no = AppMain.app.getBasic().getClass_no();
             	AssignmentPopupDto sTask = new AssignmentPopupDto(this.class_no, this.task_no, this.student_id, taskQuestion, taskFile, taskFile_name);
             	aDao.resubmit_Assignment(sTask);
-            	alertInformation("제출되었습니다");
+				Alert alert2 = Util.showAlert("", "제출되었습니다.", AlertType.INFORMATION);
+				Optional<ButtonType> result2 = alert2.showAndWait();
+				// OK누르면 창 종료
+				if (result2.get().equals(ButtonType.OK)) {
+					this.popupStage.close();
+				}
             }
 		} catch (SQLException e) {
 //			e.printStackTrace();
 			System.out.println("[SQL Error : " + e.getMessage() + "]");
 			System.out.println("과제 제출 실패");
-			alertError("과제 제출 실패");
+			Util.showAlert("과제 제출 실패", "이미 제출했습니다.", AlertType.ERROR);
 		}
 	}
 	
@@ -280,36 +286,5 @@ public class AssignmentPopupController_yes implements Initializable {
 
 		this.popupStage.close();
 		System.out.println("취소 버튼 클릭");
-	}
-	
-	//제출 실패 메세지 창
-	private void alertError(String msg) {
-		
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("과제 제출 실패");
-		alert.setContentText(msg);
-		alert.showAndWait();
-	}
-	
-	//신청확인 메세지 창
-	private Alert alertConfirmation(String msg) {
-		
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("과제 제출 확인");
-		alert.setContentText(msg);
-		return alert;
-	}
-	
-	//신청확인 메세지 창
-	private void alertInformation(String msg) {
-		
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("과제 제출 완료");
-		alert.setContentText(msg);
-		Optional<ButtonType> result = alert.showAndWait();
-		// OK누르면 창 종료
-		if (result.get().equals(ButtonType.OK)) {
-			popupStage.close();
-		}
 	}
 }

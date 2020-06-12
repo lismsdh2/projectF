@@ -59,15 +59,16 @@ public class Full_Task_Controller implements Initializable{
 	private AssignmentDao aDao = new AssignmentDao();
 	private AssignmentPopupController_no popupController_no = new AssignmentPopupController_no();
 	private AssignmentPopupController_yes popupController_yes = new AssignmentPopupController_yes(); 
-	private String student_id = AppMain.app.getBasic().getId();				//학생ID - 추후 연동 필요
+	private String student_id = AppMain.app.getBasic().getId();					//학생ID - 추후 연동 필요
 	private int class_no = 	AppMain.app.getBasic().getClass_no();				//강의번호 - 추후 연동 필요
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 	
-		assignTableView();												//DB값 불러오기
-		this.tableView.setOnMouseClicked(e -> handleDoubleClicked(e));		//더블클릭 event 처리
-		setCombo();														//콤보박스
+		assignTableView();														//DB값 불러오기
+		this.tableView.setOnMouseClicked(e -> handleDoubleClicked(e));			//더블클릭 event 처리
+		setCombo();																//콤보박스
+		this.combo.setOnAction(e -> { handleComebo();});						//콤보박스 동작
 	}
 	
 	//테이블 내용 출력
@@ -184,6 +185,8 @@ public class Full_Task_Controller implements Initializable{
 		//선택된 강의가 있을 때 콤보박스 설정
 		if(this.class_no != 0) {
 			int c_no = 0;
+			System.out.println(this.classList.get(0));
+			System.out.println(this.classList.get(1));
 			for(int i = 1 ; i < this.classList.size(); i++) {
 			
 				c_no =Integer.valueOf(this.classList.get(i).substring(1, 5)); 		//문자열에서 강의번호자르기
@@ -194,25 +197,26 @@ public class Full_Task_Controller implements Initializable{
 				}
 			}
 		}
-		
-		this.combo.setOnAction(e -> {
-		
-			if(this.combo.getSelectionModel().getSelectedIndex() == 0) {
-				
-				this.class_no=0;
-				refreshTable(0);
-				showProgressBar(false);
-			} else {
+	}
 
-				String selectedCombo = this.combo.getSelectionModel().getSelectedItem();
-				int selectedNo = Integer.valueOf(selectedCombo.substring(1, 5));
-			
-				AppMain.app.getBasic().setClass_no(selectedNo);
-				refreshTable(1);
-				showProgressBar(true);
-			}
-		});
+	//콤보박스 동작
+	private void handleComebo() {
 		
+		System.out.println("콤보"+this.class_no);
+		if(this.combo.getSelectionModel().getSelectedIndex() == 0) {
+			
+			this.class_no=0;
+			refreshTable(0);
+			showProgressBar(false);
+		} else {
+
+			String selectedCombo = this.combo.getSelectionModel().getSelectedItem();
+			int selectedNo = Integer.valueOf(selectedCombo.substring(1, 5));
+		
+			AppMain.app.getBasic().setClass_no(selectedNo);
+			refreshTable(1);
+			showProgressBar(true);
+		}
 	}
 	
 	//더블클릭 핸들러

@@ -25,6 +25,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import launch.AppMain;
+import util.Util;
 
 public class EnrollmentPopupController implements Initializable {
 
@@ -93,7 +94,7 @@ public class EnrollmentPopupController implements Initializable {
 	}
 	
 	// 화면에 정보 뿌리기
-	public void enrollView(int c_no) {
+	private void enrollView(int c_no) {
 		
 		this.enroll = this.eDao.enrollment_selectOne(c_no);
 		this.lblClassname.setText(this.enroll.getClassname());	
@@ -122,22 +123,27 @@ public class EnrollmentPopupController implements Initializable {
 	}
 
 	// 신청 버튼
-	public void handleBtnSubmit() {
+	private void handleBtnSubmit() {
 		
 		try {
-			Alert alert = alertConfirmation("신청하시겠습니까?");
+			Alert alert = Util.showAlert("수강신청확인","신청하시겠습니까?", AlertType.CONFIRMATION);
 			Optional<ButtonType> result = alert.showAndWait();
             // OK누르면 신청 후 알림창 출력
             if (result.get().equals(ButtonType.OK)) {
             	
             	this.eDao.submit_Enrollment(this.stu_id, this.c_no);
-            	alertInformation("신청되었습니다");
+            	Alert alert2 = Util.showAlert("", "신청되었습니다.", AlertType.INFORMATION);
+				Optional<ButtonType> result2 = alert2.showAndWait();
+            	// OK누르면 창 종료
+				if (result2.get().equals(ButtonType.OK)) {
+					this.popupStage.close();
+				}
             }
 		} catch (SQLException e) {
 //			e.printStackTrace();
 			System.out.println("[SQL Error : " + e.getMessage() + "]");
 			System.out.println("강의 신청 실패");
-			alertError("이미 신청되어 있습니다.");
+			Util.showAlert("", "이미 신청되어 있습니다", AlertType.ERROR);
 		}
 	}
 	
@@ -145,21 +151,25 @@ public class EnrollmentPopupController implements Initializable {
 	public void handleBtnDelete() {
 		
 		try {
-			Alert alert = alertConfirmation("취소하시겠습니까?");
+			Alert alert = Util.showAlert("수강취소확인","취소하시겠습니까?", AlertType.CONFIRMATION);
 			Optional<ButtonType> result = alert.showAndWait();
             // OK누르면 신청 후 알림창 출력
             if (result.get().equals(ButtonType.OK)) {
             	
             	this.eDao.delete_Enrollment(this.stu_id, this.c_no);
-            	alertInformation("취소되었습니다");
+            	Alert alert2 = Util.showAlert("", "취소되었습니다.", AlertType.INFORMATION);
+				Optional<ButtonType> result2 = alert2.showAndWait();
+            	// OK누르면 창 종료
+				if (result2.get().equals(ButtonType.OK)) {
+					this.popupStage.close();
+				}
             }
 		} catch (Exception e) {
 //			e.printStackTrace();
 			System.out.println("[SQL Error : " + e.getMessage() + "]");
 			System.out.println("수강취소 신청 실패");
-			alertError("취소가 실패되었습니다.");
+			Util.showAlert("", "수강취소가 되지 않았습니다.", AlertType.ERROR);
 		}
-
 	}
 
 	// 취소 버튼
@@ -167,36 +177,5 @@ public class EnrollmentPopupController implements Initializable {
 
 		this.popupStage.close();
 		System.out.println("취소 버튼 클릭");
-	}
-
-	//에러 메세지 창
-	private void alertError(String msg) {
-		
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("수강 신청 실패");
-		alert.setContentText(msg);
-		alert.showAndWait();
-	}
-	
-	//신청확인 메세지 창
-	private Alert alertConfirmation(String msg) {
-		
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("수강 신청 확인");
-		alert.setContentText(msg);
-		return alert;
-	}
-	
-	//신청확인 메세지 창
-	public void alertInformation(String msg) {
-		
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("수강 신청 완료");
-		alert.setContentText(msg);
-		Optional<ButtonType> result = alert.showAndWait();
-		// OK누르면 창 종료
-		if (result.get().equals(ButtonType.OK)) {
-			this.popupStage.close();
-		}
 	}
 }

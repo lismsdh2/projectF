@@ -9,13 +9,15 @@ import javafx.scene.control.TextInputControl;
 public class Util {
 
 	// 팝업창
-	public static void showAlert(String title, String msg, AlertType type) {
+	public static Alert showAlert(String title, String msg, AlertType type) {
 		Alert alert = new Alert(type);
 		alert.setTitle(title);
 		alert.setHeaderText(null);
 		alert.setContentText(msg);
-
-		alert.show();
+		if(type == AlertType.ERROR) {
+			alert.showAndWait();
+		}
+		return alert;
 	}
 	
 	//TextInputControl에 숫자만 오도록
