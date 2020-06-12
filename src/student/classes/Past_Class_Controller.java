@@ -42,38 +42,37 @@ public class Past_Class_Controller implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 	
 		pastTableView();								//리스트 출력
-		btnSearch.setOnAction(e-> handleBtnSearch());	//검색단추 클릭
+		this.btnSearch.setOnAction(e-> handleBtnSearch());	//검색단추 클릭
 		//검색 시 엔터 효과
-		txtSearch.setOnKeyPressed(e ->{ 
+		this.txtSearch.setOnKeyPressed(e ->{ 
 			if(e.getCode() == KeyCode.ENTER) {
 				
 				handleBtnSearch();
 			}
 		});
 		//더블클릭시 효과
-		tableView.setOnMouseClicked(e->{handleClicked(e);});
+		this.tableView.setOnMouseClicked(e->{handleClicked(e);});
 	}
 	
 	//table에 내용 출력하기
 	private void pastTableView() {
 
-		list = eDao.past_selectAll(stu_id);
-		colClassNo.setCellValueFactory(new PropertyValueFactory<>("classno"));
-		colClassName.setCellValueFactory(new PropertyValueFactory<>("classname"));
-		colClassDate.setCellValueFactory(new PropertyValueFactory<>("period"));
-		colClassTeacher.setCellValueFactory(new PropertyValueFactory<>("teachername"));
-		colClassTask.setCellValueFactory(new PropertyValueFactory<>("taskCount"));
-		colClassStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-		tableView.setItems(list);
+		this.list = eDao.past_selectAll(this.stu_id);
+		this.colClassNo.setCellValueFactory(new PropertyValueFactory<>("classno"));
+		this.colClassName.setCellValueFactory(new PropertyValueFactory<>("classname"));
+		this.colClassDate.setCellValueFactory(new PropertyValueFactory<>("period"));
+		this.colClassTeacher.setCellValueFactory(new PropertyValueFactory<>("teachername"));
+		this.colClassTask.setCellValueFactory(new PropertyValueFactory<>("taskCount"));
+		this.colClassStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+		this.tableView.setItems(this.list);
 	}
 
 	//검색단추
 	private void handleBtnSearch() {
 	
 		String search_word = txtSearch.getText();
-		System.out.println(search_word);
-		list = eDao.search_past_selectAll(stu_id, search_word);
-		tableView.setItems(list);
+		this.list = eDao.search_past_selectAll(this.stu_id, search_word);
+		this.tableView.setItems(this.list);
 	}
 	
 	//더블클릭 시 이벤트->과제리스트로 넘어가기
@@ -81,14 +80,13 @@ public class Past_Class_Controller implements Initializable{
 	
 		if(e.getClickCount()==2) {
 			
-			System.out.println("과제리스트로 이동");
-			EnrollmentDto selectedRowClass = tableView.getSelectionModel().getSelectedItem();
-			
+			EnrollmentDto selectedRowClass = this.tableView.getSelectionModel().getSelectedItem();
 			if(selectedRowClass != null) {
 			
 				//AppMain에 강의번호 입력
 				AppMain.app.getBasic().setClass_no(selectedRowClass.getClassno());
 				Navigator.loadPages(Navigator.STUDENT_FULL_TASK_LIST);
+				Navigator.loadSubMenu(Navigator.STUDENT_TASK_MENU);
 			}
 		}
 	}

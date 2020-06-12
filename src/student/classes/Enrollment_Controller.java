@@ -6,8 +6,6 @@
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javax.swing.text.TabExpander;
-
 import DAO.EnrollmentDao;
 import DTO.EnrollmentDto;
 import javafx.collections.ObservableList;
@@ -24,7 +22,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import student.classes.popup.EnrollmentPopupController;
 
@@ -48,16 +45,16 @@ public class Enrollment_Controller implements Initializable{
 
 	private ObservableList<EnrollmentDto> list;
 	private EnrollmentDao eDao = new EnrollmentDao();
-	private EnrollmentPopupController popupController = new EnrollmentPopupController(this);
+	private EnrollmentPopupController popupController = new EnrollmentPopupController();
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		
 		enrollTableView();												//DB내용 출력
-		tableView.setOnMouseClicked(e -> handleDoubleClicked(e));		//더블클릭
-		btnSearch.setOnAction(e-> handleBtnSearch());					//검색단추 클릭
+		this.tableView.setOnMouseClicked(e -> handleDoubleClicked(e));		//더블클릭
+		this.btnSearch.setOnAction(e-> handleBtnSearch());					//검색단추 클릭
 		//검색 시 엔터 효과
-		txtSearch.setOnKeyPressed(e ->{ 
+		this.txtSearch.setOnKeyPressed(e ->{ 
 			if(e.getCode() == KeyCode.ENTER) {
 				
 				handleBtnSearch();
@@ -68,14 +65,14 @@ public class Enrollment_Controller implements Initializable{
 	//table에 내용 출력하기
 	private void enrollTableView() {
 
-		list = eDao.enrollment_selectAll();
-		colClassNo.setCellValueFactory(new PropertyValueFactory<>("classno"));
-		colClassName.setCellValueFactory(new PropertyValueFactory<>("classname"));
-		colClassDate.setCellValueFactory(new PropertyValueFactory<>("period"));
-		colClassTeacher.setCellValueFactory(new PropertyValueFactory<>("teachername"));
-		colClassPeople.setCellValueFactory(new PropertyValueFactory<>("str"));
+		this.list = eDao.enrollment_selectAll();
+		this.colClassNo.setCellValueFactory(new PropertyValueFactory<>("classno"));
+		this.colClassName.setCellValueFactory(new PropertyValueFactory<>("classname"));
+		this.colClassDate.setCellValueFactory(new PropertyValueFactory<>("period"));
+		this.colClassTeacher.setCellValueFactory(new PropertyValueFactory<>("teachername"));
+		this.colClassPeople.setCellValueFactory(new PropertyValueFactory<>("str"));
 		addButton();													//버튼 추가
-		tableView.setItems(list);
+		this.tableView.setItems(this.list);
 	}
 	
 	
@@ -119,14 +116,14 @@ public class Enrollment_Controller implements Initializable{
 				return cell;
 			}
 		};
-		colClassButton.setCellFactory(cellFactory);
+		this.colClassButton.setCellFactory(cellFactory);
 	}
 
 	//버튼 클릭시 수강신청 상세화면 띄우기
 	private void openPopupWindow() {
 		
-		popupController.showStage();
-		refreshTable();									//저장 후 리스트 새로 고침
+		this.popupController.showStage();
+		handleBtnSearch();
 	}
 	
 	//더블클릭 핸들러
@@ -144,26 +141,18 @@ public class Enrollment_Controller implements Initializable{
 					//클래스번호 생성
 					int c_no = enroll.getClassno();
 					System.out.println("enroll : " + c_no);
-					popupController.setClassno(c_no);
+					this.popupController.setClassno(c_no);
 					openPopupWindow();
 				}
 			}
 		}
 	}
 
-	//검색단추
+	//검색 및 리스트 새로고침
 	private void handleBtnSearch() {
 	
-		String search_word = txtSearch.getText();
-		list = eDao.search_selectAll(search_word);
-		tableView.setItems(list);
+		String search_word = this.txtSearch.getText();
+		this.list = eDao.search_selectAll(search_word);
+		this.tableView.setItems(this.list);
 	}
-	
-	//데이터 저장 후 리스트 새로고침
-	public void refreshTable() {
-		
-		list = eDao.enrollment_selectAll();
-		tableView.setItems(list);
-	}
-	
 }

@@ -29,11 +29,6 @@
 			</columns>
 		</TableView>
 		<ComboBox fx:id="combo" layoutX="809.0" layoutY="15.0" prefWidth="200.0" promptText="과제명 선택" />
-		<ProgressBar fx:id="pgbScore" layoutX="559" layoutY="580.0" prefWidth="200.0" prefHeight="25" progress="0.0" />
-		<Label layoutX="559.0" layoutY="610.0" prefWidth="40.0" text="점수 : " />
-		<Label fx:id="lblMyScore" layoutX="599.0" layoutY="610.0" prefWidth="40.0" />
-		<Label alignment="CENTER" layoutX="639.0" layoutY="610.0" prefWidth="20.0" text="/" />
-		<Label fx:id="lblPerfectScore" layoutX="659.0" layoutY="610.0" prefWidth="40.0" />
 		<ProgressBar fx:id="pgbSubmitCnt" layoutX="809" layoutY="580.0" prefWidth="200.0" prefHeight="25" progress="0.0" />
 		<Label layoutX="809" layoutY="610" prefWidth="65.0" text="과제 개수 :" />
 		<Label fx:id="lblSubmitTask" layoutX="874" layoutY="610" prefWidth="40.0" />

@@ -45,12 +45,6 @@ public class AssignmentDao {
 					+ "taskquestion, taskfile, taskfile_name)"
 					+ "values (?, ?, ?, 'Y' ,sysdate(),? ,?, ?);";
 			pstmt = connection.prepareStatement(sql);
-			System.out.println(sTask.getClass_no());
-			System.out.println(sTask.getTask_no());
-			System.out.println(sTask.getStudent_id());
-			System.out.println(sTask.getTaskQuestion());
-			System.out.println(sTask.getTaskFile());
-			System.out.println(sTask.getTaskFile_name());
 
 			pstmt.setInt(1, sTask.getClass_no());
 			pstmt.setInt(2, sTask.getTask_no());
@@ -95,7 +89,7 @@ public class AssignmentDao {
 		}
 	}
 	
-	//과제 조회-현재
+	//전체 과제 조회-현재
 	public ObservableList<AssignmentDto> assignment_selectAll(String stu_id){
 		
 		//DB연결
@@ -103,14 +97,16 @@ public class AssignmentDao {
 	
 		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
 		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name, c.class_no"
-						+ " from task t"
-						+ " inner join class c"
-						+ " on c.class_no = t.class_no"
-						+ " left outer join submission_task ts"
-						+ " on t.task_no = ts.task_no"
-						+ " and ts.student_id = ?"
-						+ " where t.expire_date >= curdate()"
-						+ " order by t.expire_date, t.class_no;";
+				   + "  from task t"
+				   + " inner join class c"
+				   + "    on c.class_no = t.class_no"
+				   + "  left outer join submission_task ts"
+				   + "    on t.task_no = ts.task_no"
+				   + "   and ts.student_id = ?"
+				   + " where (t.expire_date >= curdate())"
+				   + "   and (c.start_date < curdate()"
+				   + "   and c.end_date > curdate())"
+				   + " order by t.expire_date, c.class_name, t.task_name;";
 		
 		try {
 			pstmt = connection.prepareStatement(sql);
@@ -154,6 +150,7 @@ public class AssignmentDao {
 		}
 		return list;
 	}
+	
 	//강의별 과제 조회-현재
 	public ObservableList<AssignmentDto> assignment_selectAll(int class_no, String stu_id){
 		
@@ -162,14 +159,17 @@ public class AssignmentDao {
 	
 		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
 		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name, c.class_no"
-						+ " from task t"
-						+ " inner join class c"
-						+ " on c.class_no = t.class_no"
-						+ " left outer join submission_task ts"
-						+ " on t.task_no = ts.task_no"
-						+ " and ts.student_id = ?"
-						+"where t.class_no = ?"
-						+"  and t.expire_date >= curdate();";
+				   + "  from task t"
+				   + " inner join class c"
+				   + "    on c.class_no = t.class_no"
+				   + "  left outer join submission_task ts"
+				   + "    on t.task_no = ts.task_no"
+				   + "   and ts.student_id = ?"
+				   + " where (t.class_no = ?)"
+				   + "   and (t.expire_date >= curdate())"
+				   + "   and (c.start_date < curdate()"
+				   + "   and c.end_date > curdate())"
+				   + " order by t.expire_date, t.task_name;";
 		
 		try {
 			pstmt = connection.prepareStatement(sql);
@@ -222,7 +222,7 @@ public class AssignmentDao {
 		connectionJDBC();
 	
 		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
-		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name"
+		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name, c.class_no, c.start_date, c.end_date"
 						+ " from task t"
 						+ " inner join class c"
 						+ " on c.class_no = t.class_no"
@@ -260,6 +260,9 @@ public class AssignmentDao {
 					assign.setScore(0+" / "+rs.getInt(7));
 				}
 				assign.setClass_name(rs.getString(8));
+				assign.setClass_no(rs.getInt(9));
+				assign.setStart_date(rs.getDate(10));
+				assign.setEnd_date(rs.getDate(11));
 				list.add(assign);
 			}
 			System.out.println("전체 과제 조회 성공");
@@ -272,28 +275,28 @@ public class AssignmentDao {
 		}
 		return list;
 	}
-	//강의별 과제 조회-현재
+	//강의별 과제 조회-전체
 	public ObservableList<AssignmentDto> assignment_selectAll_Full(int class_no, String stu_id){
 		
 		//DB연결
 		connectionJDBC();
 	
 		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
-		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name"
-						+ " from task t"
-						+ " inner join class c"
-						+ " on c.class_no = t.class_no"
-						+ " left outer join submission_task ts"
-						+ " on t.task_no = ts.task_no"
-						+ " and ts.student_id = ?"
-						+"where t.class_no = ?;";
+		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name, c.class_no, c.start_date, c.end_date"
+				   + "  from task t"
+				   + " inner join class c"
+				   + "    on c.class_no = t.class_no"
+				   + "  left outer join submission_task ts"
+				   + "    on t.task_no = ts.task_no"
+				   + "   and ts.student_id = ?"
+				   + " where t.class_no = ?;";
 		
 		try {
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, stu_id);
 			pstmt.setInt(2, class_no);
 			rs = pstmt.executeQuery();
-			int i = 0;										//연번을 나타내기 위한 변수
+			int i = 0;												//연번을 나타내기 위한 변수
 		
 			while(rs.next()) {
 				i++;
@@ -318,6 +321,9 @@ public class AssignmentDao {
 					assign.setScore(0+" / "+rs.getInt(7));
 				}
 				assign.setClass_name(rs.getString(8));
+				assign.setClass_no(rs.getInt(9));
+				assign.setStart_date(rs.getDate(10));
+				assign.setEnd_date(rs.getDate(11));
 				list.add(assign);
 			}
 			System.out.println("전체 과제 조회 성공");
@@ -339,8 +345,10 @@ public class AssignmentDao {
 		
 		AssignmentDto assign = new AssignmentDto();
 		//과제번호, 과제명, 과제설명, 과제 나의점수, 과제 만점점수, 제출기한, 첨부파일, 첨부파일명, 문의사항, 답변, 제출파일
-		String sql = "select t.task_no, t.task_name, t.task_desc, st.taskscore, t.perfect_score, t.expire_date, t.attachedfile, t.attachedfile_name, st.taskquestion, st.taskanswer, st.taskfile, st.taskfile_name"
+		String sql = "select t.task_no, t.task_name, t.task_desc, st.taskscore, t.perfect_score, t.expire_date, t.attachedfile, t.attachedfile_name, st.taskquestion, st.taskanswer, st.taskfile, st.taskfile_name, c.start_date, c.end_date"
 				  	 + " from task t"
+				  	 + " inner join class c"
+				  	 + " on c.class_no = t.class_no"
 				  	 + " left outer join submission_task st"
 				     + " on t.task_no = st.task_no"
 				     + " where t.task_no = ?"
@@ -368,12 +376,14 @@ public class AssignmentDao {
 				assign.setPerfect_score(rs.getInt(5));					// 만점
 				assign.setScore(rs.getInt(4)+" / "+rs.getInt(5));		// 과제 점수 / 만점
 				assign.setExpire_date(rs.getDate(6));					// 제출기한
-				assign.setAttachedFile(rs.getBinaryStream(11));			// 과제 참고 파일		-- 추후 7로 변경해야됨
-				assign.setAttachedFile_name(rs.getString(12));			// 과제 참고 파일명		-- 추후 8로 변경해야됨
+				assign.setAttachedFile(rs.getBinaryStream(7));			// 과제 참고 파일		-- 추후 7로 변경해야됨
+				assign.setAttachedFile_name(rs.getString(8));			// 과제 참고 파일명		-- 추후 8로 변경해야됨
 				assign.setTaskQuestion(rs.getString(9));				// 문의사항
 				assign.setTaskAnswer(rs.getString(10));					// 답변
 				assign.setTaskFile(rs.getBytes(11));					// 과제제출파일
 				assign.setTaskFile_name(rs.getString(12));				// 과제제출파일명
+				assign.setStart_date(rs.getDate(13));					// 강의시작일
+				assign.setEnd_date(rs.getDate(14));						// 강의종료일
 			}
 			System.out.println("과제 조회 성공");
 		} catch (SQLException e) {
@@ -396,12 +406,14 @@ public class AssignmentDao {
 		AssignmentDto assign = new AssignmentDto();
 		ResultSet rs = null;
 		//과제번호, 과제명, 과제설명, 과제 나의점수, 과제 만점점수, 제출기한, 첨부파일, 첨부파일명, 문의사항, 답변, 제출파일
-		String sql = "select t.task_no, t.task_name, t.task_desc, st.taskscore, t.perfect_score, t.expire_date, t.attachedfile, t.attachedfile_name, st.taskquestion, st.taskanswer, st.taskfile"
-				  	 + " from task t"
-				  	 + " left outer join submission_task st"
-				     + " on t.task_no = st.task_no"
-				     + " where t.task_no = ?"
-				     + " and t.class_no = ?";
+		String sql = "select t.task_no, t.task_name, t.task_desc, st.taskscore, t.perfect_score, t.expire_date, t.attachedfile, t.attachedfile_name, st.taskquestion, st.taskanswer, st.taskfile, c.start_date, c.end_date"
+				   + "  from task t"
+				   + " inner join class c"
+				   + "    on t.class_no = c.class_no"
+				   + "  left outer join submission_task st"
+				   + "    on t.task_no = st.task_no"
+				   + " where t.task_no = ?"
+				   + "   and t.class_no = ?";
 		
 		try {
 			pstmt = connection.prepareStatement(sql);
@@ -429,6 +441,8 @@ public class AssignmentDao {
 				assign.setTaskQuestion(rs.getString(9));				// 문의사항
 				assign.setTaskAnswer(rs.getString(10));					// 답변
 				assign.setTaskFile(rs.getBytes(11));					// 과제제출
+				assign.setStart_date(rs.getDate(12));					// 강의시작일
+				assign.setEnd_date(rs.getDate(13));						// 강의종료일
 			}
 			System.out.println("과제 조회 성공");
 		} catch (SQLException e) {
@@ -484,7 +498,7 @@ public class AssignmentDao {
 		return assign;
 	}
 	
-	//과제 제출 갯수 조회
+	//전체 강의 과제 제출 갯수 조회-강의별
 	public AssignmentDto myCount_select(int class_no, String stu_id) {
 		
 		//DB연결
@@ -518,6 +532,123 @@ public class AssignmentDao {
 			ju.disconnect(connection, pstmt, rs);
 		}
 		return assign;
+	}
+	
+	
+	//진행 중 전체과제 개수 조회-전체
+	public int myCount_ing_total_select(String stu_id) {
+		
+		//DB연결
+		connectionJDBC();
+		int cnt = 0;
+		String sql = "select count(*)"
+					+"  from request_class rc"
+					+" inner join class c"
+					+"    on rc.class_no = c.class_no"
+					+" inner join task t"
+					+"    on rc.class_no = t.class_no"
+					+" where rc.student_id = ?"
+					+"   and (c.start_date < curdate()"
+					+"   and c.end_date > curdate()"
+					+"   and t.expire_date >=curdate());";
+			
+		try {
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, stu_id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				
+				cnt = rs.getInt(1);
+				System.out.println("과제 개수 조회 완료");
+			}
+			
+		} catch (SQLException e) {
+//			e.printStackTrace();
+				System.out.println("과제 개수 조회 실패");
+		} finally {
+			//접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
+		return cnt;
+	}
+	
+	//진행 중 전체과제 개수 조회-강의별
+	public int myCount_ing_class_select(String stu_id, int class_no) {
+		
+		//DB연결
+		connectionJDBC();
+		int cnt = 0;
+		String sql = "select count(*)"
+					+"  from request_class rc"
+					+" inner join class c"
+					+"    on rc.class_no = c.class_no"
+					+" inner join task t"
+					+"    on rc.class_no = t.class_no"
+					+"   and t.class_no= ?"
+					+" where rc.student_id = ?"
+					+"   and (c.start_date < curdate()"
+					+"   and c.end_date > curdate()"
+					+"   and t.expire_date >=curdate());";
+			
+		try {
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setInt(1, class_no);
+			pstmt.setString(2, stu_id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				
+				cnt = rs.getInt(1);
+				System.out.println("과제 개수 조회 완료");
+			}
+			
+		} catch (SQLException e) {
+//			e.printStackTrace();
+				System.out.println("과제 개수 조회 실패");
+		} finally {
+			//접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
+		return cnt;
+	}
+	//진행중 과제 중 제출한 전체 과제 수 조회
+	public int myCount_ing_submit_select(String stu_id) {
+		
+		//DB연결
+		connectionJDBC();
+		int cnt = 0;
+		String sql = "select count(*)"
+					+"  from submission_task st  "
+					+" inner join task t"
+					+"    on st.task_no = t.task_no"
+					+" inner join class c"
+					+"    on t.class_no = c.class_no"
+					+" where st.student_id = ?"
+					+"   and st.tasksubmit = 'Y'"
+					+"   and (c.start_date < curdate()"
+					+"   and c.end_date > curdate()"
+					+"   and t.expire_date >=curdate());";
+			
+		try {
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, stu_id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				
+				cnt = rs.getInt(1);
+				System.out.println("진행 과제 중 제출한 과제 수 조회 완료");
+			}
+			
+		} catch (SQLException e) {
+//			e.printStackTrace();
+				System.out.println("진행 과제 중 제출한 과제 수 조회 실패");
+		} finally {
+			//접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
+		return cnt;
 	}
 	
 	//콤보박스 과제명 출력-현재
@@ -603,5 +734,73 @@ public class AssignmentDao {
 			ju.disconnect(connection, pstmt, rs);
 		}
 		return list;
+	}
+
+	//강의 날짜 조회
+	public AssignmentDto select_classDate(String stu_id) {
+	
+		//DB연결
+		connectionJDBC();
+	
+		AssignmentDto assign = new AssignmentDto();
+		String sql = "select c.start_date, c.end_date"
+					+"  from request_class rc"
+					+" inner join class c"
+					+"    on rc.class_no = c.class_no"
+					+" where rc.student_id = ?;";
+		
+		try {
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, stu_id);
+			rs = pstmt.executeQuery();
+		
+			while(rs.next()) {
+				
+				assign.setStart_date(rs.getDate(1));
+				assign.setEnd_date(rs.getDate(2));
+				
+			}
+			System.out.println("강의 날짜 조회 성공");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("[SQL Error : " + e.getMessage() + "]");
+			System.out.println("강의 날짜 조회 실패");
+		} finally {
+			
+			//접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
+	
+		return assign;
+	}
+	
+	//첨부파일 삭제
+	public void delete_file(String student_id, int class_no, int task_no) {
+		
+		//DB연결
+		connectionJDBC();
+		
+		String sql = "update submission_task" + 
+					 "   set taskfile = null, taskfile_name = null" + 
+					 " where student_id = ?" + 
+					 "   and class_no = ?" + 
+					 "   and task_no = ?;";
+		
+		try {
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, student_id);
+			pstmt.setInt(2, class_no);
+			pstmt.setInt(3, task_no);
+			pstmt.executeUpdate();		
+			System.out.println("첨부파일 삭제 성공");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("[SQL Error : " + e.getMessage() + "]");
+			System.out.println("첨부파일 삭제 실패");
+		} finally {
+			
+			//접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
 	}
 }

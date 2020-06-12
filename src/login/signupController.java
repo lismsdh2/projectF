@@ -4,8 +4,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import DAO.BasicDao;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,8 +24,8 @@ public class signupController implements Initializable {
 	@FXML private PasswordField passfield;
 	@FXML private PasswordField repassfield;
 	@FXML private TextField emailfield;
-	@FXML private ComboBox combobox;
-	@FXML private ComboBox email2;
+	@FXML private ComboBox<String> combobox;
+	@FXML private ComboBox<String> email2;
 	@FXML private TextField phonefield1;
 	@FXML private TextField phonefield2;
 	@FXML private Button done;

@@ -24,7 +24,7 @@ public class search_pass_Controller implements Initializable {
 	@FXML private Button cancle; 
 	@FXML private Button student;
 	@FXML private Button teacher;
-	@FXML private ComboBox email2;
+	@FXML private ComboBox<String> email2;
 	
 	private boolean type;
 	private Stage pop;

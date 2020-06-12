@@ -30,6 +30,8 @@ public class AssignmentDto {
 	private final StringProperty attachedFile_name = new SimpleStringProperty();			//첨부파일명
 	private final IntegerProperty class_no = new SimpleIntegerProperty();					//강의번호
 	private final StringProperty class_name = new SimpleStringProperty();					//강의명
+	private final ObjectProperty<Date> start_date = new SimpleObjectProperty<Date>();		//강의 시작일
+	private final ObjectProperty<Date> end_date = new SimpleObjectProperty<Date>();			//강의 종료일
 	private final IntegerProperty perfect_score = new SimpleIntegerProperty();				//만점
 	private final StringProperty taskQuestion = new SimpleStringProperty();					//문의사항
 	private final StringProperty taskAnswer = new SimpleStringProperty();					//답변
@@ -409,5 +411,37 @@ public class AssignmentDto {
 		
 		return this.CheckTask;
 	}
-}
+	
+	//강의 시작일
+	public void setStart_date(Date value) {
+		
+		this.start_date.set(value);
+	}
+	
+	public Date getStart_date() {
+		
+		return this.start_date.get();
+	}
+	
+	public ObjectProperty<Date> start_date_Property(){
+		
+		return this.start_date;
+	}
+	
+	//강의 종료일
+	public void setEnd_date(Date value) {
+		
+		this.end_date.set(value);
+	}
+	
+	public Date getEnd_date() {
+		
+		return this.end_date.get();
+	}
+	
+	public ObjectProperty<Date> end_date_Property(){
+		
+		return this.end_date;
+	}
 
+}

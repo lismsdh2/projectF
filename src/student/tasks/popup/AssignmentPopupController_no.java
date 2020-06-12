@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -49,6 +51,7 @@ public class AssignmentPopupController_no implements Initializable {
 	@FXML private Label lblTaskFilename;
 	@FXML private Button btnDownload;
 	@FXML private Button btnSubmitFile;
+	@FXML private Button btnDeleteFile;
 	@FXML private Button btnSubmit;
 	@FXML private Button btnCancle;
 
@@ -82,6 +85,7 @@ public class AssignmentPopupController_no implements Initializable {
 		
 		btnDownload.setOnAction(e -> {handleBtnAttachFile();});
 		btnSubmitFile.setOnAction(e -> {handleBtnSubmitFile();});
+		btnDeleteFile.setOnAction(e -> {handleBtnDeleteFile();});
 		btnSubmit.setOnAction(e -> { handleBtnSubmit(); });
 		btnCancle.setOnAction(e -> { handleBtnCancle(); });
 		//강좌설명 자동줄바꿈
@@ -101,8 +105,6 @@ public class AssignmentPopupController_no implements Initializable {
 		this.task_no = AppMain.app.getBasic().getTask_no();
 		//과제번호는 받기전 인스턴스가 생성되기에 task_no은 0으로 초기화되어 있음, 별도로 받아야 함
 
-		System.out.println("팝업:"+class_no);
-		System.out.println("팝업:"+task_no);
 		assignView(this.class_no, this.task_no);
 		try {
 			
@@ -136,10 +138,31 @@ public class AssignmentPopupController_no implements Initializable {
 
 			btnDownload.setDisable(true);
 		}
+		//강의기간 아닐 때 제출버튼활성화
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date currentTime = new Date();
+		String curretnDate = sdf.format(currentTime);
+		Date today = null;
+		try {
+			today = sdf.parse(curretnDate);
+		} catch(Exception e) {}
+		
+		Date start_date = assign.getStart_date();
+		Date end_date = assign.getEnd_date();
+		
+		int sdDiff = today.compareTo(start_date);
+		int edDiff = today.compareTo(end_date);
+		
+		if((sdDiff ==1 && edDiff ==1) || (sdDiff ==-1 && edDiff ==-1) ) {
+			
+			btnSubmit.setDisable(true);
+		} else {
+			btnSubmit.setDisable(false);
+		}
 	}
 	
 	//참고파일 다운로드 버튼
-	public void handleBtnAttachFile() {
+	private void handleBtnAttachFile() {
 		
 		//파일 확장자 찾기
 		String fileName = assign.getAttachedFile_name();
@@ -176,7 +199,7 @@ public class AssignmentPopupController_no implements Initializable {
 	}
 	
 	//첨부파일 업로드 버튼
-	public void handleBtnSubmitFile() {
+	private void handleBtnSubmitFile() {
 		
 		//파일 열기DIALOG 띄우기
 		FileChooser fileChooser = new FileChooser();
@@ -209,6 +232,7 @@ public class AssignmentPopupController_no implements Initializable {
 				}
 				assign.setTaskFile(baos.toByteArray());				//property에 넣기
 				String file_name = file.getName();					//파일명 출력
+				System.out.println(file_name);
 				assign.setTaskFile_name(file_name);
 				lblTaskFilename.setText(file_name);
 				System.out.println("파일명 : " + file_name);
@@ -219,8 +243,16 @@ public class AssignmentPopupController_no implements Initializable {
 		}
 	}
 	
+	//첨부파일 삭제 버튼
+	private void handleBtnDeleteFile() {
+		
+		assign.setTaskFile(null);
+		assign.setTaskFile_name(null);
+		lblTaskFilename.setText(null);
+	}
+	
 	//제출 버튼
-	public void handleBtnSubmit() {
+	private void handleBtnSubmit() {
 		
 		try {
 			
@@ -232,12 +264,17 @@ public class AssignmentPopupController_no implements Initializable {
             	String taskQuestion = txtQuestion.getText();
             	byte[] taskFile = assign.getTaskFile();
             	String taskFile_name = assign.getTaskFile_name();
-            	System.out.println("taskFile_name : "+ taskFile_name);
             	
-            	//submitTask DTO
-            	AssignmentPopupDto sTask = new AssignmentPopupDto(this.class_no, this.task_no, this.student_id, taskQuestion, taskFile, taskFile_name);
-            	aDao.submit_Assignment(sTask);
-            	alertInformation("제출되었습니다");
+            	if(taskQuestion.equals("") && taskFile == null) {
+            	
+            		alertNull("제출할 내용이 없습니다.");
+            	} else {
+            	
+					//submitTask DTO
+					AssignmentPopupDto sTask = new AssignmentPopupDto(this.class_no, this.task_no, this.student_id, taskQuestion, taskFile, taskFile_name);
+					aDao.submit_Assignment(sTask);
+					alertInformation("제출되었습니다");
+            	}
             }
 		} catch (SQLException e) {
 			
@@ -249,7 +286,7 @@ public class AssignmentPopupController_no implements Initializable {
 	}
 	
 	// 취소 버튼
-	public void handleBtnCancle() {
+	private void handleBtnCancle() {
 
 		popupStage.close();
 		System.out.println("취소 버튼 클릭");
@@ -274,7 +311,7 @@ public class AssignmentPopupController_no implements Initializable {
 	}
 	
 	//신청확인 메세지 창
-	public void alertInformation(String msg) {
+	private void alertInformation(String msg) {
 		
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("과제 제출 완료");
@@ -284,5 +321,14 @@ public class AssignmentPopupController_no implements Initializable {
 		if (result.get().equals(ButtonType.OK)) {
 			popupStage.close();
 		}
+	}
+	
+	//문의사항과 제출파일이 null인경우
+	private void alertNull(String msg) {
+		
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("과제 제출 실패");
+		alert.setContentText(msg);
+		alert.showAndWait();
 	}
 }

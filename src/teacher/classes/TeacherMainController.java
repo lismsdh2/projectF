@@ -14,8 +14,6 @@ import java.util.ResourceBundle;
 import DAO.ClassDao;
 import DTO.BasicDto;
 import DTO.ClassDto;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -522,5 +520,4 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		}
 		classTableView.setItems(classList);
 	}
-
 }

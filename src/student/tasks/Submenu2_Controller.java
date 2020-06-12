@@ -21,12 +21,12 @@ public class Submenu2_Controller implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 	
 		//현재과제 버튼
-		btn2_1.setOnAction(e ->{
+		this.btn2_1.setOnAction(e ->{
 			AppMain.app.getBasic().setClass_no(0);
 			Navigator.loadPages(Navigator.STUDENT_CURRENT_TASK_LIST);
 		});
 		//전체과제 버튼
-		btn2_2.setOnAction(e -> {
+		this.btn2_2.setOnAction(e -> {
 			AppMain.app.getBasic().setClass_no(0);
 			Navigator.loadPages(Navigator.STUDENT_FULL_TASK_LIST);
 		});

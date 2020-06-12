@@ -42,11 +42,8 @@ public class Current_Task_Controller implements Initializable{
     @FXML private TableColumn<AssignmentDto, Void> colTaskAssign;
     @FXML private ComboBox<String> combo;
     @FXML private ProgressBar pgbSubmitCnt;
-    @FXML private ProgressBar pgbScore;
     @FXML private Label lblSubmitTask;
     @FXML private Label lblTotalTask;
-    @FXML private Label lblMyScore;
-    @FXML private Label lblPerfectScore;
 
     private Task<Void> task;
     private ObservableList<AssignmentDto> list;
@@ -56,13 +53,13 @@ public class Current_Task_Controller implements Initializable{
 	private AssignmentPopupController_no popupController_no = new AssignmentPopupController_no();
 	private AssignmentPopupController_yes popupController_yes = new AssignmentPopupController_yes(); 
 	private String student_id = AppMain.app.getBasic().getId();				//학생ID - 추후 연동 필요
-	private int class_no = 	AppMain.app.getBasic().getClass_no();				//강의번호 - 추후 연동 필요
+	private int class_no = 	AppMain.app.getBasic().getClass_no();			//강의번호 - 추후 연동 필요
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 	
 		assignTableView();												//DB값 불러오기
-		tableView.setOnMouseClicked(e -> handleDoubleClicked(e));		//더블클릭 event 처리
+		this.tableView.setOnMouseClicked(e -> handleDoubleClicked(e));		//더블클릭 event 처리
 		setCombo();														//콤보박스
 	}
 	
@@ -70,22 +67,22 @@ public class Current_Task_Controller implements Initializable{
 	private void assignTableView() {
 		
 		if(this.class_no==0) {								//강의가 지정 안된 경우
-			list = aDao.assignment_selectAll(this.student_id);
+			this.list = this.aDao.assignment_selectAll(this.student_id);
 		} else {											//강의가 지정 된 경우
-			list = aDao.assignment_selectAll(this.class_no, this.student_id);
+			this.list = this.aDao.assignment_selectAll(this.class_no, this.student_id);
 		}
-		colTaskNo.setCellValueFactory(new PropertyValueFactory<>("taskList_no"));
-		colClassName.setCellValueFactory(new PropertyValueFactory<>("class_name"));
-		colTaskName.setCellValueFactory(new PropertyValueFactory<>("task_name"));
-		colTaskSubmit.setCellValueFactory(new PropertyValueFactory<>("submitornot"));
-		colTaskSubmissionDate.setCellValueFactory(new PropertyValueFactory<>("reg_date"));		//수정필요
-		colTaskDeadlineDate.setCellValueFactory(new PropertyValueFactory<>("expire_date"));
-		colTaskScore.setCellValueFactory(new PropertyValueFactory<>("Score"));
+		this.colTaskNo.setCellValueFactory(new PropertyValueFactory<>("taskList_no"));
+		this.colClassName.setCellValueFactory(new PropertyValueFactory<>("class_name"));
+		this.colTaskName.setCellValueFactory(new PropertyValueFactory<>("task_name"));
+		this.colTaskSubmit.setCellValueFactory(new PropertyValueFactory<>("submitornot"));
+		this.colTaskSubmissionDate.setCellValueFactory(new PropertyValueFactory<>("reg_date"));		//수정필요
+		this.colTaskDeadlineDate.setCellValueFactory(new PropertyValueFactory<>("expire_date"));
+		this.colTaskScore.setCellValueFactory(new PropertyValueFactory<>("Score"));
 		addButton();													//버튼생성
-		tableView.setItems(list);
-		viewProgressScore();
+		this.tableView.setItems(this.list);
 		viewTaskCount();
 	}
+	
 	
 	//상세정보 버튼 만들기
 	private void addButton() {
@@ -114,10 +111,10 @@ public class Current_Task_Controller implements Initializable{
 							
 							if(assign.getSubmitornot().equals("N")) {
 								openPopupWindow_no();							//처음 제출시 상세화면창 열기
-								refreshTable();									//저장 후 리스트 새로 고침
+								refreshTable(0);									//저장 후 리스트 새로 고침
 							} else if(assign.getSubmitornot().equals("Y")) {
 								openPopupWindow_yes();							//재 제출시 상세화면창 열기
-								refreshTable();									//저장 후 리스트 새로 고침
+								refreshTable(0);									//저장 후 리스트 새로 고침
 							}
 						});
 					}
@@ -136,51 +133,57 @@ public class Current_Task_Controller implements Initializable{
 				return cell;
 			}
 		};
-		colTaskAssign.setCellFactory(cellFactory);
+		this.colTaskAssign.setCellFactory(cellFactory);
 	}
 	
 	//버튼 클릭시 수강신청 상세화면 띄우기
 	private void openPopupWindow_no() {
 		
-		popupController_no.showStage();
-		refreshTable();											//저장 후 리스트 새로 고침
+		this.popupController_no.showStage();
+		refreshTable(0);											//저장 후 리스트 새로 고침
 	}
 	
 	//버튼 클릭시 수강신청 상세화면 띄우기
 	private void openPopupWindow_yes() {
 		
-		popupController_yes.showStage();
-		refreshTable();											//저장 후 리스트 새로 고침
+		this.popupController_yes.showStage();
+		refreshTable(0);											//저장 후 리스트 새로 고침
 	}
 	
 	//강의별 과제 목록
-	public void setCombo() {
+	private void setCombo() {
 		
-		classList = aDao.current_className_selectAll(this.student_id);
-//		classList.add(0,"전체보기");
-		combo.setItems(classList);
+		this.classList = aDao.current_className_selectAll(this.student_id);
+		this.classList.add(0,"전체보기");
+		this.combo.setItems(this.classList);
 
 		//선택된 강의가 있을 때 콤보박스 설정
 		if(this.class_no != 0) {
 			int c_no = 0;
-			for(int i = 0 ; i < classList.size(); i++) {
+			for(int i = 0 ; i < this.classList.size(); i++) {
 			
-				c_no =Integer.valueOf(classList.get(i).substring(1, 5)); 		//문자열에서 강의번호자르기
+				c_no =Integer.valueOf(this.classList.get(i).substring(1, 5)); 		//문자열에서 강의번호자르기
 				if(c_no == this.class_no) {
 					
-					combo.getSelectionModel().select(classList.get(i));
+					this.combo.getSelectionModel().select(this.classList.get(i));
 					return;
 				}
 			}
 		}
 		
-		combo.setOnAction(e -> {
+		this.combo.setOnAction(e -> {
 
-			String selectedCombo = combo.getSelectionModel().getSelectedItem();
-			int selectedNo = Integer.valueOf(selectedCombo.substring(1, 5));
-		
-			AppMain.app.getBasic().setClass_no(selectedNo);
-			refreshTable();
+			if(this.combo.getSelectionModel().getSelectedIndex() == 0) {
+				
+				this.class_no=0;
+				refreshTable(0);
+			} else {
+				String selectedCombo = combo.getSelectionModel().getSelectedItem();
+				int selectedNo = Integer.valueOf(selectedCombo.substring(1, 5));
+			
+				AppMain.app.getBasic().setClass_no(selectedNo);
+				refreshTable(1);
+			}
 		});
 	}
 	
@@ -197,18 +200,17 @@ public class Current_Task_Controller implements Initializable{
 				if (event.getClickCount() == 2) {
 					
 					AppMain.app.getBasic().setClass_no(assign.getClass_no());
-					//테이블에서 과제번호 연동 완료
 					AppMain.app.getBasic().setTask_no(assign.getTask_no());
 					
 					System.out.println("selectedData(더블클릭) : " + assign.getSubmitornot());
 					if(assign.getSubmitornot().equals("N")) {
 						
 						openPopupWindow_no();							//처음 제출시 상세화면창 열기
-						refreshTable();									//저장 후 리스트 새로 고침
+						refreshTable(0);									//저장 후 리스트 새로 고침
 					} else if(assign.getSubmitornot().equals("Y")){
 						
 						openPopupWindow_yes();							//재 제출시 상세화면창 열기
-						refreshTable();									//저장 후 리스트 새로 고침
+						refreshTable(0);									//저장 후 리스트 새로 고침
 					}
 				}
 			}
@@ -216,64 +218,41 @@ public class Current_Task_Controller implements Initializable{
 	}
 
 	//데이터 저장 후 리스트 새로고침
-	private void refreshTable() {
-	
-		this.class_no = AppMain.app.getBasic().getClass_no();
-		if(this.class_no==0) {								//강의가 지정 안된 경우
-			list = aDao.assignment_selectAll(this.student_id);
-		} else {											//강의가 지정 된 경우
-			list = aDao.assignment_selectAll(this.class_no, this.student_id);
+	private void refreshTable(int num) {
+		
+		if(num==0) {						//강의번호 호출 안함
+			
+		} else if(num==1) {					//강의번호 호출 함
+			this.class_no = AppMain.app.getBasic().getClass_no();
 		}
-		tableView.setItems(list);
-		viewProgressScore();
+	
+		if(this.class_no==0) {				//강의가 지정 안된 경우
+			this.list = aDao.assignment_selectAll(this.student_id);
+		} else {							//강의가 지정 된 경우
+			this.list = aDao.assignment_selectAll(this.class_no, this.student_id);
+		}
+		this.tableView.setItems(this.list);
 		viewTaskCount();
 	}
-	
-	//점수 현황 보여주기
-	private void viewProgressScore() {
-		
-		assign = aDao.score_select(this.class_no, this.student_id);
-		int MyScore = assign.getSumMyScore();  
-		int PerfectScore = assign.getSumPerfectScore();
-		//progressBar 지정
-		task = new Task<Void>() {
-			
-			@Override
-			protected Void call() throws Exception {
-			
-				for(int i = 1; i< 10 ; i++) {
-					
-					if(isCancelled()) { break; }
-					
-					updateProgress(MyScore, PerfectScore);
-					
-					try { Thread.sleep(100); } catch (Exception e) { }
-					
-					if(isCancelled()) { break; }
-				}
-				
-				return null;
-			}
-		};
-		pgbScore.progressProperty().bind(task.progressProperty());
-		
-		Thread thread = new Thread(task);
-		thread.setDaemon(true);
-		thread.start();
-		
-		lblMyScore.setText(Integer.toString(MyScore));
-		lblPerfectScore.setText(Integer.toString(PerfectScore));
-	}
 
-	//과제 제출 현황 보여주기
+	//진행중 과제 제출 현황 보여주기
 	private void viewTaskCount() {
 	
-		assign = aDao.myCount_select(this.class_no, this.student_id);
-		int MyAssign = assign.getCntMyAssign();
-		int TotalAssign = assign.getCntTotalAssign();
+		if(this.class_no==0) {
+			
+			this.assign.setCntMyAssign(aDao.myCount_ing_submit_select(this.student_id));			//제출과제수
+			this.assign.setCntTotalAssign(aDao.myCount_ing_total_select(this.student_id));		//전체과제수
+	
+		} else {
+			
+			this.assign.setCntMyAssign(aDao.myCount_ing_submit_select(this.student_id));			//제출과제수
+			this.assign.setCntTotalAssign(aDao.myCount_ing_class_select(this.student_id, this.class_no));
+		}
+		int MyAssign = this.assign.getCntMyAssign();
+		int TotalAssign = this.assign.getCntTotalAssign();
 	
 		//progressBar 지정
-		task = new Task<Void>() {
+		this.task = new Task<Void>() {
 			
 			@Override
 			protected Void call() throws Exception {
@@ -292,13 +271,12 @@ public class Current_Task_Controller implements Initializable{
 				return null;
 			}
 		};
-		pgbSubmitCnt.progressProperty().bind(task.progressProperty());
+		this.pgbSubmitCnt.progressProperty().bind(this.task.progressProperty());
 		
-		Thread thread = new Thread(task);
+		Thread thread = new Thread(this.task);
 		thread.setDaemon(true);
 		thread.start();
 		lblSubmitTask.setText(Integer.toString(MyAssign));
 		lblTotalTask.setText(Integer.toString(TotalAssign));
 	}
-	
 }

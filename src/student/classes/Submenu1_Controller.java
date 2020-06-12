@@ -21,17 +21,17 @@ public class Submenu1_Controller implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 	
 		//현재강의 버튼
-		btn1_1.setOnAction(e ->{
+		this.btn1_1.setOnAction(e ->{
 			
 			Navigator.loadPages(Navigator.STUDENT_CURRENT_CLASS_LIST);
 		});
 		//지난강의 버튼
-		btn1_2.setOnAction(e -> {
+		this.btn1_2.setOnAction(e -> {
 			
 			Navigator.loadPages(Navigator.STUDENT_PAST_CLASS_LIST);
 		});
 		//수강신청 버튼
-		btn1_3.setOnAction(e -> {
+		this.btn1_3.setOnAction(e -> {
 			
 			Navigator.loadPages(Navigator.STUDENT_FULL_CLASS_LIST);
 		});

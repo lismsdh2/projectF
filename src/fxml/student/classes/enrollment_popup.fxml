@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.TextField?>
 
-<AnchorPane maxWidth="350.0" prefHeight="500.0" prefWidth="350.0"
+<AnchorPane fx:id="anchorPane" maxWidth="350.0" prefHeight="500.0" prefWidth="350.0"
 			xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="39.0" layoutY="59.0" prefHeight="35.0" prefWidth="50.0" text="강의명">

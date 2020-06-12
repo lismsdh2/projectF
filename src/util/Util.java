@@ -4,7 +4,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 
 public class Util {
@@ -72,5 +71,4 @@ public class Util {
 			}
 		};
 	}
-
 }

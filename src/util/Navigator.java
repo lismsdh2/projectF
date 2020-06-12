@@ -25,8 +25,8 @@ public class Navigator {
 	public static final String STUDENT_PAST_CLASS_LIST = "../fxml/student/classes/past_class.fxml";
 	public static final String STUDENT_FULL_CLASS_LIST = "../fxml/student/classes/enrollment.fxml";
 	//학생-리스트(과제)
-	public static final String STUDENT_CURRENT_TASK_LIST = "../fxml/student/tasks/current_task.fxml";
 	public static final String STUDENT_FULL_TASK_LIST = "../fxml/student/tasks/full_task.fxml";
+	public static final String STUDENT_CURRENT_TASK_LIST = "../fxml/student/tasks/current_task.fxml";
 
 	//하위메뉴
 	public static void loadSubMenu(String fxml) {
