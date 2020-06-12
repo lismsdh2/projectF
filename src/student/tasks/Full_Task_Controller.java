@@ -184,7 +184,7 @@ public class Full_Task_Controller implements Initializable{
 		//선택된 강의가 있을 때 콤보박스 설정
 		if(this.class_no != 0) {
 			int c_no = 0;
-			for(int i = 0 ; i < this.classList.size(); i++) {
+			for(int i = 1 ; i < this.classList.size(); i++) {
 			
 				c_no =Integer.valueOf(this.classList.get(i).substring(1, 5)); 		//문자열에서 강의번호자르기
 				if(c_no == this.class_no) {
