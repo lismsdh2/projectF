@@ -14,7 +14,7 @@ public class Submenu_Controller implements Initializable{
 	@FXML Button btn1_1;
 	@FXML Button btn1_2;
 	@FXML Button btn1_3;
-
+	
 	public static Main_Master_Controller mmc;
 	public static int btnNo;
 	@Override

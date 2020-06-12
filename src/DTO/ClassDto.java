@@ -21,8 +21,10 @@ public class ClassDto {
 	private SimpleObjectProperty<LocalDate> startDate;
 	private SimpleObjectProperty<LocalDate> endDate;
 	private SimpleIntegerProperty limitStudent;
+	private SimpleIntegerProperty currentStudent;
 	private SimpleBooleanProperty dateCheck;
-
+	private SimpleStringProperty str;
+	
 	public ClassDto() {
 		this.classNo = new SimpleIntegerProperty();
 		this.className = new SimpleStringProperty();
@@ -32,20 +34,22 @@ public class ClassDto {
 		this.startDate = new SimpleObjectProperty<LocalDate>();
 		this.endDate = new SimpleObjectProperty<LocalDate>();
 		this.limitStudent = new SimpleIntegerProperty();
+		this.currentStudent = new SimpleIntegerProperty();
 		this.dateCheck = new SimpleBooleanProperty();
+		this.str = new SimpleStringProperty();
 	}
 
-	public ClassDto(int ClassNo, String className, String teacherName, String teacherId, String classDescription,
-			LocalDate startDate, LocalDate endDate, int limitStudent) {
-		this.classNo = new SimpleIntegerProperty(ClassNo);
-		this.className = new SimpleStringProperty(className);
-		this.teacherName = new SimpleStringProperty(teacherName);
-		this.teacherId = new SimpleStringProperty(teacherId);
-		this.classDescription = new SimpleStringProperty(classDescription);
-		this.startDate = new SimpleObjectProperty<LocalDate>(startDate);
-		this.endDate = new SimpleObjectProperty<LocalDate>(endDate);
-		this.limitStudent = new SimpleIntegerProperty(limitStudent);
-	}
+//	public ClassDto(int ClassNo, String className, String teacherName, String teacherId, String classDescription,
+//			LocalDate startDate, LocalDate endDate, int limitStudent) {
+//		this.classNo = new SimpleIntegerProperty(ClassNo);
+//		this.className = new SimpleStringProperty(className);
+//		this.teacherName = new SimpleStringProperty(teacherName);
+//		this.teacherId = new SimpleStringProperty(teacherId);
+//		this.classDescription = new SimpleStringProperty(classDescription);
+//		this.startDate = new SimpleObjectProperty<LocalDate>(startDate);
+//		this.endDate = new SimpleObjectProperty<LocalDate>(endDate);
+//		this.limitStudent = new SimpleIntegerProperty(limitStudent);
+//	}
 
 	public ClassDto(String className, String teacherName, String teacherId, String classDescription, LocalDate startDate,
 			LocalDate endDate, int limitStudent) {
@@ -104,7 +108,6 @@ public class ClassDto {
 
 	public void setStartDate(LocalDate startDate) {
 		this.startDate.set(startDate);
-		;
 	}
 
 	public LocalDate getEndDate() {
@@ -122,6 +125,14 @@ public class ClassDto {
 	public void setLimitStudent(int limitStudent) {
 		this.limitStudent.set(limitStudent);
 	}
+	
+	public int getCurrentStudent() {
+		return currentStudent.getValue();
+	}
+
+	public void setCurrentStudent(int currentStudent) {
+		this.currentStudent.set(currentStudent);
+	}
 
 	public boolean getDateCheck() {
 		return dateCheck.get();
@@ -129,6 +140,14 @@ public class ClassDto {
 
 	public void setDateCheck(boolean dateCheck) {
 		this.dateCheck.set(dateCheck);
+	}
+	
+	public String getStr() {
+		return str.get();
+	}
+
+	public void setStr(String str) {
+		this.str.set(str);
 	}
 
 	public SimpleIntegerProperty getClassNoProperty() {

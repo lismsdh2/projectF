@@ -48,6 +48,7 @@ import javafx.stage.StageStyle;
 import launch.AppMain;
 import main.Main_Master_Controller;
 import util.Navigator;
+import util.Util;
 public class TeacherMainController extends Main_Master_Controller implements Initializable {
 	
 	BasicDto user = AppMain.app.getBasic();
@@ -129,7 +130,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		tcTeacherName.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
 		tcStartDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
 		tcEndDate.setCellValueFactory(new PropertyValueFactory<>("endDate"));
-		tcLimitStudent.setCellValueFactory(new PropertyValueFactory<>("limitStudent"));
+		tcLimitStudent.setCellValueFactory(new PropertyValueFactory<>("str"));
 		modify.setCellValueFactory(new PropertyValueFactory<>("dateCheck"));
 		detail.setCellValueFactory(new PropertyValueFactory<>("dateCheck"));
 		
@@ -191,31 +192,31 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							TextArea txtDescription = (TextArea) parent.lookup("#description");
 							DatePicker localDateStartDate = (DatePicker) parent.lookup("#startDate");
 							DatePicker localDateEndDate = (DatePicker) parent.lookup("#endDate");
+							Label txtCurrentStudent = (Label) parent.lookup("#currentStudent");
 							TextField txtLimitStudent = (TextField) parent.lookup("#limitStudent");
 							Button btnUpdate = (Button) parent.lookup("#update");
 							Button btnCancel = (Button) parent.lookup("#cancel");
 							
-							txtLimitStudent.textProperty().addListener(new ChangeListener<String>() {
-								@Override
-								public void changed(ObservableValue<? extends String> observable, String oldValue,
-										String newValue) {
-									if (!newValue.matches("\\d*")) {
-										txtLimitStudent.setText(newValue.replaceAll("[^\\d]", ""));
-									}
-								}
-							});
+							//글자수 입력제한
+							txtClassName.textProperty().addListener(Util.textCountLimit(txtClassName, 20));
+							txtLimitStudent.textProperty().addListener(Util.textCountLimit(txtLimitStudent, 9));
+							txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 1000));
+							//숫자만 입력가능
+							txtLimitStudent.textProperty().addListener(Util.numberOnlyListener(txtLimitStudent));
 							
 							//기존에 저장되어있던 강의정보 가져오기
 							String className = class1.getClassName();
 							String description = class1.getClassDescription();
 							LocalDate startDate = class1.getStartDate();
 							LocalDate endDate = class1.getEndDate();
+							int curStudent = class1.getCurrentStudent();
 							int limitStudent = class1.getLimitStudent();
 							
 							txtClassName.setText(className);
 							txtDescription.setText(description);
 							localDateStartDate.setValue(startDate);
 							localDateEndDate.setValue(endDate);
+							txtCurrentStudent.setText(curStudent + "");
 							txtLimitStudent.setText(limitStudent + "");
 							
 							//수정버튼눌렀을시 수정이벤트발생
@@ -229,6 +230,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 									String description = txtDescription.getText();
 									LocalDate startDate = localDateStartDate.getValue();
 									LocalDate endDate = localDateEndDate.getValue();
+									int curStudent = Integer.parseInt(txtCurrentStudent.getText());
 									int limitStudent = 0;
 									long day1 = 0;
 									long day2 = 0;
@@ -268,6 +270,9 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 										flag = false;
 									} else if(limitStudent<=0) {
 										alert.setContentText("수강인원수(자연수)를 입력하세요");
+										flag = false;
+									} else if(curStudent > limitStudent) {
+										alert.setContentText("현재인원수(" + curStudent + ") 이상의 수를 입력하세요");
 										flag = false;
 									}
 									
@@ -412,15 +417,12 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		TextField txtLimitStudent = (TextField) parent.lookup("#limitStudent");
 		Button btnSave = (Button) parent.lookup("#save");
 		
-		txtLimitStudent.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue,
-					String newValue) {
-				if (!newValue.matches("\\d*")) {
-					txtLimitStudent.setText(newValue.replaceAll("[^\\d]", ""));
-				}
-			}
-		});
+		//글자수 입력제한
+		txtClassName.textProperty().addListener(Util.textCountLimit(txtClassName, 20));
+		txtLimitStudent.textProperty().addListener(Util.textCountLimit(txtLimitStudent, 9));
+		txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 1000));
+		//숫자만 입력가능
+		txtLimitStudent.textProperty().addListener(Util.numberOnlyListener(txtLimitStudent));
 		
 		//강의만들기 
 		btnSave.setOnAction(new EventHandler<ActionEvent>() {
@@ -505,7 +507,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		if(btnNo==0 || btnNo==1) {
 			classList = cDao.selectMyClassList(userid,btnNo);			
 		} else {
-			classList = cDao.searchClassList("");
+			classList = cDao.selectAllClassList();
 		}
 		classTableView.setItems(classList);
 	}

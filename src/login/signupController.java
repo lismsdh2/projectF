@@ -17,7 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
+import util.Util;
 
 public class signupController implements Initializable {
 	
@@ -66,56 +66,24 @@ public class signupController implements Initializable {
 		teacher.setOnAction(e->handleteacher(e));
 		check.setOnAction(e->handlecheck(e));
 		
-	      //폰 번호 가운데자리수 제한
-	      phonefield1.lengthProperty().addListener(new ChangeListener<Number>() {
-	         @Override
-	         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-	            
-	            if(newValue.intValue() > oldValue.intValue()) {
-	               
-	               if(phonefield1.getText().length()>=5) {
-	                  
-	                  phonefield1.setText(phonefield1.getText().substring(0, 4));
-	               }
-	            }
-	         }
-	      });
-	      
-	      //폰번호 숫자만 입력
-	      phonefield1.textProperty().addListener(new ChangeListener<String>() {
-
-				@Override
-				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					if (!newValue.matches("\\d*")) {
-						phonefield1.setText(newValue.replaceAll("[^\\d]", ""));
-					}
-				}
-			});
-	      //폰 번호 마지막자리수 제한
-	      phonefield2.lengthProperty().addListener(new ChangeListener<Number>() {
-	         @Override
-	         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-	            
-	            if(newValue.intValue() > oldValue.intValue()) {
-	               
-	               if(phonefield2.getText().length()>=5) {
-	                  
-	                  phonefield2.setText(phonefield2.getText().substring(0, 4));
-	               }
-	            }
-	         }
-	      });
-	      
-	      //폰번호 숫자만 입력
-	      phonefield2.textProperty().addListener(new ChangeListener<String>() {
-
-				@Override
-				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					if (!newValue.matches("\\d*")) {
-						phonefield2.setText(newValue.replaceAll("[^\\d]", ""));
-					}
-				}
-			});
+		//입력양식 제한
+		idfield.textProperty().addListener(Util.alphabetListener(idfield));
+		passfield.textProperty().addListener(Util.pwListener(passfield));
+		repassfield.textProperty().addListener(Util.pwListener(repassfield));
+		emailfield.textProperty().addListener(Util.alphabetListener(emailfield));
+		
+		//숫자만 입력
+		phonefield1.textProperty().addListener(Util.numberOnlyListener(phonefield1));
+		phonefield2.textProperty().addListener(Util.numberOnlyListener(phonefield2));
+		
+		//글자수 제한
+		phonefield1.textProperty().addListener(Util.textCountLimit(phonefield1, 4));
+		phonefield2.textProperty().addListener(Util.textCountLimit(phonefield2, 4));
+		idfield.textProperty().addListener(Util.textCountLimit(idfield, 20));
+		namefield.textProperty().addListener(Util.textCountLimit(namefield, 20));
+		emailfield.textProperty().addListener(Util.textCountLimit(emailfield, 30));
+		passfield.textProperty().addListener(Util.textCountLimit(passfield, 20));
+		repassfield.textProperty().addListener(Util.textCountLimit(repassfield, 20));
 	}
 
 	//교사신분 선택
@@ -222,12 +190,6 @@ public class signupController implements Initializable {
 			alert.setContentText("회원가입완료");
 			alert.show();
 			
-			idfield.setText(null);
-			namefield.setText(null);
-			passfield.setText(null);
-			emailfield.setText(null);
-			phonefield1.setText(null);
-			phonefield2.setText(null);
 			pop = (Stage)cancle.getScene().getWindow(); 
 	        pop.close();
 		}
