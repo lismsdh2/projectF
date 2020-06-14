@@ -20,7 +20,7 @@
 				<TableColumn fx:id="modify" prefWidth="190.0" text="수정/삭제" />
 			</columns>
 		</TableView>
-		<ComboBox fx:id="combo" layoutX="859.0" layoutY="15.0" prefWidth="150.0" promptText="과제명 선택" />
+		<ComboBox fx:id="combo" layoutX="859.0" layoutY="15.0" prefWidth="150.0" promptText="과목명 선택" />
 		<Button fx:id="btnReportCreate" layoutX="889" layoutY="580" prefHeight="30.0" prefWidth="120.0" text="과제 만들기" />
 	</children>
 </AnchorPane>

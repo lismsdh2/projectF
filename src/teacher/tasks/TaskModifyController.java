@@ -14,8 +14,6 @@ import java.util.ResourceBundle;
 import DAO.TaskDao;
 import DTO.TaskDto;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -73,15 +71,7 @@ public class TaskModifyController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 		// 숫자만 입력할 수 있도록 제한
-		txtPerfectScore.textProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (!newValue.matches("\\d*")) {
-					txtPerfectScore.setText(newValue.replaceAll("[^\\d]", ""));
-				}
-			}
-		});
+		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));
 
 		// 첨부파일 버튼
 		btnFile.setOnAction(e -> handleAttachedFileBtn());
@@ -96,9 +86,6 @@ public class TaskModifyController implements Initializable {
 		btnFileDel.setOnAction(e -> {
 			arr = null;
 			txtFile.clear();
-			if (arr == null) {
-				System.out.println("arr remove");
-			}
 		});
 	}
 
@@ -192,7 +179,6 @@ public class TaskModifyController implements Initializable {
 			}
 
 			// DTO에 수정된 값들 저장
-			System.out.println("score- " + perfectScore);
 			TaskDto modifiedReport = new TaskDto(selectedTaskNo, name, desc, regDate, expireDate, arr, filename,
 					perfectScore);
 
@@ -209,21 +195,20 @@ public class TaskModifyController implements Initializable {
 	// 선택된 과제 정보 입력
 	private void setContents() {
 		System.out.println("selected Task : " + selectedTaskNo);
-		TaskDto selectedReport = tDao.selectTask(selectedTaskNo);
+		TaskDto selectedTask = tDao.selectTask(selectedTaskNo);
 
 		Platform.runLater(() -> {
-			txtTitle.setText(selectedReport.getTcTitle());
-			txtDesc.setText(selectedReport.getTcDesc());
+			txtTitle.setText(selectedTask.getTcTitle());
+			txtDesc.setText(selectedTask.getTcDesc());
 
-			if (selectedReport.getPerfectScore() != null) {
-				txtPerfectScore.setText(selectedReport.getPerfectScore().toString());
+			if (selectedTask.getPerfectScore() != null) {
+				txtPerfectScore.setText(selectedTask.getPerfectScore().toString());
 			} else {
 				txtPerfectScore.setText("");
 			}
 
-			dateExpire.setValue(selectedReport.getTcExpireDate());
-			txtFile.setText(selectedReport.getTcFile());
+			dateExpire.setValue(selectedTask.getTcExpireDate());
+			txtFile.setText(selectedTask.getTcFile());
 		});
-
 	}
 }

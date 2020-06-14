@@ -164,24 +164,24 @@ public class TaskDao {
 			ResultSet re = pstmt.executeQuery();
 
 			while (re.next()) {
-				TaskDto report = new TaskDto();
+				TaskDto task = new TaskDto();
 
-				report.setTcNo(re.getInt("task_no"));
-				report.setTcTitle(re.getString("task_name"));
-				report.setTcDesc(re.getString("task_desc"));
-				report.setTcRegdate(LocalDate.parse(re.getString("reg_date"), DateTimeFormatter.ISO_DATE));
+				task.setTcNo(re.getInt("task_no"));
+				task.setTcTitle(re.getString("task_name"));
+				task.setTcDesc(re.getString("task_desc"));
+				task.setTcRegdate(LocalDate.parse(re.getString("reg_date"), DateTimeFormatter.ISO_DATE));
 //				report.setTcExpireDate(LocalDate.parse(re.getString("expireDate"), DateTimeFormatter.ISO_DATE));
 
 				if (re.getString("expire_date") == null) {
 					System.out.println("selectList-expireDate-null");
 				} else {
-					report.setTcExpireDate(LocalDate.parse(re.getString("expire_date"), DateTimeFormatter.ISO_DATE));
+					task.setTcExpireDate(LocalDate.parse(re.getString("expire_date"), DateTimeFormatter.ISO_DATE));
 				}
 
-				report.setTcFile(re.getString("attachedFile_name"));
-				report.setPerfectScore(re.getInt("perfect_score"));
+				task.setTcFile(re.getString("attachedFile_name"));
+				task.setPerfectScore(re.getInt("perfect_score"));
 
-				list.add(report);
+				list.add(task);
 			}
 
 		} catch (SQLException e) {
@@ -195,7 +195,7 @@ public class TaskDao {
 	}
 
 	// user의 task만 보여준다
-	public ObservableList<TaskDto> selectUserTaskList(String userid) {
+	public ObservableList<TaskDto> selectUserTaskList(String userid,int subBtnNo) {
 
 		// DB연결
 		connectionJDBC();
@@ -204,7 +204,15 @@ public class TaskDao {
 		try {
 			// select * from task t join class c on t.class_no = c.class_no where
 			// c.teacher_id=123;
-			String sql = "select * from task t join class c on t.class_no = c.class_no where c.teacher_id=?;";
+			String sql = "select * from task t join class c on t.class_no = c.class_no where c.teacher_id=?";
+			
+			if(subBtnNo==1) { //현재 과제
+				//select * from task t join class c on t.class_no = c.class_no where  c.teacher_id=123 and end_date >= sysdate();
+				sql+=" and expire_date >= sysdate();";
+			}else if(subBtnNo==2) { //지난 과제
+				sql+=" and expire_date < sysdate();";
+			}
+			
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, userid);
 
@@ -217,7 +225,6 @@ public class TaskDao {
 				task.setTcTitle(re.getString("task_name"));
 				task.setTcDesc(re.getString("task_desc"));
 				task.setTcRegdate(LocalDate.parse(re.getString("reg_date"), DateTimeFormatter.ISO_DATE));
-//				report.setTcExpireDate(LocalDate.parse(re.getString("expireDate"), DateTimeFormatter.ISO_DATE));
 
 				if (re.getString("expire_date") == null) {
 					System.out.println("selectList-expireDate-null");
@@ -298,14 +305,22 @@ public class TaskDao {
 	}
 
 	// user - 선택한 강의 - 정보
-	public ObservableList<TaskDto> selectUserClassTaskList(String userid, int classNo) {
+	public ObservableList<TaskDto> selectUserClassTaskList(String userid, int classNo, int subBtnNo) {
 		// DB연결
 		connectionJDBC();
 
 		ObservableList<TaskDto> list = FXCollections.observableArrayList();
 		try {
 //			select t.* from task t join class c on t.class_no = c.class_no where c.teacher_id=123 and c.class_no=1010;
-			String sql = "select t.* from task t join class c on t.class_no = c.class_no where c.teacher_id=? and c.class_no=?;";
+			String sql = "select t.* from task t join class c on t.class_no = c.class_no where c.teacher_id=? and c.class_no=?";
+			
+			if(subBtnNo==1) { //현재 과제
+				//select * from task t join class c on t.class_no = c.class_no where  c.teacher_id=123 and end_date >= sysdate();
+				sql+=" and expire_date >= sysdate();";
+			}else if(subBtnNo==2) { //지난 과제
+				sql+=" and expire_date < sysdate();";
+			}
+			
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, userid);
 			pstmt.setInt(2, classNo);
@@ -319,7 +334,6 @@ public class TaskDao {
 				task.setTcTitle(re.getString("task_name"));
 				task.setTcDesc(re.getString("task_desc"));
 				task.setTcRegdate(LocalDate.parse(re.getString("reg_date"), DateTimeFormatter.ISO_DATE));
-//				report.setTcExpireDate(LocalDate.parse(re.getString("expireDate"), DateTimeFormatter.ISO_DATE));
 
 				if (re.getString("expire_date") == null) {
 					System.out.println("selectList-expireDate-null");

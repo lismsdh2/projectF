@@ -38,6 +38,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import launch.AppMain;
 import main.Main_Master_Controller;
 import util.Navigator;
@@ -77,6 +78,8 @@ public class TaskListController extends Main_Master_Controller implements Initia
 	ClassDao cDao = new ClassDao();
 	ClassDto currentClass = cDao.selectClassOne(classno);
 	TaskDao tDao = new TaskDao();
+
+	int SubBtnNo = TaskSubMenuController.btnNo;
 
 	ObservableList<TaskDto> taskList = FXCollections.observableArrayList();
 	ObservableList<String> classNameList = FXCollections.observableArrayList();
@@ -156,22 +159,19 @@ public class TaskListController extends Main_Master_Controller implements Initia
 		// 더블클릭 시
 		if (e.getButton().equals(MouseButton.PRIMARY)) {
 			if (e.getClickCount() == 2) {
-				System.out.println("과제 더블클릭");
-
 				// 과제 제출 현황 페이지로 이동
 				TaskDto selected = tblViewReport.getSelectionModel().getSelectedItem();
-				if (selected != null) { // 상단제목바 누르면 null
-					System.out.println(selected.toString());
+				if (selected != null) { // 상단바 누르면 null
 					int selectedNo = selected.getTcNo();
-					Navigator.loadPages("../fxml/teacher/tasks/TaskListDetail.fxml");
+					AppMain.app.getBasic().setTask_no(selectedNo);
+					Navigator.loadPages(Navigator.TEACHER_TASK_DETAIL_LIST);
 				}
 			}
 		}
 	}
 
-	// DB에서 읽어온 데이터를 테이블에 표시
+	// 테이블 컬럼 설정
 	private void setTableColumns() {
-		// 컬럼 설정
 		tcNo.setCellValueFactory(new PropertyValueFactory<>("tcNo"));
 		tcTitle.setCellValueFactory(new PropertyValueFactory<>("tcTitle"));
 		tcRegDate.setCellValueFactory(new PropertyValueFactory<>("tcRegdate"));
@@ -179,8 +179,15 @@ public class TaskListController extends Main_Master_Controller implements Initia
 		tcFile.setCellValueFactory(new PropertyValueFactory<>("tcFile"));
 		perfectScore.setCellValueFactory(new PropertyValueFactory<>("perfectScore"));
 		modify.setCellValueFactory(new PropertyValueFactory<>("dateCheck"));
+		modify.setCellFactory(setButtons());
 
-		modify.setCellFactory(item -> new TableCell<TaskDto, Boolean>() {
+		// 테이블 채우기
+		refreshTable();
+	}
+
+	// 수정.삭제 버튼 설정
+	private Callback<TableColumn<TaskDto, Boolean>, TableCell<TaskDto, Boolean>> setButtons() {
+		return item -> new TableCell<TaskDto, Boolean>() {
 
 			private final Button editButton = new Button("수정");
 			private final Button deleteButton = new Button("삭제");
@@ -219,14 +226,10 @@ public class TaskListController extends Main_Master_Controller implements Initia
 					setGraphic(hBox);
 
 					// 수정 버튼 클릭 시 과제 수정창
-					editButton.setOnAction(event -> {
-						handleEditBtn(selectedRowTask);
-					});
+					editButton.setOnAction(event -> handleEditBtn(selectedRowTask));
 
 					// 삭제 버튼 클릭 시 과제 삭제창
-					deleteButton.setOnAction(event -> {
-						handleDelBtn(selectedRowTask, event);
-					});
+					deleteButton.setOnAction(event -> handleDelBtn(selectedRowTask, event));
 				}
 			}
 
@@ -238,7 +241,7 @@ public class TaskListController extends Main_Master_Controller implements Initia
 				try {
 					// 새로운 스테이지로 수정창
 					Stage stage = new Stage(StageStyle.UTILITY);
-					stage.initOwner(reportListPane.getScene().getWindow());
+					stage.initOwner(tblViewReport.getScene().getWindow());
 					stage.initModality(Modality.WINDOW_MODAL);
 					stage.setTitle("과제 수정");
 
@@ -295,25 +298,26 @@ public class TaskListController extends Main_Master_Controller implements Initia
 					refreshTable();
 				}
 			}
-		});
-
-		// 테이블 채우기
-		refreshTable();
+		};
 	}
 
 	// db에서 저장된 데이터 불러와서 테이블에 넣기
 	public void refreshTable() {
-		System.out.println("cNo" + classno);
 
-		if (classno == 0) { // 선택된 강의 없음
-			System.out.println("classno not exists");
-			taskList = tDao.selectUserTaskList(userid);
+		if (classno == 0) { // 선택된 강의 없으면
+			// 강사의 전체 과제 보여주고
+			taskList = tDao.selectUserTaskList(userid, SubBtnNo);
+			// 과제 생성버튼 비활성화
 			btnReportCreate.setVisible(false);
-		} else { // 선택된 강의 있음
-			System.out.println("classno exists");
-			taskList = tDao.selectUserClassTaskList(userid, classno);
+
+		} else { // 선택된 강의 있으면
+			// 해당 강의의 과제만 보여주고
+			taskList = tDao.selectUserClassTaskList(userid, classno, SubBtnNo);
+			// 과제 생성버튼 활성화
 			btnReportCreate.setVisible(true);
 		}
+
+		// 테이블뷰에 불러온 리스트 set
 		tblViewReport.setItems(taskList);
 	}
 }

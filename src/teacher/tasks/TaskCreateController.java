@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -76,7 +77,6 @@ public class TaskCreateController implements Initializable {
 		txtClassName.setText(currentClass.getClassName());
 
 		// 점수필드 - 숫자만 입력할 수 있도록 제한
-//		txtPerfectScore.textProperty().addListener(numberOnlyListener());
 		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));
 
 		// 첨부파일 버튼
@@ -92,24 +92,9 @@ public class TaskCreateController implements Initializable {
 		btnFileDel.setOnAction(e -> {
 			arr = null;
 			txtFile.clear();
-			if (arr == null) {
-				System.out.println("arr remove");
-			}
 		});
 
 	}
-
-//	private ChangeListener<String> numberOnlyListener() {
-//		return new ChangeListener<String>() {
-//
-//			@Override
-//			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-//				if (!newValue.matches("\\d*")) {
-//					txtPerfectScore.setText(newValue.replaceAll("[^\\d]", ""));
-//				}
-//			}
-//		};
-//	}
 
 	// 첨부파일 버튼 -> fileChooser dialog
 	private void handleAttachedFileBtn() {
@@ -183,10 +168,8 @@ public class TaskCreateController implements Initializable {
 				return;
 			}
 
-			// 점수입력 검사
-			if (strPftScore.isEmpty()) {
-				System.out.println("입력된 점수 없음");
-			} else {
+			// 점수입력되면 Integer로
+			if (!strPftScore.isEmpty()) {
 				perfectScore = Integer.parseInt(strPftScore);
 			}
 
@@ -195,17 +178,19 @@ public class TaskCreateController implements Initializable {
 				expireDate = currentClass.getEndDate();
 			}
 
-			// 과제 제출 날짜 검사
-
 			// 과제 제출 날짜>현재 날짜 제한
-			Period period = Period.between(cDate, expireDate);
-			int diff = period.getDays();
+			int diff = Period.between(cDate, expireDate).getDays();
 			if (diff < 0) {
 				// 팝업 넣기
-				Alert expireDateAlert = new Alert(Alert.AlertType.ERROR);
-				expireDateAlert.setTitle("날짜 오류");
-				expireDateAlert.setContentText("오늘 이전 날짜로는 설정 할 수 없습니다.");
-				expireDateAlert.showAndWait();
+				Util.showAlert("날짜 오류", "오늘 이전 날짜로는 설정할 수 없습니다.", AlertType.ERROR);
+				return;
+			}
+
+			// 과제 제출 날짜>강의 시작 날짜
+			LocalDate classStartDate = currentClass.getStartDate();
+			int diff2 = Period.between(classStartDate, expireDate).getDays();
+			if (diff2 < 0) {
+				Util.showAlert("날짜 오류", "강의 시작 전에 과제 마감을 할 수 없습니다.", AlertType.ERROR);
 				return;
 			}
 
