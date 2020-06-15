@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="500.0" prefWidth="680.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+			fx:controller="util.mail.MailControllor">
+   <children>
+      <Label layoutX="20.0" layoutY="21.0" text="받는 사람">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="receive" layoutX="97.0" layoutY="19.0" prefHeight="23.0" prefWidth="565.0" />
+      <Label layoutX="20.0" layoutY="63.0" text="제목">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="title" layoutX="97.0" layoutY="61.0" prefHeight="23.0" prefWidth="565.0" />
+      <Label layoutX="20.0" layoutY="106.0" text="파일 첨부">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnFile" layoutX="97.0" layoutY="104.0" prefHeight="23.0" prefWidth="56.0" text="내PC" />
+      <HTMLEditor fx:id="content" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="14.0" layoutY="162.0" prefHeight="283.0" prefWidth="650.0" />
+      <Button fx:id="btnSend" layoutX="14.0" layoutY="468.0" prefHeight="23.0" prefWidth="125.0" text="메일 보내기" />
+      <Separator layoutX="14.0" layoutY="456.0" prefHeight="0.0" prefWidth="650.0" />
+   </children>
+</AnchorPane>
