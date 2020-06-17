@@ -263,7 +263,7 @@ public class ClassDao {
 					"on C.class_no = R.class_no " + 
 					"left outer join user U " + 
 					"on C.teacher_id = U.user_id " +
-					"where class_name like ? or teacher_name like ? " +
+					"where C.class_name like ? or U.user_name like ? " +
 					"group by C.class_no ";
 			
 			String temp = "%" + str + "%";

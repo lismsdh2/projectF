@@ -278,7 +278,7 @@ public class EnrollmentDao {
 		connectionJDBC();
 		
 		ObservableList<EnrollmentDto> list = FXCollections.observableArrayList();
-		String sql = "select *, count(rc.student_id),u.user_name "
+		String sql = "select c.*, count(rc.student_id),u.user_name "
 				   + "  from class c"
 				   + "  left outer join request_class rc"
 				   + "    on c.class_no = rc.class_no"
@@ -331,14 +331,18 @@ public class EnrollmentDao {
 		connectionJDBC();
 		
 		ObservableList<EnrollmentDto> list = FXCollections.observableArrayList();
-		String sql = "select rc.class_no, c.class_name, c.start_date, c.end_date, c.teacher_name, c.limitstudent"
+		String sql = "select rc.class_no, c.class_name, c.start_date, c.end_date, u.user_name, c.limitstudent, count(t.task_no)"
 				   + "  from request_class rc"
 				   + " inner join class c"
 				   + "    on rc.class_no = c.class_no"
+				   + " left outer join user u"
+				   + "	  on c.teacher_id = u.user_id"
+				   + "  left outer join task t"
+				   + "   on c.class_no=t.class_no"
 				   + " where (rc.student_id = ?"
 				   + "   and c.end_date >= curdate())"
 				   + "   and (c.class_name like ?"
-				   + "    or c.teacher_name like ?)";
+				   + "    or u.user_name like ?)";
 		String like_word = "%"+search_word+"%";
 	
 		try {
@@ -358,6 +362,7 @@ public class EnrollmentDao {
 				enroll.setPeriod(rs.getDate(3)+" ~ "+rs.getDate(4));			//강의 기간
 				enroll.setTeachername(rs.getString(5));						//강사명
 				enroll.setLimitstudent(rs.getInt(6));						//수강가능인원
+				enroll.setTaskCount(rs.getInt(7));							//과제수
 				enroll.setStatus("진행 중");
 				
 				list.add(enroll);
@@ -383,14 +388,18 @@ public class EnrollmentDao {
 		connectionJDBC();
 		
 		ObservableList<EnrollmentDto> list = FXCollections.observableArrayList();
-		String sql = "select rc.class_no, c.class_name, c.start_date, c.end_date, c.teacher_name, c.limitstudent"
+		String sql = "select rc.class_no, c.class_name, c.start_date, c.end_date, u.user_name, c.limitstudent, count(t.task_no)"
 				   + "  from request_class rc"
 				   + " inner join class c"
 				   + "    on rc.class_no = c.class_no"
+				   + " left outer join user u"
+				   + "	  on c.teacher_id = u.user_id"
+				   + "  left outer join task t"
+				   + "   on c.class_no=t.class_no"
 				   + " where (rc.student_id = ?"
 				   + "   and c.end_date < curdate())"
 				   + "   and (c.class_name like ?"
-				   + "    or c.teacher_name like ?)";
+				   + "    or u.user_name like ?)";
 		String like_word = "%"+search_word+"%";
 	
 		try {
@@ -410,7 +419,8 @@ public class EnrollmentDao {
 				enroll.setPeriod(rs.getDate(3)+" ~ "+rs.getDate(4));			//강의 기간
 				enroll.setTeachername(rs.getString(5));						//강사명
 				enroll.setLimitstudent(rs.getInt(6));						//수강가능인원
-				enroll.setStatus("진행 중");
+				enroll.setTaskCount(rs.getInt(7));							//과제수
+				enroll.setStatus("강의 종료");
 				
 				list.add(enroll);
 			}
