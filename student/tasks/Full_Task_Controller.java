@@ -60,8 +60,6 @@ public class Full_Task_Controller implements Initializable{
 	private AssignmentDao aDao = new AssignmentDao();
 	private AssignmentPopupController_no popupController_no;
 	private AssignmentPopupController_yes popupController_yes; 
-//	private AssignmentPopupController_no popupController_no = new AssignmentPopupController_no();
-//	private AssignmentPopupController_yes popupController_yes = new AssignmentPopupController_yes(); 
 	private String student_id = AppMain.app.getBasic().getId();					//학생ID - 추후 연동 필요
 	private int class_no = 	AppMain.app.getBasic().getClass_no();				//강의번호 - 추후 연동 필요
 	
@@ -78,6 +76,7 @@ public class Full_Task_Controller implements Initializable{
 	private void assignTableView() {
 		
 		if(this.class_no==0) {								//강의가 지정 안된 경우
+			System.out.println(this.student_id);
 			this.list = aDao.assignment_selectAll_Full(this.student_id);
 			showProgressBar(false);
 		} else {											//강의가 지정 된 경우
@@ -345,5 +344,4 @@ public class Full_Task_Controller implements Initializable{
 		this.lblSubmitTask.setText(Integer.toString(MyAssign));
 		this.lblTotalTask.setText(Integer.toString(TotalAssign));
 	}
-	
 }

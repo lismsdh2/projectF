@@ -222,14 +222,15 @@ public class AssignmentDao {
 		connectionJDBC();
 	
 		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
-		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name, c.class_no, c.start_date, c.end_date"
-						+ " from task t"
-						+ " inner join class c"
-						+ " on c.class_no = t.class_no"
-						+ " left outer join submission_task ts"
-						+ " on t.task_no = ts.task_no"
-						+ " and ts.student_id = ?"
-						+ " order by t.expire_date asc, t.class_no asc;";
+		String sql = "select t.task_no, t.task_name, st.tasksubmit, st.tasksubmit_date, t.expire_date, st.taskscore, t.perfect_score, c.class_name, c.class_no, c.start_date, c.end_date" 
+				   + "  from task t" 
+				   + " inner join request_class rc" 
+				   + "    on t.class_no = rc.class_no" 
+				   + " inner join class c" 
+				   + "    on c.class_no = t.class_no" 
+				   + " left outer join submission_task st" 
+				   + "    on t.class_no = st.class_no" 
+				   + " where rc.student_id = ?;";
 		
 		try {
 			pstmt = connection.prepareStatement(sql);
@@ -254,8 +255,8 @@ public class AssignmentDao {
 				assign.setSubmitornot(yorn);
 				assign.setReg_date(rs.getDate(4));
 				assign.setExpire_date(rs.getDate(5));
-				if(rs.getInt(6)>=0) {								//내 점수를 확인해서 -1이면 점수책정여부(CheckTask값) false, 0이상이면 true
-					assign.setScore(rs.getInt(6)+" / "+rs.getInt(7));//그리고 -1이면 점수를 0점으로 변환하여 화면에 출력
+				if(rs.getInt(6)>=0) {									//내 점수를 확인해서 -1이면 점수책정여부(CheckTask값) false, 0이상이면 true
+					assign.setScore(rs.getInt(6)+" / "+rs.getInt(7));	//그리고 -1이면 점수를 0점으로 변환하여 화면에 출력
 				} else {
 					assign.setScore(0+" / "+rs.getInt(7));
 				}
@@ -275,6 +276,7 @@ public class AssignmentDao {
 		}
 		return list;
 	}
+	
 	//강의별 과제 조회-전체
 	public ObservableList<AssignmentDto> assignment_selectAll_Full(int class_no, String stu_id){
 		
@@ -576,6 +578,8 @@ public class AssignmentDao {
 	//진행 중 전체과제 개수 조회-강의별
 	public int myCount_ing_class_select(String stu_id, int class_no) {
 		
+		System.out.println(stu_id);
+		System.out.println(class_no);
 		//DB연결
 		connectionJDBC();
 		int cnt = 0;
@@ -612,6 +616,7 @@ public class AssignmentDao {
 		}
 		return cnt;
 	}
+	
 	//진행중 과제 중 제출한 전체 과제 수 조회
 	public int myCount_ing_submit_select(String stu_id) {
 		

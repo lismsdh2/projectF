@@ -79,10 +79,7 @@ public class TaskListController extends Main_Master_Controller implements Initia
 	ClassDto currentClass = cDao.selectClassOne(classno);
 	TaskDao tDao = new TaskDao();
 
-	int SubBtnNo = TaskSubMenuController.btnNo;
-
 	ObservableList<TaskDto> taskList = FXCollections.observableArrayList();
-	ObservableList<String> classNameList = FXCollections.observableArrayList();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -131,6 +128,7 @@ public class TaskListController extends Main_Master_Controller implements Initia
 
 	// 현재 유저의 강의목록
 	private void setCombo() {
+		ObservableList<String> classNameList = FXCollections.observableArrayList();
 		classNameList = tDao.selectUserClassList(userid);
 		combo.setItems(classNameList);
 
@@ -144,7 +142,8 @@ public class TaskListController extends Main_Master_Controller implements Initia
 		// 콤보박스에서 강의명 선택 시 그 강의의 과제만 보여주기
 		combo.setOnAction(e -> {
 			String selectedCombo = combo.getSelectionModel().getSelectedItem();
-			int selectedNo = Integer.valueOf(selectedCombo.substring(1, 5));
+			int selectedNo = Integer
+					.valueOf(selectedCombo.substring(selectedCombo.indexOf("[") + 1, selectedCombo.lastIndexOf("]")));
 			// 선택된강의로 데이터변경
 			AppMain.app.getBasic().setClass_no(selectedNo);
 			classno = selectedNo;
@@ -162,8 +161,8 @@ public class TaskListController extends Main_Master_Controller implements Initia
 				// 과제 제출 현황 페이지로 이동
 				TaskDto selected = tblViewReport.getSelectionModel().getSelectedItem();
 				if (selected != null) { // 상단바 누르면 null
-					int selectedNo = selected.getTcNo();
-					AppMain.app.getBasic().setTask_no(selectedNo);
+					int selectedTaskNo = selected.getTcNo();
+					AppMain.app.getBasic().setTask_no(selectedTaskNo);
 					Navigator.loadPages(Navigator.TEACHER_TASK_DETAIL_LIST);
 				}
 			}
@@ -303,18 +302,15 @@ public class TaskListController extends Main_Master_Controller implements Initia
 
 	// db에서 저장된 데이터 불러와서 테이블에 넣기
 	public void refreshTable() {
+		int SubBtnNo = TaskSubMenuController.btnNo;
 
 		if (classno == 0) { // 선택된 강의 없으면
 			// 강사의 전체 과제 보여주고
 			taskList = tDao.selectUserTaskList(userid, SubBtnNo);
-			// 과제 생성버튼 비활성화
-			btnReportCreate.setVisible(false);
 
 		} else { // 선택된 강의 있으면
 			// 해당 강의의 과제만 보여주고
 			taskList = tDao.selectUserClassTaskList(userid, classno, SubBtnNo);
-			// 과제 생성버튼 활성화
-			btnReportCreate.setVisible(true);
 		}
 
 		// 테이블뷰에 불러온 리스트 set

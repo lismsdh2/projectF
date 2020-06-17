@@ -1,22 +1,24 @@
 ﻿package login;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import DAO.BasicDao;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import util.Util;
+import util.mail.Mail;
 
 public class signupController implements Initializable {
 	
@@ -25,6 +27,7 @@ public class signupController implements Initializable {
 	@FXML private PasswordField passfield;
 	@FXML private PasswordField repassfield;
 	@FXML private TextField emailfield;
+	@FXML private TextField certificationfield;
 	@FXML private ComboBox<String> combobox;
 	@FXML private ComboBox<String> email2;
 	@FXML private TextField phonefield1;
@@ -34,9 +37,11 @@ public class signupController implements Initializable {
 	@FXML private Button student;
 	@FXML private Button teacher;
 	@FXML private Button check;
+	@FXML private Button btnCertification;
 	@FXML private Label idlabel;
 	@FXML private Label namelabel;
 	@FXML private Label emaillabel;
+	@FXML private Label lblCertification;
 	@FXML private Label passlabel;
 	@FXML private Label repasslabel;
 	@FXML private Label numberlabel;
@@ -45,7 +50,10 @@ public class signupController implements Initializable {
 	
 	private Stage pop;
 	private int recheck;
-	private boolean type;
+	private boolean identityType;
+	private boolean checkMail;
+	private String certificationNum;
+	private Mail mail;
 	BasicDao bDao = new BasicDao();
 	Alert alert =new Alert(AlertType.INFORMATION);
 	
@@ -59,6 +67,11 @@ public class signupController implements Initializable {
 		numberlabel.setVisible(false);
 		passchecklabel.setVisible(false);
 		
+		//이메일 인증
+		this.certificationfield.setVisible(false);
+		this.lblCertification.setVisible(false);
+		this.btnCertification.setOnAction(e -> {handleEmailCheck();});
+		
 		done.setOnAction(e->handledone(e));
 		cancle.setOnAction(e->handlecancle(e));
 		student.setOnAction(e->handlestudent(e));
@@ -70,7 +83,7 @@ public class signupController implements Initializable {
 		passfield.textProperty().addListener(Util.pwListener(passfield));
 		repassfield.textProperty().addListener(Util.pwListener(repassfield));
 		emailfield.textProperty().addListener(Util.alphabetListener(emailfield));
-
+		
 		//숫자만 입력
 		phonefield1.textProperty().addListener(Util.numberOnlyListener(phonefield1));
 		phonefield2.textProperty().addListener(Util.numberOnlyListener(phonefield2));
@@ -83,18 +96,48 @@ public class signupController implements Initializable {
 		emailfield.textProperty().addListener(Util.textCountLimit(emailfield, 30));
 		passfield.textProperty().addListener(Util.textCountLimit(passfield, 20));
 		repassfield.textProperty().addListener(Util.textCountLimit(repassfield, 20));
+		
 	}
 
 	//교사신분 선택
 	public void handleteacher(ActionEvent e) {
 		System.out.println("교사로 전환");
-		type=true;
+		identityType=true;
 	}
 
 	//학생신분 선택
 	public void handlestudent(ActionEvent e) {
 		System.out.println("학생으로 전환");
-		type=false;
+		identityType=false;
+	}
+	
+	//이메일 인증
+	private void handleEmailCheck() {
+
+		if(this.emailfield.getText().length() != 0 &&
+		   this.email2.getSelectionModel().getSelectedItem() != null) {
+
+			String address = emailfield.getText() + "@" + this.email2.getSelectionModel().getSelectedItem();
+			//이메일 입력 라벨 숨기기
+			this.emaillabel.setVisible(false);
+			
+			//인증번홉 입력칸 생성
+			this.certificationfield.setVisible(true);
+
+			//메일 값 넣기
+			this.mail = new Mail(this.namefield.getText(), address);
+			this.mail.mailSend();
+			this.checkMail = this.mail.getCheckMail();
+			if(this.checkMail) {
+				Alert alert = Util.showAlert("", "인증메일이 발송되었습니다.", AlertType.INFORMATION);
+				alert.showAndWait();
+			}
+			this.certificationNum = this.mail.getCertificationNum();
+		} else {
+			
+			this.emaillabel.setText("이메일을 입력해주세요.");
+			this.emaillabel.setVisible(true);
+		}
 	}
 
 	//완료버튼 선택
@@ -133,6 +176,11 @@ public class signupController implements Initializable {
 			if(emailfield.getText().length()==0) {
 				emaillabel.setVisible(true);
 			}
+			//이메일 인증 번호 입력 확인
+			if(certificationfield.getText().length()==0) {
+				lblCertification.setText("인증번호를 입력해주세요.");
+				lblCertification.setVisible(true);
+			}
 			//휴대폰번호 가운데 4자리 입력 확인
 			if(phonefield1.getText().length()==0) {
 				numberlabel.setVisible(true);
@@ -169,7 +217,8 @@ public class signupController implements Initializable {
 				
 			 System.out.println("데이터가 없습니다.");
 			 throw new Exception();
-			}	
+			}
+			
 			if(!(phonefield1.getText().length()==4)) {
 				System.out.println("핸드폰 번호 4자리를 입력해 주세요.");
 				throw new Exception();
@@ -183,8 +232,21 @@ public class signupController implements Initializable {
 			    alert.show();
 			    throw new Exception();
 			}
+		
+			//인증메일
+			if(!checkMail) {
+				
+				alert.setContentText("인증메일발송버튼을 눌러 주세요.");
+			    alert.show();
+			    throw new Exception();
+			} else if(this.certificationNum.equals(certificationfield.getText())){
+				
+				alert.setContentText("인증번호가 일치하지 않습니다.");
+			    alert.show();
+			    throw new Exception();
+			}
 			
-			bDao.insertBoard(id, pass, name, email, phone ,type);	
+			bDao.insertBoard(id, pass, name, email, phone ,identityType);	
 	
 			alert.setContentText("회원가입완료");
 			alert.show();

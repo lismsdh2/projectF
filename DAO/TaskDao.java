@@ -77,6 +77,7 @@ public class TaskDao {
 		}
 	}
 
+	// 과제 수정
 	public void updateReport(TaskDto task) {
 		// DB연결
 		connectionJDBC();
@@ -134,7 +135,8 @@ public class TaskDao {
 					task.setTcExpireDate(LocalDate.parse(rs.getString("expire_date"), DateTimeFormatter.ISO_DATE));
 				}
 				task.setTcFile(rs.getString("attachedFile_name"));
-				task.setPerfectScore((Integer)rs.getObject("perfect_score"));
+				task.setPerfectScore((Integer) rs.getObject("perfect_score"));
+				task.setClassNo(rs.getInt("class_no"));
 
 			}
 			System.out.println("**데이터  조회 성공");
@@ -195,24 +197,22 @@ public class TaskDao {
 	}
 
 	// user의 task만 보여준다
-	public ObservableList<TaskDto> selectUserTaskList(String userid,int subBtnNo) {
+	public ObservableList<TaskDto> selectUserTaskList(String userid, int subBtnNo) {
 
 		// DB연결
 		connectionJDBC();
 
 		ObservableList<TaskDto> list = FXCollections.observableArrayList();
 		try {
-			// select * from task t join class c on t.class_no = c.class_no where
-			// c.teacher_id=123;
 			String sql = "select * from task t join class c on t.class_no = c.class_no where c.teacher_id=?";
-			
-			if(subBtnNo==1) { //현재 과제
-				//select * from task t join class c on t.class_no = c.class_no where  c.teacher_id=123 and end_date >= sysdate();
-				sql+=" and expire_date >= sysdate();";
-			}else if(subBtnNo==2) { //지난 과제
-				sql+=" and expire_date < sysdate();";
+
+			if (subBtnNo == 1) { // 현재 과제
+				// c.teacher_id=123 and end_date >= sysdate();
+				sql += " and expire_date >= sysdate();";
+			} else if (subBtnNo == 2) { // 지난 과제
+				sql += " and expire_date < sysdate();";
 			}
-			
+
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, userid);
 
@@ -233,7 +233,8 @@ public class TaskDao {
 				}
 
 				task.setTcFile(re.getString("attachedFile_name"));
-				task.setPerfectScore((Integer)re.getObject("perfect_score"));
+				task.setPerfectScore((Integer) re.getObject("perfect_score"));
+				task.setClassNo(re.getInt("class_no"));
 
 				list.add(task);
 			}
@@ -270,6 +271,42 @@ public class TaskDao {
 		}
 	}
 
+	// user의 과제 목록
+	public ObservableList<String> selectUserTaskComoboList(int classno) {
+
+		// DB연결
+		connectionJDBC();
+		ObservableList<String> list = FXCollections.observableArrayList();
+
+		try {
+			String sql = "select * from task where class_no=?;";
+
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setInt(1, classno);
+			rs = pstmt.executeQuery();
+
+			int taskNo = 0;
+			String taskName = null;
+
+			while (rs.next()) {
+				taskNo = rs.getInt("task_no");
+				taskName = rs.getString("task_name");
+
+				String classInfo = "[" + taskNo + "] " + taskName;
+				list.add(classInfo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		} finally {
+
+			// 접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
+		return list;
+	}
+
 	// user의 강의 목록
 	public ObservableList<String> selectUserClassList(String userid) {
 
@@ -304,6 +341,40 @@ public class TaskDao {
 		return list;
 	}
 
+	// user의 현재 강의 목록
+	public ObservableList<String> selectUserCurrentClassList(String userid) {
+
+		// DB연결
+		connectionJDBC();
+		ObservableList<String> list = FXCollections.observableArrayList();
+
+		try {
+			String sql = "select class_no, class_name from class where teacher_id=? and end_date >= sysdate();";
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, userid);
+			rs = pstmt.executeQuery();
+
+			int classNo = 0;
+			String className = null;
+			while (rs.next()) {
+				classNo = rs.getInt("class_No");
+				className = rs.getString("class_name");
+
+				String classInfo = "[" + classNo + "] " + className;
+				list.add(classInfo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		} finally {
+
+			// 접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
+		return list;
+	}
+
 	// user - 선택한 강의 - 정보
 	public ObservableList<TaskDto> selectUserClassTaskList(String userid, int classNo, int subBtnNo) {
 		// DB연결
@@ -313,14 +384,15 @@ public class TaskDao {
 		try {
 //			select t.* from task t join class c on t.class_no = c.class_no where c.teacher_id=123 and c.class_no=1010;
 			String sql = "select t.* from task t join class c on t.class_no = c.class_no where c.teacher_id=? and c.class_no=?";
-			
-			if(subBtnNo==1) { //현재 과제
-				//select * from task t join class c on t.class_no = c.class_no where  c.teacher_id=123 and end_date >= sysdate();
-				sql+=" and expire_date >= sysdate();";
-			}else if(subBtnNo==2) { //지난 과제
-				sql+=" and expire_date < sysdate();";
+
+			if (subBtnNo == 1) { // 현재 과제
+				// select * from task t join class c on t.class_no = c.class_no where
+				// c.teacher_id=123 and end_date >= sysdate();
+				sql += " and expire_date >= sysdate();";
+			} else if (subBtnNo == 2) { // 지난 과제
+				sql += " and expire_date < sysdate();";
 			}
-			
+
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, userid);
 			pstmt.setInt(2, classNo);
@@ -342,7 +414,7 @@ public class TaskDao {
 				}
 
 				task.setTcFile(re.getString("attachedFile_name"));
-				task.setPerfectScore((Integer)re.getObject("perfect_score"));
+				task.setPerfectScore((Integer) re.getObject("perfect_score"));
 
 				list.add(task);
 			}

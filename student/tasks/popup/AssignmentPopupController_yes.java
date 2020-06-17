@@ -77,7 +77,6 @@ public class AssignmentPopupController_yes implements Initializable {
 			this.popupStage.setScene(new Scene(loader.load()));
 			this.popupStage.setResizable(false);
 			this.popupStage.setTitle("과제 수정");
-			this.popupStage.setAlwaysOnTop(true);
 			this.popupStage.initModality(Modality.WINDOW_MODAL);
 			this.popupStage.initOwner(this.window);
 		} catch (IOException e) {
@@ -183,6 +182,7 @@ public class AssignmentPopupController_yes implements Initializable {
 		
 		//파일 저장DIALOG 띄우기 - 기존 파일 확장자로 바로 저장하기
 		FileChooser fileChooser = new FileChooser();
+		fileChooser.setInitialFileName(fileName);
 		fileChooser.getExtensionFilters().addAll(
 			new ExtensionFilter(fileExtension,"*."+fileExtension)
 		);

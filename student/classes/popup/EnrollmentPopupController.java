@@ -58,7 +58,6 @@ public class EnrollmentPopupController implements Initializable {
 			this.anchorPane = (AnchorPane) loader.load();
 			this.popupStage.setScene(new Scene(anchorPane));
 			this.popupStage.setTitle("수강 신청");
-			this.popupStage.setAlwaysOnTop(true);
 			this.popupStage.initModality(Modality.WINDOW_MODAL);
 			this.popupStage.initOwner(this.window);
 			

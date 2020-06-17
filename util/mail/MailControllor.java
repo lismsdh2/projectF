@@ -1,6 +1,7 @@
 package util.mail;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -27,7 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-
+;
 
 public class MailControllor implements Initializable {
 
@@ -49,10 +50,14 @@ public class MailControllor implements Initializable {
 	
 	//메일 보내기
 	public void mailSend(ActionEvent e) { 
-		System.out.println(filePath);
+		
 		String host = "smtp.gmail.com"; 						// 네이버일 경우 네이버 계정, gmail경우 gmail 계정 
 		String user = "projectfexam@gmail.com";  				// 보내는 사람의 메일 계정
+		String username = "과제제출프로그램";					// 보내는 이
 		String password = "rhjhilsijzuyzune";   				// 패스워드 - 지메일은 access용 비밀번호 입력해야됨
+		String to_user = "";
+		
+		//세션생성
 		//SMTP 서버 정보를 설정한다. 
 		Properties props = new Properties(); 
 		props.put("mail.smtp.host", host); 
@@ -60,7 +65,6 @@ public class MailControllor implements Initializable {
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");			//지메일 사용시 추가 필요
  
-		
 		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() { 
 					return new PasswordAuthentication(user, password); 
@@ -69,18 +73,16 @@ public class MailControllor implements Initializable {
 		
 		try { 
 			MimeMessage message = new MimeMessage(session);
-			//보내는 사람 설정
-			message.setFrom(new InternetAddress(user)); 
-			//받는 사람 설정			 
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(receive.getText()));			
-			// 메일 제목
-			message.setSubject(title.getText());
-			// 메일 내용 
-			contents = new HTMLEditor();
-			message.setText(contents.getHtmlText());
+			message.setFrom(new InternetAddress(user, username));										// 보내는 사람 설정
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(receive.getText()));		// 받는 사람 설정			
+			message.setSubject(title.getText());														// 메일 제목
+			this.contents = new HTMLEditor();															// 메일 내용 
+			message.setText("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+			message.setContent("aaaaaaaaaa111", "text/html;charset=utf-8");
 		
 			Multipart multipart = new MimeMultipart();
-			messageBodyPart = new MimeBodyPart();						
+			messageBodyPart = new MimeBodyPart();
+			messageBodyPart.setContent("aaaaaaaaaa", "text/html;charset=utf-8");
 			
 			if(filePath == null) {
 				
@@ -97,7 +99,7 @@ public class MailControllor implements Initializable {
 			//메일 내용 보내기 
 			Transport.send(message); 
 			System.out.println("메일 보내기 성공"); 
-		} catch (MessagingException e1) { e1.printStackTrace(); } 
+		} catch (Exception e1) { e1.printStackTrace(); } 
 	}
 	//파일 추출 기능
 	public String importFile() {

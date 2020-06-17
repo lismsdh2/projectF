@@ -242,7 +242,7 @@ public class Current_Task_Controller implements Initializable{
 		if(this.class_no==0) {
 			
 			this.assign.setCntMyAssign(aDao.myCount_ing_submit_select(this.student_id));			//제출과제수
-			this.assign.setCntTotalAssign(aDao.myCount_ing_total_select(this.student_id));		//전체과제수
+			this.assign.setCntTotalAssign(aDao.myCount_ing_total_select(this.student_id));			//전체과제수
 	
 		} else {
 			
