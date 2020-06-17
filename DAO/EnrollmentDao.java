@@ -66,10 +66,12 @@ public class EnrollmentDao {
 		connectionJDBC();
 		
 		ObservableList<EnrollmentDto> list = FXCollections.observableArrayList();
-		String sql = "select *, count(rc.student_id)"
+		String sql = "select c.*, count(rc.student_id), u.user_name "
 			       + "  from class c"
 			       + "  left outer join request_class rc"
 			       + "    on c.class_no = rc.class_no"
+			       + "	left outer join user u"
+			       + "	  on c.teacher_id = u.user_id"
 			       + " where end_date >= curdate()"
 			       + " group by c.class_no;";
 		
@@ -82,13 +84,13 @@ public class EnrollmentDao {
 				EnrollmentDto enroll = new EnrollmentDto();
 				enroll.setClassno(rs.getInt(1));
 				enroll.setClassname(rs.getString(2));
-				enroll.setTeachername(rs.getString(3));
-				enroll.setTeacherid(rs.getString(4));
-				enroll.setClassdescription(rs.getString(5));
-				enroll.setPeriod(rs.getDate(6)+" ~ "+rs.getDate(7));
-				enroll.setLimitstudent(rs.getInt(8));
-				enroll.setCurrentstudent(rs.getInt(11));
-				enroll.setStr(rs.getInt(11) + " / " + rs.getInt(8));
+				enroll.setTeachername(rs.getString(9));
+				enroll.setTeacherid(rs.getString(3));
+				enroll.setClassdescription(rs.getString(4));
+				enroll.setPeriod(rs.getDate(5)+" ~ "+rs.getDate(6));
+				enroll.setLimitstudent(rs.getInt(7));
+				enroll.setCurrentstudent(rs.getInt(8));
+				enroll.setStr(rs.getInt(8) + " / " + rs.getInt(7));
 				list.add(enroll);
 			}
 			System.out.println("수강신청 전체 강좌 조회 성공");
@@ -112,10 +114,12 @@ public class EnrollmentDao {
 		connectionJDBC();
 		
 		EnrollmentDto enroll = new EnrollmentDto();
-		String sql = "select *, count(rc.student_id)"
+		String sql = "select c.*, count(rc.student_id), u.user_name "
 				   + "  from class c"
 				   + "  left outer join request_class rc"
 				   + "    on c.class_no=rc.class_no"
+				   + "	left outer join user u"
+			       + "	  on c.teacher_id = u.user_id"
 				   + " where c.class_no = ?";
 		
 		try {
@@ -127,14 +131,14 @@ public class EnrollmentDao {
 				
 				enroll.setClassno(rs.getInt(1));
 				enroll.setClassname(rs.getString(2));
-				enroll.setTeachername(rs.getString(3));
-				enroll.setTeacherid(rs.getString(4));
-				enroll.setClassdescription(rs.getString(5));
-				enroll.setStartdate(rs.getDate(6));
-				enroll.setEnddate(rs.getDate(7));
-				enroll.setLimitstudent(rs.getInt(8));
-				enroll.setCurrentstudent(rs.getInt(11));
-				enroll.setStr(rs.getInt(11) + " / " + rs.getInt(8));
+				enroll.setTeachername(rs.getString(9));
+				enroll.setTeacherid(rs.getString(3));
+				enroll.setClassdescription(rs.getString(4));
+				enroll.setStartdate(rs.getDate(5));
+				enroll.setEnddate(rs.getDate(6));
+				enroll.setLimitstudent(rs.getInt(7));
+				enroll.setCurrentstudent(rs.getInt(8));
+				enroll.setStr(rs.getInt(8) + " / " + rs.getInt(7));
 			}
 			System.out.println("강좌 조회 성공");
 		} catch (SQLException e) {
@@ -163,12 +167,14 @@ public class EnrollmentDao {
 			today = sdf.parse(current);
 		} catch (ParseException e1) {}
 		
-		String sql = "select rc.class_no, c.class_name, c.start_date, c.end_date, c.teacher_name, c.limitstudent, count(t.task_no)"
+		String sql = "select rc.class_no, c.class_name, c.start_date, c.end_date, u.user_name, c.limitstudent, count(t.task_no)"
 					+"  from request_class rc"
 					+" inner join class c"
 					+"    on rc.class_no = c.class_no"
+					+"	left outer join user u"
+				    +"	  on c.teacher_id = u.user_id"
 					+"  left outer join task t"
-					+ "   on c.class_no=t.class_no"
+					+"   on c.class_no=t.class_no"
 					+" where rc.student_id = ?"
 					+"   and c.end_date >= curdate()"
 					+" group by c.class_no"
@@ -221,10 +227,12 @@ public class EnrollmentDao {
 		connectionJDBC();
 		
 		ObservableList<EnrollmentDto> list = FXCollections.observableArrayList();
-		String sql = "select rc.class_no, c.class_name, c.start_date, c.end_date, c.teacher_name, c.limitstudent, count(t.task_no)"
+		String sql = "select rc.class_no, c.class_name, c.start_date, c.end_date, u.user_name, c.limitstudent, count(t.task_no)"
 					+"  from request_class rc"
 					+" inner join class c"
 					+"    on rc.class_no = c.class_no"
+					+" left outer join user u"
+				    +"	  on c.teacher_id = u.user_id"
 					+"  left outer join task t"
 					+ "   on c.class_no=t.class_no"
 					+" where rc.student_id = ?"
@@ -270,13 +278,15 @@ public class EnrollmentDao {
 		connectionJDBC();
 		
 		ObservableList<EnrollmentDto> list = FXCollections.observableArrayList();
-		String sql = "select *, count(rc.student_id)"
+		String sql = "select *, count(rc.student_id),u.user_name "
 				   + "  from class c"
 				   + "  left outer join request_class rc"
 				   + "    on c.class_no = rc.class_no"
+				   + " left outer join user u"
+				   + "	  on c.teacher_id = u.user_id"
 				   + " where (end_date >= curdate())"
 				   + "   and (c.class_name like ?"
-				   + "    or c.teacher_name like ?)"
+				   + "    or u.user_name like ?)"
 				   + " group by c.class_no;";
 		String like_word = "%"+search_word+"%";
 	
@@ -291,13 +301,13 @@ public class EnrollmentDao {
 				EnrollmentDto enroll = new EnrollmentDto();				//DTO객체가 밖에 있는 경우 출력값이 통일됨
 				enroll.setClassno(rs.getInt(1));						//강의번호
 				enroll.setClassname(rs.getString(2));					//강의명
-				enroll.setTeachername(rs.getString(3));					//강사명
-				enroll.setTeacherid(rs.getString(4));					//강사ID
-				enroll.setClassdescription(rs.getString(5));			//수업설명
-				enroll.setPeriod(rs.getDate(6)+" ~ "+rs.getDate(7));	//강의기간
-				enroll.setLimitstudent(rs.getInt(8));					//수업인원
-				enroll.setCurrentstudent(rs.getInt(11));
-				enroll.setStr(rs.getInt(11) + " / " + rs.getInt(8));
+				enroll.setTeachername(rs.getString(9));					//강사명
+				enroll.setTeacherid(rs.getString(3));					//강사ID
+				enroll.setClassdescription(rs.getString(4));			//수업설명
+				enroll.setPeriod(rs.getDate(5)+" ~ "+rs.getDate(6));	//강의기간
+				enroll.setLimitstudent(rs.getInt(7));					//수업인원
+				enroll.setCurrentstudent(rs.getInt(8));
+				enroll.setStr(rs.getInt(8) + " / " + rs.getInt(7));
 				list.add(enroll);
 			}
 			System.out.println("수강신청 전체 강좌 조회 성공");

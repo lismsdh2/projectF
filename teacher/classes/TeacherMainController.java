@@ -199,10 +199,11 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							//글자수 입력제한
 							txtClassName.textProperty().addListener(Util.textCountLimit(txtClassName, 20));
 							txtLimitStudent.textProperty().addListener(Util.textCountLimit(txtLimitStudent, 9));
-							txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 1000));
+							txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 5000));
 							//숫자만 입력가능
 							txtLimitStudent.textProperty().addListener(Util.numberOnlyListener(txtLimitStudent));
-							
+							//상세정보 줄바꿈
+							txtDescription.setWrapText(true);
 							//기존에 저장되어있던 강의정보 가져오기
 							String className = class1.getClassName();
 							String description = class1.getClassDescription();
@@ -224,7 +225,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 								@Override
 								public void handle(ActionEvent event) {
 									//수정할 값 입력
-									boolean flag = true;
+									boolean flag = false;
 									String className = txtClassName.getText();
 									String description = txtDescription.getText();
 									LocalDate startDate = localDateStartDate.getValue();
@@ -248,36 +249,37 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 										day2 = ChronoUnit.DAYS.between(today,endDate);
 									}
 									
-									Alert alert = new Alert(AlertType.INFORMATION);
+									String alertTitle = "";
+									String alertMsg = "";
+									
 									if(className.length()==0) {
-										alert.setContentText("강의명을 입력하세요");
-										flag = false;
-									} else if(description.length()==0) {
-										alert.setContentText("강의설명을 입력하세요");
-										flag = false;
+										alertTitle = "강의명 오류";
+										alertMsg = "강의명을 입력하세요";
 									} else if(startDate==null) {
-										alert.setContentText("시작일을 입력하세요");
-										flag = false;
+										alertTitle = "강의시작일 오류";
+										alertMsg = "시작일을 입력하세요";
 									} else if(endDate==null) {
-										alert.setContentText("종료일을 입력하세요");
-										flag = false;
+										alertTitle = "강의종료일 오류";
+										alertMsg = "종료일을 입력하세요";
 									} else if(day1<0) {
-										alert.setContentText("강의종료일은 강의시작일보다 먼저일 수 없습니다.");
-										flag = false;
+										alertTitle = "강의종료일 오류";
+										alertMsg = "강의종료일은 강의시작일보다 늦어야 합니다.";
 									} else if(day2<0) {
-										alert.setContentText("강의종료일은 오늘보다 늦어야 합니다.");
-										flag = false;
+										alertTitle = "강의종료일 오류";
+										alertMsg = "강의종료일은 오늘보다 늦어야 합니다.";
 									} else if(limitStudent<=0) {
-										alert.setContentText("수강인원수(자연수)를 입력하세요");
-										flag = false;
+										alertTitle = "수강인원 오류";
+										alertMsg = "수강인원수(자연수)를 입력하세요.";
 									} else if(curStudent > limitStudent) {
-										alert.setContentText("현재인원수(" + curStudent + ") 이상의 수를 입력하세요");
-										flag = false;
-									}
+										alertTitle = "수강인원 오류";
+										alertMsg = "현재인원수(" + curStudent + ") 이상의 수를 입력하세요";
+									} else {
+										flag = true;
+									} 
 									
 									//값이 입력불가능하면 alert창을 보여준다
 									if(!flag) {
-										alert.show();
+										Util.showAlert(alertTitle, alertMsg, AlertType.ERROR);
 									} else {
 										//값이 입력가능하면 수정한다
 										cDao.updateClass(className, description, startDate, endDate, limitStudent, selectedClassNo);
@@ -380,6 +382,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							localDateEndDate.setText(endDate + "");
 							txtLimitStudent.setText(limitStudent + "");
 							txtDescription.setEditable(false);
+							txtDescription.setWrapText(true);
 							
 							Scene scene = new Scene(parent);
 							dialog.setScene(scene);
@@ -419,16 +422,17 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		//글자수 입력제한
 		txtClassName.textProperty().addListener(Util.textCountLimit(txtClassName, 20));
 		txtLimitStudent.textProperty().addListener(Util.textCountLimit(txtLimitStudent, 9));
-		txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 1000));
+		txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 5000));
 		//숫자만 입력가능
 		txtLimitStudent.textProperty().addListener(Util.numberOnlyListener(txtLimitStudent));
-		
+		//상세정보 줄바꿈
+		txtDescription.setWrapText(true);
 		//강의만들기 
 		btnSave.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				boolean flag = true;
+				boolean flag = false;
 				String className = txtClassName.getText();
 				String description = txtDescription.getText();
 				LocalDate startDate = localDateStartDate.getValue();
@@ -453,36 +457,37 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 					day2 = ChronoUnit.DAYS.between(today,endDate);
 				}
 				
-				Alert alert = new Alert(AlertType.INFORMATION);
+				String alertTitle = "";
+				String alertMsg = "";
+				
 				if(className.length()==0) {
-					alert.setContentText("강의명을 입력하세요");
-					flag = false;
-				} else if(description.length()==0) {
-					alert.setContentText("강의설명을 입력하세요");
-					flag = false;
+					alertTitle = "강의명 오류";
+					alertMsg = "강의명을 입력하세요";
 				} else if(startDate==null) {
-					alert.setContentText("시작일을 입력하세요");
-					flag = false;
+					alertTitle = "강의시작일 오류";
+					alertMsg = "시작일을 입력하세요";
 				} else if(endDate==null) {
-					alert.setContentText("종료일을 입력하세요");
-					flag = false;
+					alertTitle = "강의종료일 오류";
+					alertMsg = "종료일을 입력하세요";
 				} else if(day1<0) {
-					alert.setContentText("강의종료일은 강의시작일보다 먼저일 수 없습니다.");
-					flag = false;
+					alertTitle = "강의종료일 오류";
+					alertMsg = "강의종료일은 강의시작일보다 늦어야 합니다.";
 				} else if(day2<0) {
-					alert.setContentText("강의종료일은 오늘보다 늦어야 합니다.");
-					flag = false;
+					alertTitle = "강의종료일 오류";
+					alertMsg = "강의종료일은 오늘보다 늦어야 합니다.";
 				} else if(limitStudent<=0) {
-					alert.setContentText("수강인원수(자연수)를 입력하세요");
-					flag = false;
+					alertTitle = "수강인원 오류";
+					alertMsg = "수강인원수(자연수)를 입력하세요.";
+				} else {
+					flag = true;
 				}
 				
 				//값이 입력불가능하면 alert창을 보여준다
 				if(!flag) {
-					alert.show();					
+					Util.showAlert(alertTitle, alertMsg, AlertType.ERROR);		
 				} else {
 					//값이 입력가능하면 DB에값을 입력한다
-					cDao.insertBoard(new ClassDto(className, teacherid, teacherid, description, startDate, endDate, limitStudent));					
+					cDao.insertClass(new ClassDto(className, teacherid, description, startDate, endDate, limitStudent));					
 					refreshTable();
 					dialog.close();
 				}

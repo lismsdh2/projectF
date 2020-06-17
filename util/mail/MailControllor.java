@@ -27,7 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-;
+
 
 public class MailControllor implements Initializable {
 

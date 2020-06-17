@@ -22,8 +22,8 @@ public class TaskDto {
 	private ObjectProperty<byte[]> attachedFile;
 	private SimpleStringProperty tcFile;
 	private SimpleObjectProperty<Integer> perfectScore;
+//	private SimpleIntegerProperty perfectScore;
 	private SimpleBooleanProperty dateCheck;
-	private SimpleIntegerProperty classNo;
 
 	public TaskDto() {
 		this.tcNo = new SimpleIntegerProperty();
@@ -35,7 +35,6 @@ public class TaskDto {
 		this.tcFile = new SimpleStringProperty();
 		this.perfectScore = new SimpleObjectProperty<Integer>();
 		this.dateCheck = new SimpleBooleanProperty();
-		this.classNo = new SimpleIntegerProperty();
 	}
 
 	public TaskDto(Integer tcNo, String tcTitle, String tcDesc, LocalDate tcRegdate, LocalDate tcExpireDate,
@@ -110,10 +109,6 @@ public class TaskDto {
 	public byte[] getAttachedFile() {
 		return attachedFile.get();
 	}
-	
-	public Integer getClassNo() {
-		return classNo.get();
-	}
 
 	// setter
 	public void setTcNo(Integer tcNo) {
@@ -150,10 +145,6 @@ public class TaskDto {
 
 	public void setAttachedFile(byte[] attachedFile) {
 		this.attachedFile.set(attachedFile);
-	}
-	
-	public void setClassNo(Integer classNo) {
-		this.classNo.set(classNo);
 	}
 
 	// get property

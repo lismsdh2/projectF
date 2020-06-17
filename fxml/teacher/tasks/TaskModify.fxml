@@ -14,18 +14,9 @@
       <Label text="만점 점수" GridPane.rowIndex="3" />
       <Label text="제출 기한" GridPane.rowIndex="4" />
       <Label text="첨부파일" GridPane.rowIndex="5" />
-      <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
-         <children>
-            <TextField id="txtReportName" fx:id="txtTitle" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-            <Label fx:id="lblTitle"  />
-         </children>
-      </VBox>
-      <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
-         <children>
-            <TextArea id="txtReportDesc" fx:id="txtDesc" minHeight="150.0" prefHeight="0.0" prefWidth="214.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-            <Label fx:id="lblDesc" />
-         </children>
-      </VBox>
+
+      <TextField id="txtReportName" fx:id="txtTitle" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+      <TextArea id="txtReportDesc" fx:id="txtDesc" prefHeight="46.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
       <TextField id="txtPerfectScore" fx:id="txtPerfectScore" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
       <DatePicker id="dateExpire" fx:id="dateExpire" editable="false" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
       <TextField id="txtFileName" fx:id="txtFile" editable="false" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />

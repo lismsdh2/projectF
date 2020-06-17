@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 
 import DAO.BasicDao;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -69,7 +70,7 @@ public class signupController implements Initializable {
 		passfield.textProperty().addListener(Util.pwListener(passfield));
 		repassfield.textProperty().addListener(Util.pwListener(repassfield));
 		emailfield.textProperty().addListener(Util.alphabetListener(emailfield));
-		
+
 		//숫자만 입력
 		phonefield1.textProperty().addListener(Util.numberOnlyListener(phonefield1));
 		phonefield2.textProperty().addListener(Util.numberOnlyListener(phonefield2));

@@ -40,25 +40,24 @@ public class ClassDao {
 	}
 
 	//강의생성
-	public void insertBoard(ClassDto classDto) {
+	public void insertClass(ClassDto classDto) {
 		
 		//DB연결
 		connectionJDBC();
 		
-		String sql = "insert into class values(null,?,(select user_name from teacher where user_id=?),?,?,?,?,?);";
+		String sql = "insert into class values(null,?,?,?,?,?,?);";
 		try {
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, classDto.getClassName());
 			pstmt.setString(2, classDto.getTeacherId());
-			pstmt.setString(3, classDto.getTeacherId());
-			pstmt.setString(4, classDto.getClassDescription());
-			pstmt.setObject(5, classDto.getStartDate());
-			pstmt.setObject(6, classDto.getEndDate());
-			pstmt.setInt(7, classDto.getLimitStudent());
+			pstmt.setString(3, classDto.getClassDescription());
+			pstmt.setObject(4, classDto.getStartDate());
+			pstmt.setObject(5, classDto.getEndDate());
+			pstmt.setInt(6, classDto.getLimitStudent());
 			pstmt.executeUpdate();
-			System.out.println("데이터 입력 성공");
+			System.out.println("강의생성 성공");
 		} catch (SQLException e) {
-			System.out.println("데이터 입력 실패");
+			System.out.println("강의생성 실패");
 			e.printStackTrace();
 		} finally {
 			
@@ -117,10 +116,12 @@ public class ClassDao {
 		//DB연결
 		connectionJDBC();
 		
-		String sql = "select C.class_no, C.class_name, C.teacher_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
+		String sql = "select C.class_no, C.class_name, U.user_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
 				"from class C " + 
 				"left outer join request_class R " + 
 				"on C.class_no = R.class_no " + 
+				"left outer join user U " + 
+				"on C.teacher_id = U.user_id " +
 				"where C.class_no=? " +
 				"group by C.class_no ";
 		ClassDto classDto = new ClassDto();
@@ -131,7 +132,7 @@ public class ClassDao {
 			if (rs.next()) {
 				classDto.setClassNo(rs.getInt("class_no"));
 				classDto.setClassName(rs.getString("class_name"));
-				classDto.setTeacherName(rs.getString("teacher_name"));
+				classDto.setTeacherName(rs.getString("user_name"));
 				classDto.setTeacherId(rs.getString("teacher_id"));
 				classDto.setClassDescription(rs.getString("class_desc"));
 				classDto.setStartDate(LocalDate.parse(rs.getString("start_Date"), DateTimeFormatter.ISO_DATE));
@@ -155,10 +156,12 @@ public class ClassDao {
 		
 		ObservableList<ClassDto> list = FXCollections.observableArrayList();
 		try {
-			String sql = "select C.class_no, C.class_name, C.teacher_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
+			String sql = "select C.class_no, C.class_name, U.user_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
 					"from class C " + 
 					"left outer join request_class R " + 
 					"on C.class_no = R.class_no " + 
+					"left outer join user U " + 
+					"on C.teacher_id = U.user_id " +
 					"group by C.class_no;";
 			pstmt = connection.prepareStatement(sql);
 			rs = pstmt.executeQuery();
@@ -167,7 +170,7 @@ public class ClassDao {
 				ClassDto classDto = new ClassDto();
 				classDto.setClassNo(rs.getInt("class_no"));
 				classDto.setClassName(rs.getString("class_name"));
-				classDto.setTeacherName(rs.getString("teacher_name"));
+				classDto.setTeacherName(rs.getString("user_name"));
 				classDto.setTeacherId(rs.getString("teacher_id"));
 				classDto.setClassDescription(rs.getString("class_desc"));
 				classDto.setStartDate(LocalDate.parse(rs.getString("start_Date"), DateTimeFormatter.ISO_DATE));
@@ -196,18 +199,22 @@ public class ClassDao {
 		ObservableList<ClassDto> list = FXCollections.observableArrayList();
 		try {
 			//디폴트 값(btnNo==0)으로 현재강의를 조회
-			String sql = "select C.class_no, C.class_name, C.teacher_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
+			String sql = "select C.class_no, C.class_name, U.user_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
 					"from class C " + 
 					"left outer join request_class R " + 
 					"on C.class_no = R.class_no " + 
+					"left outer join user U " + 
+					"on C.teacher_id = U.user_id " +
 					"where teacher_id=? and end_date >= sysdate() " +
 					"group by C.class_no ";
 			//btnNo == 1이면 지난강의를 조회
 			if(btnNo == 1) {
-				sql = "select C.class_no, C.class_name, C.teacher_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
+				sql = "select C.class_no, C.class_name, U.user_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
 						"from class C " + 
 						"left outer join request_class R " + 
 						"on C.class_no = R.class_no " + 
+						"left outer join user U " + 
+						"on C.teacher_id = U.user_id " +
 						"where teacher_id=? and end_date < sysdate() " +
 						"group by C.class_no ";
 			}
@@ -220,7 +227,7 @@ public class ClassDao {
 
 				classDto.setClassNo(rs.getInt("class_no"));
 				classDto.setClassName(rs.getString("class_name"));
-				classDto.setTeacherName(rs.getString("teacher_name"));
+				classDto.setTeacherName(rs.getString("user_name"));
 				classDto.setTeacherId(rs.getString("teacher_id"));
 				classDto.setClassDescription(rs.getString("class_desc"));
 				classDto.setStartDate(LocalDate.parse(rs.getString("start_date"), DateTimeFormatter.ISO_DATE));
@@ -250,10 +257,12 @@ public class ClassDao {
 		ObservableList<ClassDto> list = FXCollections.observableArrayList();
 		
 		try {
-			String sql = "select C.class_no, C.class_name, C.teacher_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
+			String sql = "select C.class_no, C.class_name, U.user_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
 					"from class C " + 
 					"left outer join request_class R " + 
 					"on C.class_no = R.class_no " + 
+					"left outer join user U " + 
+					"on C.teacher_id = U.user_id " +
 					"where class_name like ? or teacher_name like ? " +
 					"group by C.class_no ";
 			
@@ -268,7 +277,7 @@ public class ClassDao {
 
 				classDto.setClassNo(rs.getInt("class_no"));
 				classDto.setClassName(rs.getString("class_name"));
-				classDto.setTeacherName(rs.getString("teacher_name"));
+				classDto.setTeacherName(rs.getString("user_name"));
 				classDto.setTeacherId(rs.getString("teacher_id"));
 				classDto.setClassDescription(rs.getString("class_desc"));
 				classDto.setStartDate(LocalDate.parse(rs.getString("start_date"), DateTimeFormatter.ISO_DATE));
@@ -299,18 +308,22 @@ public class ClassDao {
 			
 			try {
 				//디폴트값(btnNo=0)일때 현재강의 범위에서 검색
-				String sql = "select C.class_no, C.class_name, C.teacher_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
+				String sql = "select C.class_no, C.class_name, U.user_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
 						"from class C " + 
 						"left outer join request_class R " + 
 						"on C.class_no = R.class_no " + 
+						"left outer join user U " + 
+						"on C.teacher_id = U.user_id " +
 						"where teacher_id=? and class_name like ? and end_date >= sysdate() " +
 						"group by C.class_no ";
 				//btnNo == 1이면 지난강의 범위에서 검색
 				if(btnNo == 1) {
-					sql = "select C.class_no, C.class_name, C.teacher_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
+					sql = "select C.class_no, C.class_name, U.user_name, C.teacher_id, C.class_desc, C.start_date, C.end_date, C.limitstudent, count(R.student_id)" + 
 							"from class C " + 
 							"left outer join request_class R " + 
 							"on C.class_no = R.class_no " + 
+							"left outer join user U " + 
+							"on C.teacher_id = U.user_id " +
 							"where teacher_id=? and class_name like ? and end_date < sysdate() " +
 							"group by C.class_no ";
 				} 
@@ -325,7 +338,7 @@ public class ClassDao {
 
 					classDto.setClassNo(rs.getInt("class_no"));
 					classDto.setClassName(rs.getString("class_name"));
-					classDto.setTeacherName(rs.getString("teacher_name"));
+					classDto.setTeacherName(rs.getString("user_name"));
 					classDto.setTeacherId(rs.getString("teacher_id"));
 					classDto.setClassDescription(rs.getString("class_desc"));
 					classDto.setStartDate(LocalDate.parse(rs.getString("start_date"), DateTimeFormatter.ISO_DATE));

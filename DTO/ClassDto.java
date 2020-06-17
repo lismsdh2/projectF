@@ -51,10 +51,9 @@ public class ClassDto {
 //		this.limitStudent = new SimpleIntegerProperty(limitStudent);
 //	}
 
-	public ClassDto(String className, String teacherName, String teacherId, String classDescription, LocalDate startDate,
+	public ClassDto(String className, String teacherId, String classDescription, LocalDate startDate,
 			LocalDate endDate, int limitStudent) {
 		this.className = new SimpleStringProperty(className);
-		this.teacherName = new SimpleStringProperty(teacherName);
 		this.teacherId = new SimpleStringProperty(teacherId);
 		this.classDescription = new SimpleStringProperty(classDescription);
 		this.startDate = new SimpleObjectProperty<LocalDate>(startDate);

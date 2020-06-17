@@ -18,7 +18,7 @@
       <Label layoutX="42.0" layoutY="145.0" text="강의설명" />
       <Label layoutX="42.0" layoutY="332.0" text="강의기간" />
       <TextField id="className" layoutX="121.0" layoutY="72.0" prefHeight="23.0" prefWidth="178.0" />
-      <Label id="teacherName" layoutX="121.0" layoutY="108.0" prefWidth="40.0" />
+      <Label id="teacherName" layoutX="121.0" layoutY="108.0" prefWidth="178.0" />
       <TextArea id="description" layoutX="121.0" layoutY="143.0" prefHeight="164.0" prefWidth="211.0" />
       <Separator layoutX="32.0" layoutY="102.0" prefHeight="3.0" prefWidth="303.0" />
       <Separator layoutX="32.0" layoutY="132.0" prefHeight="3.0" prefWidth="303.0" />
