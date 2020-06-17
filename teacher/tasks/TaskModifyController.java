@@ -20,6 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
@@ -57,6 +58,10 @@ public class TaskModifyController implements Initializable {
 
 	@FXML
 	private TextField txtPerfectScore;
+	@FXML
+	private Label lblDesc;
+	@FXML
+	private Label lblTitle;
 
 	TaskDao tDao = new TaskDao();
 	int selectedTaskNo;
@@ -69,6 +74,10 @@ public class TaskModifyController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
+		//입력길이 제한
+		Util.textLengthLimit(txtTitle, lblTitle, 20);
+		Util.textLengthLimit(txtDesc, lblDesc, 5000);
 
 		// 숫자만 입력할 수 있도록 제한
 		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));

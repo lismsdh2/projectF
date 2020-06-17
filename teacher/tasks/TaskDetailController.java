@@ -22,6 +22,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
@@ -46,6 +47,8 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 	private AnchorPane taskDetailListPane;
 	@FXML
 	private Label lblTaskTitle;
+	@FXML
+	private ComboBox<String> comboTaskList;
 
 	@FXML
 	private TableView<TaskDetailDto> tblView;
@@ -75,13 +78,20 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 	private ProgressBar pbarAvg;
 
 	int taskNo = AppMain.app.getBasic().getTask_no();
+
+	TaskDao tDao = new TaskDao();
+	TaskDto currentTask = tDao.selectTask(taskNo);
+
 	ObservableList<TaskDetailDto> tdList = FXCollections.observableArrayList();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		
 		// 과제명 표시 라벨링
 		setLabel();
+
+		// 콤보박스에 과제목록 표시
+		setCombo();
 
 		// 테이블에 과제별 학생 제출 정보 표시
 		setTableColumns();
@@ -90,10 +100,37 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 
 	// 상단 라벨에 과제명 표시
 	private void setLabel() {
-		TaskDao tDao = new TaskDao();
-		TaskDto currentTask = tDao.selectTask(taskNo);
 		String taskTitle = currentTask.getTcTitle();
 		lblTaskTitle.setText(taskTitle);
+	}
+
+	// 현재 유저-현재 강의-과제목록 표시
+	private void setCombo() {
+		ObservableList<String> classTaskList = FXCollections.observableArrayList();
+		TaskDao tDao = new TaskDao();
+		int classNo =currentTask.getClassNo();
+		System.out.println(classNo);
+		classTaskList = tDao.selectUserTaskComoboList(classNo);
+
+		comboTaskList.setItems(classTaskList);
+
+		// 콤보박스에 현재 과제명을 보여준다.
+		if (taskNo != 0) {
+			String taskName = currentTask.getTcTitle();
+			String taskInfo = "[" + taskNo + "] " + taskName;
+			comboTaskList.getSelectionModel().select(taskInfo);
+		}
+
+		// 콤보박스에서 과제명 선택 시 이동
+		comboTaskList.setOnAction(e -> {
+			String selectedCombo = comboTaskList.getSelectionModel().getSelectedItem();
+			int selectedNo = Integer
+					.valueOf(selectedCombo.substring(selectedCombo.indexOf("[") + 1, selectedCombo.lastIndexOf("]")));
+			System.out.println(selectedNo);
+			// 선택된 과제로 테이블 데이터변경
+			taskNo = selectedNo;
+			refreshTable();
+		});
 	}
 
 	// 컬럼 설정
@@ -136,7 +173,7 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 					if (status.equals("N")) {
 						btnDetail.setDisable(true);
 					}
-					
+
 					setGraphic(btnDetail);
 
 					// 상세버튼 누르면 상세창

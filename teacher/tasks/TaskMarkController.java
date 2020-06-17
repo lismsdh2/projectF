@@ -50,6 +50,8 @@ public class TaskMarkController implements Initializable {
 	private Button btnSubmit;
 	@FXML
 	private Button btnCancel;
+	@FXML
+	private Label lblAnswer;
 
 	int taskNum;
 	String studentId;
@@ -64,6 +66,9 @@ public class TaskMarkController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		// 제출된 과제 정보 표시
 		setLabels();
+		
+		//입력제한
+		Util.textLengthLimit(txtAnswer,lblAnswer,5000);
 
 		// 다운로드 버튼
 		btnDownload.setOnAction(e -> handleBtnDownload());

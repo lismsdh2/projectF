@@ -11,21 +11,29 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ResourceBundle;
 
+import DAO.ClassDao;
 import DAO.TaskDao;
 import DTO.ClassDto;
 import DTO.TaskDto;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import launch.AppMain;
 import util.Util;
 
 /**
@@ -63,9 +71,20 @@ public class TaskCreateController implements Initializable {
 	@FXML
 	private TextField txtPerfectScore;
 
+	@FXML
+	private ComboBox<String> comboClassName;
+
+	@FXML
+	private Label lblDescCount;
+
+	@FXML
+	private Label lblTitleCount;
+
 	ClassDto currentClass;
 	byte[] arr;
 	TaskListController tlc = new TaskListController();
+
+	ObservableList<String> classList = FXCollections.observableArrayList();
 
 	public TaskCreateController(ClassDto currentClass) {
 		this.currentClass = currentClass;
@@ -73,8 +92,18 @@ public class TaskCreateController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// 현재 강의명 표시
-		txtClassName.setText(currentClass.getClassName());
+
+		// 강의명 표시
+		setClassName();
+
+		// 콤보박스 클릭 시 강의선택
+		comboClassName.setOnAction(e -> handleCombobox());
+
+		// 글자 수 제한
+		Util.textLengthLimit(txtTitle, lblTitleCount, 20);
+		Util.textLengthLimit(txtDesc, lblDescCount, 5000);
+
+		// 글자 수 표시
 
 		// 점수필드 - 숫자만 입력할 수 있도록 제한
 		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));
@@ -94,6 +123,40 @@ public class TaskCreateController implements Initializable {
 			txtFile.clear();
 		});
 
+	}
+
+	// 콤보박스 클릭 시 강의선택
+	private void handleCombobox() {
+		String selectedCombo = comboClassName.getValue();
+		String strClassno = selectedCombo.substring(selectedCombo.indexOf("[") + 1, selectedCombo.lastIndexOf("]"));
+		int classno = Integer.parseInt(strClassno);
+		ClassDao cDao = new ClassDao();
+		currentClass = cDao.selectClassOne(classno);
+	}
+
+	// 강의명 표시
+	private void setClassName() {
+
+		if (currentClass.getClassName() == null) {// 선택된 강의가 없을 경우
+			// 콤보박스 보이고 라벨 안보임
+			comboClassName.setVisible(true);
+			txtClassName.setVisible(false);
+
+			// 강의목록 불러와서 보여줌
+			TaskDao tDao = new TaskDao();
+			String userid = AppMain.app.getBasic().getId();
+			classList = tDao.selectUserCurrentClassList(userid);
+
+			comboClassName.setItems(classList);
+
+		} else {// 선택된 강의가 있을 경우
+			// 콤보박스 안보이고 라벨 보임
+			comboClassName.setVisible(false);
+			txtClassName.setVisible(true);
+
+			// 라벨에 현재 강의명 표시
+			txtClassName.setText(currentClass.getClassName());
+		}
 	}
 
 	// 첨부파일 버튼 -> fileChooser dialog
@@ -150,6 +213,13 @@ public class TaskCreateController implements Initializable {
 
 		try {
 			// 각 필드에서 값 읽기
+
+			// 강의명
+			if (comboClassName.isVisible()) { // 콤보박스에서 강의명 얻기
+
+			} else if (txtClassName.isVisible()) {
+			}
+
 			String name = txtTitle.getText();
 			String desc = txtDesc.getText();
 			String strPftScore = txtPerfectScore.getText();
@@ -199,7 +269,10 @@ public class TaskCreateController implements Initializable {
 
 			// db에 데이터 저장
 			TaskDao tDao = new TaskDao();
-			tDao.insertTask(task, currentClass.getClassNo());
+
+			int classno = currentClass.getClassNo();
+
+			tDao.insertTask(task, classno);
 
 			// 입력창 클리어
 			clear();
