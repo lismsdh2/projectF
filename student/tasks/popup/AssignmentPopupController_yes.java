@@ -177,6 +177,12 @@ public class AssignmentPopupController_yes implements Initializable {
 		} else {
 			this.btnSubmit.setDisable(false);
 		}
+		//점수가 책정되어있으면 제출 버튼 비활성화
+		if(this.assign.getCheckTask()) {
+			this.btnSubmit.setDisable(true);
+		} else {
+			this.btnSubmit.setDisable(false);
+		}
 	}
 	
 	//참고파일 다운로드 버튼
