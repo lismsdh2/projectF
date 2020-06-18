@@ -6,8 +6,6 @@ import java.util.ResourceBundle;
 import DAO.BasicDao;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -59,8 +57,8 @@ public class search_pass_Controller implements Initializable {
 		teacher.setOnAction(e -> handleteacher(e));
 
 		// textfield warning label
-		showWarningLabel(idfield, lblIdWarning);
-		showWarningLabel(namefield, lblNameWarning);
+		Util.showWarningLabel(idfield, lblIdWarning);
+		Util.showWarningLabel(namefield, lblNameWarning);
 
 		BooleanBinding isEmailEmpty = Bindings.createBooleanBinding(
 				// 이메일 텍스트필드 비었거나 / 콤보박스 선택 안되면 true 리턴
@@ -69,22 +67,6 @@ public class search_pass_Controller implements Initializable {
 
 		lblMailWarning.visibleProperty().bind(isEmailEmpty); // true면 보이고 false면 lblWarning 안보이게
 
-	}
-
-	// textfield 미입력 시 warning label 보이기
-	private void showWarningLabel(TextField txtfield, Label lbl) {
-
-		txtfield.textProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (newValue.length() == 0) {
-					lbl.setVisible(true);
-				} else {
-					lbl.setVisible(false);
-				}
-			}
-		});
 	}
 
 	public void handleteacher(ActionEvent e) {

@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextInputControl;
 
@@ -85,6 +86,22 @@ public class Util {
 				lbl.setText("( " + newValue.length() + " / " + length + " )");
 				if (newValue.length() > length) {
 					txtInputControl.setText(oldValue);
+				}
+			}
+		});
+	}
+	
+	// textfield 미입력 시 warning label 보이기
+	public static void showWarningLabel(TextField txtfield, Label lbl) {
+
+		txtfield.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (newValue.length() == 0) {
+					lbl.setVisible(true);
+				} else {
+					lbl.setVisible(false);
 				}
 			}
 		});
