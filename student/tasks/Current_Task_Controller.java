@@ -236,18 +236,17 @@ public class Current_Task_Controller implements Initializable{
 		viewTaskCount();
 	}
 
-	//진행중 과제 제출 현황 보여주기
+	//과제 제출 현황 보여주기
 	private void viewTaskCount() {
 	
 		if(this.class_no==0) {
 			
 			this.assign.setCntMyAssign(aDao.myCount_ing_submit_select(this.student_id));			//제출과제수
 			this.assign.setCntTotalAssign(aDao.myCount_ing_total_select(this.student_id));			//전체과제수
-	
 		} else {
 			
-			this.assign.setCntMyAssign(aDao.myCount_ing_submit_select(this.student_id));			//제출과제수
-			this.assign.setCntTotalAssign(aDao.myCount_ing_class_select(this.student_id, this.class_no));
+			this.assign.setCntMyAssign(aDao.myCount_ing_submit_select(this.student_id, this.class_no));			//제출과제수
+			this.assign.setCntTotalAssign(aDao.myCount_ing_class_select(this.student_id, this.class_no));		//전체과제수
 		}
 		int MyAssign = this.assign.getCntMyAssign();
 		int TotalAssign = this.assign.getCntTotalAssign();
