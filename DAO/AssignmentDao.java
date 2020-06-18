@@ -329,9 +329,8 @@ public class AssignmentDao {
 		connectionJDBC();
 		
 		AssignmentDto assign = new AssignmentDto();
-		//과제번호, 과제명, 과제설명, 과제 나의점수, 과제 만점점수, 제출기한, 첨부파일, 첨부파일명, 문의사항, 답변, 제출파일
 		String sql = "select task_no, task_name, task_desc, taskscore, perfect_score, expire_date,"
-				   + "       attachedfile, attachedfile_name, taskanswer, taskfile, taskfile_name, start_date, end_date"
+				   + "       attachedfile, attachedfile_name, taskquestion, taskanswer, taskfile, taskfile_name, start_date, end_date"
 				   + "  from class_submission_status"
 				   + " where task_no = ?"
 				   + "   and student_id = ?;";
