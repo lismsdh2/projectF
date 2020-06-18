@@ -99,6 +99,7 @@ drop table if EXISTS backup_class;
 create table backup_class(
 	class_no 		int,
 	class_name 		varchar(20),
+    teacher_name 	varchar(20),
     teacher_id 		varchar(20),
     class_desc 		text,
     start_date 		date,
@@ -119,6 +120,7 @@ begin
 	insert into backup_class values (
 		old.class_no,
         old.class_name,
+        old.teacher_name,
         old.teacher_id,
         old.class_desc,
         old.start_date,
@@ -162,6 +164,7 @@ create table request_class(
 	constraint pk_stuid_clsid					-- PK로 지정
 		primary key(student_id, class_no)
 );
+select * from request_class;
 
 -- 과제제출테이블
 -- task테이블의 task_no(FK)와 student테이블의 student_id(FK)를 PK로 지정
@@ -212,9 +215,68 @@ begin
 end $$
 delimiter ;
 
+desc class;
+desc request_class;
 -- 제약조건 검색
--- select * from information_schema.table_constraints where table_name = 'submission_task';
+select * from information_schema.table_constraints where table_name = 'submission_task';
 
+-- 조회용 뷰테이블
+-- 클래스의 학생 목록 뷰
+drop view if EXISTS class_student;
+create or replace view class_student as 
+		select c.class_no, c.student_id, s.user_name
+		  from student s
+		  join request_class c
+		    on s.user_id = c.student_id
+		 order by c.class_no;
+
+-- 사용 예 (1001 클래스의 학생목록)
+select * from class_student where class_no=1001;
+
+ -- 클래스의 과제 제출현황 뷰
+drop view if EXISTS class_task_status;
+create or replace view class_task_status as
+    SELECT 
+		t.class_no,
+		t.task_no,
+		t.task_name,
+		cs.student_id,
+		cs.user_name as 'student_name',
+		st.tasksubmit,
+		st.tasksubmit_date,
+		st.taskscore,	
+		st.taskquestion,
+		st.taskanswer,
+		st.taskfile,
+		st.taskfile_name,
+		t.perfect_score,
+        t.expire_Date,
+        t.attachedfile,
+        t.attachedfile_name,
+        t.task_desc
+	FROM class_student cs
+	JOIN task t
+      ON t.class_no = cs.class_no
+	LEFT JOIN submission_task st
+      ON (t.task_no = st.task_no
+	 AND cs.student_id = st.student_id)
+ORDER BY cs.user_name;
+
+-- 사용 예 ) 10028과제의 과제 제출 현황
+select * from class_task_status where task_no = 10028;
+
+-- 사용 예 (1001 클래스의 학생목록)
+select * from class_student where class_no=1001;
+
+-- 과제제출현황 뷰
+drop view if EXISTS class_submission_status;
+create view class_submission_status as
+SELECT 
+	cts.*, c.class_name, c.start_date, c.end_date
+  from class_task_status cts
+  join class c
+    on cts.class_no = c.class_no;
+    
 #샘플 입력
 -- 강사
 insert into user values ('123','홍길동','123','123@naver.com','0101234123','2020-01-12','강사');
@@ -234,7 +296,7 @@ insert into user values ('m123','김한빈','123','m123@naver.com','0101234123',
 insert into user values ('n123','김현중','123','n123@naver.com','0101234123','2020-01-12','강사');
 
 -- 학생
-insert into user values ('321', '차우미', '321', '321@naver.com', '01012341234', '2020-01-12', '학생');
+insert into user values ('321', '차우미', '321', '123@naver.com', '01012341234', '2020-01-12', '학생');
 insert into user values ('a321', '엄지선', '321', 'a321@naver.com', '01012341234', '2019-01-12', '학생');
 insert into user values ('b321', '김지은', '321', 'b321@naver.com', '01012341234', '2010-01-12', '학생');
 insert into user values ('c321', '강정미', '321', 'c321@naver.com', '01012341234', '2020-01-01', '학생');
@@ -315,42 +377,40 @@ insert into user values ('yyy321',  '다가나',  '321', 'yyy321@naver.com',  '0
 insert into user values ('zzz321',  '가나다',  '321', 'zzz321@naver.com',  '01012341234',  '2019-01-01', '학생');
 
 -- 강좌
-desc class;
-insert into class values (null,  '이것이 자바다', '123', null, '2020-05-01', '2020-11-30', 40);
-insert into class values (null,  '이것이 국어다', '123', null, '2020-05-01', '2020-11-30', 30);
-insert into class values (null,  '이것이 영어다', 'a123', null, '2020-05-01', '2020-11-30', 20);
-insert into class values (null,  '이것이 수학다', 'a123', null, '2020-05-01', '2020-11-30', 20);
-insert into class values (null,  '이것이 DB다', 'b123', null, '2020-07-01', '2021-12-30', 20);
-insert into class values (null,  '이것이 JSP다', 'c123', null, '2020-07-01', '2021-12-30', 50);
-insert into class values (null,  '이것이 사회다', 'c123', null, '2020-07-01', '2021-12-30', 40);
-insert into class values (null,  '이것이 지리다', 'e123', null, '2020-07-01', '2021-12-30', 30);
-insert into class values (null,  '이것이 물리다', 'e123', null, '2020-07-01', '2021-12-30', 100);
-insert into class values (null,  '이것이 화학이다', 'f123', null, '2020-07-01', '2021-12-30', 20);
-insert into class values (null,  '이것이 고수다', 'f123', null, '2019-05-01', '2019-11-30', 15);
-insert into class values (null,  '이것이 주식이다', 'g123', null, '2019-05-01', '2019-11-30', 20);
-insert into class values (null,  '이것이 기술이다', 'g123', null, '2019-05-01', '2019-11-30', 30);
-insert into class values (null,  '이것이 Web이다', 'h123', null, '2019-05-01', '2019-11-30', 40);
-insert into class values (null,  '이것이 자바다', 'h123', null, '2019-05-01', '2019-11-30', 15);
-insert into class values (null,  '이것이 국어다', 'i123', null, '2019-05-01', '2019-11-30', 50);
-insert into class values (null,  '이것이 영어다', 'i123', null, '2019-05-01', '2019-11-30', 50);
-insert into class values (null,  '이것이 수학다', 'j123', null, '2020-03-01', '2020-06-30', 60);
-insert into class values (null,  '이것이 DB다', 'j123', null, '2020-03-01', '2020-06-30', 70);
-insert into class values (null,  '이것이 JSP다', 'k123', null, '2020-03-01', '2020-06-30', 20);
-insert into class values (null,  '이것이 사회다', 'k123', null, '2020-03-01', '2020-06-30', 20);
-insert into class values (null,  '이것이 지리다', 'l123', null, '2020-03-01', '2020-06-30', 30);
-insert into class values (null,  '이것이 물리다', 'l123', null, '2020-03-01', '2020-06-30', 30);
-insert into class values (null,  '이것이 화학이다', 'm123', null, '2020-03-01', '2020-06-30', 30);
-insert into class values (null,  '이것이 수학2다', 'm123', null, '2020-03-01', '2020-06-30', 30);
-insert into class values (null,  '이것이 의학이다', 'n123', null, '2020-11-01', '2021-04-30', 30);
-insert into class values (null,  '이것이 자바다', 'n123', null, '2020-11-01', '2021-04-30', 30);
-insert into class values (null,  '이것이 자바다', '123', null, '2020-11-01', '2021-04-30', 40);
-insert into class values (null,  '이것이 국어다', '123', null, '2020-11-01', '2021-04-30', 30);
-insert into class values (null,  '이것이 영어다', 'a123', null, '2020-11-01', '2021-04-30', 20);
-insert into class values (null,  '이것이 수학다', 'a123', null, '2020-09-01', '2021-02-28', 20);
-insert into class values (null,  '이것이 DB다', 'b123', null, '2020-09-01', '2021-02-28', 20);
-insert into class values (null,  '이것이 JSP다', 'c123', null, '2020-09-01', '2021-02-28', 50);
-insert into class values (null,  '이것이 사회다', 'c123', null, '2020-09-01', '2021-02-28', 40);
-
+insert into class values (null, '이것이 자바다','홍길동','123',null, '2020-01-05', '2020-08-30',40);
+insert into class values (null, '이것이 국어다','홍길동','123',null, '2020-01-05', '2020-08-30',30);
+insert into class values (null, '이것이 영어다','이순신','a123',null, '2020-01-05', '2020-08-30',20);
+insert into class values (null, '이것이 수학다','이순신','a123',null, '2020-01-05', '2020-08-30',20);
+insert into class values (null, '이것이 DB다','강감찬','b123',null, '2020-01-05', '2020-08-30',20);
+insert into class values (null, '이것이 JSP다','고길동','c123',null, '2020-01-05', '2020-08-30',50);
+insert into class values (null, '이것이 사회다','고길동','c123',null, '2020-01-05', '2020-08-30',40);
+insert into class values (null, '이것이 지리다','정동환','e123',null, '2020-07-01', '2020-12-30',30);
+insert into class values (null, '이것이 물리다','정동환','e123',null, '2020-07-01', '2020-12-30',100);
+insert into class values (null, '이것이 화학이다','강민호','f123',null, '2020-07-01', '2020-12-30',20);
+insert into class values (null, '이것이 고수다','강민호','f123',null, '2020-07-01', '2020-12-30',15);
+insert into class values (null, '이것이 주식이다','강민호','g123',null, '2020-07-01', '2020-12-30',20);
+insert into class values (null, '이것이 기술이다','강민호','g123',null, '2019-07-01', '2020-12-30',30);
+insert into class values (null, '이것이 Web이다','손창일','h123',null, '2019-01-05', '2019-06-30',40);
+insert into class values (null, '이것이 자바다','손창일','h123',null, '2019-01-05', '2019-06-30',15);
+insert into class values (null, '이것이 국어다','심재현','i123',null, '2019-01-05', '2019-06-30',50);
+insert into class values (null, '이것이 영어다','심재현','i123',null, '2019-01-05', '2019-06-30',50);
+insert into class values (null, '이것이 수학다','권지용','j123',null, '2019-01-05', '2019-06-30',60);
+insert into class values (null, '이것이 DB다','권지용','j123',null, '2019-01-05', '2019-06-30',70);
+insert into class values (null, '이것이 JSP다','임성빈','k123',null, '2019-01-05', '2019-06-30',20);
+insert into class values (null, '이것이 사회다','임성빈','k123',null, '2019-01-05', '2019-12-30',20);
+insert into class values (null, '이것이 지리다','최성호','l123',null, '2019-01-05', '2019-12-30',30);
+insert into class values (null, '이것이 물리다','최성호','l123',null, '2019-01-05', '2019-12-30',30);
+insert into class values (null, '이것이 화학이다','김한빈','m123',null, '2019-01-05', '2019-12-30',30);
+insert into class values (null, '이것이 수학2다','김한빈','m123',null, '2019-01-05', '2019-12-30',30);
+insert into class values (null, '이것이 의학이다','김현중','n123',null, '2019-01-05', '2019-12-30',30);
+insert into class values (null, '이것이 자바다','김현중','n123',null, '2019-01-05', '2019-12-30',30);
+insert into class values (null, '이것이 자바다','홍길동','123',null, '2020-10-01', '2021-03-30',40);
+insert into class values (null, '이것이 국어다','홍길동','123',null, '2020-10-01', '2021-03-30',30);
+insert into class values (null, '이것이 영어다','이순신','a123',null, '2020-10-01', '2021-03-30',20);
+insert into class values (null, '이것이 수학다','이순신','a123',null, '2020-10-01', '2021-03-30',20);
+insert into class values (null, '이것이 DB다','강감찬','b123',null, '2020-10-01', '2021-03-30',20);
+insert into class values (null, '이것이 JSP다','고길동','c123',null, '2020-10-01', '2021-03-30',50);
+insert into class values (null, '이것이 사회다','고길동','c123',null, '2020-10-01', '2021-03-30',40);
 -- 강좌 설명 추가
 update class
    set class_desc = "면세범위 초과 물품, 위장 반입, 원산지 조작 등 세관에서 벌어지는 불법적 행위를 빈틈없이 적발할 수 있는 기술이 개발됐다.
@@ -363,117 +423,71 @@ IBS가 WCO, 대만 국립성공대(NKCU)와 함께 개발한 알고리즘 '데�
 ";
 
 -- 과제
-insert into task values (null,  '과제 1', null,  '2020-05-01',  '2020-06-01', null, null, 1001, 100);
-insert into task values (null,  '과제 2', null,  '2020-05-11',  '2020-06-11', null, null, 1001, 100);
-insert into task values (null,  '과제 3', null,  '2020-05-21',  '2020-06-21', null, null, 1001, 80);
-insert into task values (null,  '과제 4', null,  '2020-06-01',  '2020-07-01', null, null, 1001, 60);
-insert into task values (null,  '과제 5', null,  '2020-06-11',  '2020-07-11', null, null, 1001, 70);
-insert into task values (null,  '과제 6', null,  '2020-06-21',  '2020-07-21', null, null, 1001, 100);
-insert into task values (null,  '과제 7', null,  '2020-07-01',  '2020-08-01', null, null, 1001, 50);
-insert into task values (null,  '과제 8', null,  '2020-07-11',  '2020-08-11', null, null, 1001, 80);
-insert into task values (null,  '과제 9', null,  '2020-07-21',  '2020-08-21', null, null, 1001, 100);
-insert into task values (null,  '과제 10', null,  '2020-08-01',  '2020-09-01', null, null, 1001, 140);
-insert into task values (null,  '과제 11', null,  '2020-08-11',  '2020-09-11', null, null, 1001, 200);
-insert into task values (null,  '과제 12', null,  '2020-08-21',  '2020-09-21', null, null, 1001, 60);
-insert into task values (null,  '과제 13', null,  '2020-09-01',  '2020-10-01', null, null, 1001, 100);
-insert into task values (null,  '과제 14', null,  '2020-09-11',  '2020-10-11', null, null, 1001, 80);
-insert into task values (null,  '과제 15', null,  '2020-09-21',  '2020-10-21', null, null, 1001, 90);
-insert into task values (null,  '과제 16', null,  '2020-10-01',  '2020-11-01', null, null, 1001, 100);
-insert into task values (null,  '과제 17', null,  '2020-10-11',  '2020-11-11', null, null, 1001, 20);
-insert into task values (null,  '과제 18', null,  '2020-10-21',  '2020-11-21', null, null, 1001, 100);
-
-insert into task values (null,  '과제 1', null,  '2020-05-01',  '2020-06-01', null, null, 1002, 100);
-insert into task values (null,  '과제 2', null,  '2020-05-11',  '2020-06-11', null, null, 1002, 100);
-insert into task values (null,  '과제 3', null,  '2020-05-21',  '2020-06-21', null, null, 1002, 60);
-insert into task values (null,  '과제 4', null,  '2020-06-01',  '2020-07-01', null, null, 1002, 100);
-insert into task values (null,  '과제 5', null,  '2020-06-11',  '2020-07-11', null, null, 1002, 100);
-insert into task values (null,  '과제 6', null,  '2020-06-21',  '2020-07-21', null, null, 1002, 80);
-insert into task values (null,  '과제 7', null,  '2020-07-01',  '2020-08-01', null, null, 1002, 100);
-insert into task values (null,  '과제 8', null,  '2020-07-11',  '2020-08-11', null, null, 1002, 70);
-insert into task values (null,  '과제 9', null,  '2020-07-21',  '2020-08-21', null, null, 1002, 100);
-insert into task values (null,  '과제 10', null,  '2020-08-01',  '2020-09-01', null, null, 1002, 40);
-insert into task values (null,  '과제 11', null,  '2020-08-11',  '2020-09-11', null, null, 1002, 100);
-insert into task values (null,  '과제 12', null,  '2020-08-21',  '2020-09-21', null, null, 1002, 80);
-insert into task values (null,  '과제 13', null,  '2020-09-01',  '2020-10-01', null, null, 1002, 100);
-insert into task values (null,  '과제 14', null,  '2020-09-11',  '2020-10-11', null, null, 1002, 90);
-insert into task values (null,  '과제 15', null,  '2020-09-21',  '2020-10-21', null, null, 1002, 100);
-insert into task values (null,  '과제 16', null,  '2020-10-01',  '2020-11-01', null, null, 1002, 120);
-insert into task values (null,  '과제 17', null,  '2020-10-11',  '2020-11-11', null, null, 1002, 250);
-insert into task values (null,  '과제 18', null,  '2020-10-21',  '2020-11-21', null, null, 1002, 100);
-
-insert into task values (null,  '과제 1', null,  '2020-07-01',  '2020-08-01', null, null, 1005, 100);
-insert into task values (null,  '과제 2', null,  '2020-07-11',  '2020-08-11', null, null, 1005, 100);
-insert into task values (null,  '과제 3', null,  '2020-07-21',  '2020-08-21', null, null, 1005, 60);
-insert into task values (null,  '과제 4', null,  '2020-08-01',  '2020-09-01', null, null, 1005, 100);
-insert into task values (null,  '과제 5', null,  '2020-08-11',  '2020-09-11', null, null, 1005, 100);
-insert into task values (null,  '과제 6', null,  '2020-08-21',  '2020-09-21', null, null, 1005, 80);
-insert into task values (null,  '과제 7', null,  '2020-09-01',  '2020-10-01', null, null, 1005, 100);
-insert into task values (null,  '과제 8', null,  '2020-09-11',  '2020-10-11', null, null, 1005, 70);
-insert into task values (null,  '과제 9', null,  '2020-09-21',  '2020-10-21', null, null, 1005, 100);
-insert into task values (null,  '과제 10', null,  '2020-10-01',  '2020-11-01', null, null, 1005, 40);
-insert into task values (null,  '과제 11', null,  '2020-10-11',  '2020-11-12', null, null, 1005, 100);
-insert into task values (null,  '과제 12', null,  '2020-10-21',  '2020-11-21', null, null, 1005, 80);
-insert into task values (null,  '과제 13', null,  '2020-11-01',  '2020-12-01', null, null, 1005, 100);
-insert into task values (null,  '과제 14', null,  '2020-11-11',  '2020-12-12', null, null, 1005, 90);
-insert into task values (null,  '과제 15', null,  '2020-11-21',  '2020-12-21', null, null, 1005, 100);
-
-insert into task values (null,  '과제 1', null,  '2020-05-01',  '2020-06-01', null, null, 1016, 100);
-insert into task values (null,  '과제 2', null,  '2020-05-11',  '2020-06-11', null, null, 1016, 100);
-insert into task values (null,  '과제 3', null,  '2020-05-21',  '2020-06-21', null, null, 1016, 80);
-insert into task values (null,  '과제 4', null,  '2020-06-01',  '2020-07-01', null, null, 1016, 60);
-insert into task values (null,  '과제 5', null,  '2020-06-11',  '2020-07-11', null, null, 1016, 70);
-insert into task values (null,  '과제 6', null,  '2020-06-21',  '2020-07-21', null, null, 1016, 100);
-insert into task values (null,  '과제 7', null,  '2020-07-01',  '2020-08-01', null, null, 1016, 50);
-insert into task values (null,  '과제 8', null,  '2020-07-11',  '2020-08-11', null, null, 1016, 80);
-insert into task values (null,  '과제 9', null,  '2020-07-21',  '2020-08-21', null, null, 1016, 100);
-insert into task values (null,  '과제 10', null,  '2020-08-01',  '2020-09-01', null, null, 1016, 140);
-insert into task values (null,  '과제 11', null,  '2020-08-11',  '2020-09-11', null, null, 1016, 200);
-insert into task values (null,  '과제 12', null,  '2020-08-21',  '2020-09-21', null, null, 1016, 60);
-insert into task values (null,  '과제 13', null,  '2020-09-01',  '2020-10-01', null, null, 1016, 100);
-insert into task values (null,  '과제 14', null,  '2020-09-11',  '2020-10-11', null, null, 1016, 80);
-insert into task values (null,  '과제 15', null,  '2020-09-21',  '2020-10-21', null, null, 1016, 90);
-insert into task values (null,  '과제 16', null,  '2020-10-01',  '2020-11-01', null, null, 1016, 100);
-insert into task values (null,  '과제 17', null,  '2020-10-11',  '2020-11-11', null, null, 1016, 20);
-insert into task values (null,  '과제 18', null,  '2020-10-21',  '2020-11-21', null, null, 1016, 100);
-
-insert into task values (null,  '과제 1', null,  '2020-05-01',  '2020-06-01', null, null, 1017, 100);
-insert into task values (null,  '과제 2', null,  '2020-05-11',  '2020-06-11', null, null, 1017, 100);
-insert into task values (null,  '과제 3', null,  '2020-05-21',  '2020-06-21', null, null, 1017, 80);
-insert into task values (null,  '과제 4', null,  '2020-06-01',  '2020-07-01', null, null, 1017, 60);
-insert into task values (null,  '과제 5', null,  '2020-06-11',  '2020-07-11', null, null, 1017, 70);
-insert into task values (null,  '과제 6', null,  '2020-06-21',  '2020-07-21', null, null, 1017, 100);
-insert into task values (null,  '과제 7', null,  '2020-07-01',  '2020-08-01', null, null, 1017, 50);
-insert into task values (null,  '과제 8', null,  '2020-07-11',  '2020-08-11', null, null, 1017, 80);
-insert into task values (null,  '과제 9', null,  '2020-07-21',  '2020-08-21', null, null, 1017, 100);
-insert into task values (null,  '과제 10', null,  '2020-08-01',  '2020-09-01', null, null, 1017, 140);
-insert into task values (null,  '과제 11', null,  '2020-08-11',  '2020-09-11', null, null, 1017, 200);
-insert into task values (null,  '과제 12', null,  '2020-08-21',  '2020-09-21', null, null, 1017, 60);
-insert into task values (null,  '과제 13', null,  '2020-09-01',  '2020-10-01', null, null, 1017, 100);
-insert into task values (null,  '과제 14', null,  '2020-09-11',  '2020-10-11', null, null, 1017, 80);
-insert into task values (null,  '과제 15', null,  '2020-09-21',  '2020-10-21', null, null, 1017, 90);
-insert into task values (null,  '과제 16', null,  '2020-10-01',  '2020-11-01', null, null, 1017, 100);
-insert into task values (null,  '과제 17', null,  '2020-10-11',  '2020-11-11', null, null, 1017, 20);
-insert into task values (null,  '과제 18', null,  '2020-10-21',  '2020-11-21', null, null, 1017, 100);
-
-insert into task values (null,  '과제 1', null,  '2020-09-01',  '2020-11-01', null, null, 1031, 100);
-insert into task values (null,  '과제 2', null,  '2020-09-11',  '2020-11-11', null, null, 1031, 100);
-insert into task values (null,  '과제 3', null,  '2020-09-21',  '2020-11-21', null, null, 1031, 60);
-insert into task values (null,  '과제 4', null,  '2020-10-01',  '2020-07-01', null, null, 1031, 100);
-insert into task values (null,  '과제 5', null,  '2020-10-11',  '2020-07-11', null, null, 1031, 100);
-insert into task values (null,  '과제 6', null,  '2020-10-21',  '2020-07-21', null, null, 1031, 80);
-insert into task values (null,  '과제 7', null,  '2020-11-01',  '2020-12-01', null, null, 1031, 100);
-insert into task values (null,  '과제 8', null,  '2020-11-11',  '2020-12-11', null, null, 1031, 70);
-insert into task values (null,  '과제 9', null,  '2020-11-21',  '2020-12-21', null, null, 1031, 100);
-insert into task values (null,  '과제 10', null,  '2020-12-01',  '2021-01-01', null, null, 1031, 40);
-insert into task values (null,  '과제 11', null,  '2020-12-11',  '2021-01-03', null, null, 1031, 100);
-insert into task values (null,  '과제 12', null,  '2020-12-21',  '2021-01-21', null, null, 1031, 80);
-insert into task values (null,  '과제 13', null,  '2021-01-01',  '2021-02-01', null, null, 1031, 100);
-insert into task values (null,  '과제 14', null,  '2021-01-11',  '2021-02-03', null, null, 1031, 90);
-insert into task values (null,  '과제 15', null,  '2021-01-21',  '2021-02-21', null, null, 1031, 100);
-insert into task values (null,  '과제 16', null,  '2021-02-01',  '2021-02-28', null, null, 1031, 120);
-insert into task values (null,  '과제 17', null,  '2021-02-11',  '2021-02-28', null, null, 1031, 250);
-insert into task values (null,  '과제 18', null,  '2021-02-21',  '2021-02-28', null, null, 1031, 100);
-
+insert into task values (null, '과제 1',null, '2020-01-15', '2020-01-20',null,null,1001,100);
+insert into task values (null, '과제 2',null, '2020-01-20', '2020-01-25',null,null,1001,100);
+insert into task values (null, '과제 3',null, '2020-01-25', '2020-01-30',null,null,1001,60);
+insert into task values (null, '과제 4',null, '2020-01-30', '2020-02-05',null,null,1001,80);
+insert into task values (null, '과제 5',null, '2020-02-05', '2020-02-10',null,null,1001,90);
+insert into task values (null, '과제 6',null, '2020-02-10', '2020-02-15',null,null,1001,100);
+insert into task values (null, '과제 7',null, '2020-02-15', '2020-02-20',null,null,1001,100);
+insert into task values (null, '과제 8',null, '2020-02-20', '2020-02-25',null,null,1001,100);
+insert into task values (null, '과제 9',null, '2020-02-25', '2020-03-05',null,null,1001,100);
+insert into task values (null, '과제 10',null, '2020-03-05', '2020-03-10',null,null,1001,80);
+insert into task values (null, '과제 11',null, '2020-03-10', '2020-03-15',null,null,1001,50);
+insert into task values (null, '과제 12',null, '2020-03-15', '2020-03-20',null,null,1001,100);
+insert into task values (null, '과제 13',null, '2020-03-20', '2020-03-25',null,null,1001,100);
+insert into task values (null, '과제 14',null, '2020-03-25', '2020-03-30',null,null,1001,60);
+insert into task values (null, '과제 15',null, '2020-03-30', '2020-04-05',null,null,1001,100);
+insert into task values (null, '과제 16',null, '2020-04-05', '2020-04-10',null,null,1001,100);
+insert into task values (null, '과제 17',null, '2020-04-10', '2020-04-15',null,null,1001,70);
+insert into task values (null, '과제 18',null, '2020-04-15', '2020-04-20',null,null,1001,100);
+insert into task values (null, '과제 19',null, '2020-04-20', '2020-04-25',null,null,1001,100);
+insert into task values (null, '과제 20',null, '2020-04-25', '2020-04-30',null,null,1001,60);
+insert into task values (null, '과제 21',null, '2020-04-30', '2020-05-05',null,null,1001,100);
+insert into task values (null, '과제 22',null, '2020-05-05', '2020-05-10',null,null,1001,100);
+insert into task values (null, '과제 23',null, '2020-05-10', '2020-05-15',null,null,1001,90);
+insert into task values (null, '과제 24',null, '2020-05-15', '2020-05-20',null,null,1001,100);
+insert into task values (null, '과제 25',null, '2020-05-20', '2020-05-25',null,null,1001,80);
+insert into task values (null, '과제 26',null, '2020-05-25', '2020-05-30',null,null,1001,100);
+insert into task values (null, '과제 27',null, '2020-05-30', '2020-06-05',null,null,1001,70);
+insert into task values (null, '과제 28',null, '2020-06-05', '2020-06-10',null,null,1001,100);
+insert into task values (null, '과제 29',null, '2020-06-10', '2020-06-15',null,null,1001,60);
+insert into task values (null, '과제 30',null, '2020-06-15', '2020-06-20',null,null,1001,100);
+insert into task values (null, '과제 1',null, '2020-01-15', '2020-01-20',null,null,1005,100);
+insert into task values (null, '과제 2',null, '2020-02-05', '2020-02-10',null,null,1005,90);
+insert into task values (null, '과제 3',null, '2020-03-05', '2020-03-10',null,null,1005,80);
+insert into task values (null, '과제 4',null, '2020-04-05', '2020-04-10',null,null,1005,100);
+insert into task values (null, '과제 5',null, '2020-05-05', '2020-05-10',null,null,1005,100);
+insert into task values (null, '과제 1',null, '2019-01-15', '2019-01-20',null,null,1014,100);
+insert into task values (null, '과제 2',null, '2019-02-05', '2019-02-10',null,null,1014,90);
+insert into task values (null, '과제 3',null, '2019-03-05', '2019-03-10',null,null,1014,80);
+insert into task values (null, '과제 4',null, '2019-04-05', '2019-04-10',null,null,1014,100);
+insert into task values (null, '과제 5',null, '2019-05-05', '2019-05-10',null,null,1014,100);
+insert into task values (null, '과제 6',null, '2019-06-05', '2019-06-10',null,null,1014,100);
+insert into task values (null, '과제 1',null, '2019-01-15', '2019-01-20',null,null,1016,100);
+insert into task values (null, '과제 2',null, '2019-02-05', '2019-02-10',null,null,1016,90);
+insert into task values (null, '과제 3',null, '2019-03-05', '2019-03-10',null,null,1016,80);
+insert into task values (null, '과제 4',null, '2019-04-05', '2019-04-10',null,null,1016,100);
+insert into task values (null, '과제 5',null, '2019-05-05', '2019-05-10',null,null,1016,100);
+insert into task values (null, '과제 6',null, '2019-06-05', '2019-06-10',null,null,1016,100);
+insert into task values (null, '과제 1',null, '2019-01-15', '2019-01-20',null,null,1020,100);
+insert into task values (null, '과제 2',null, '2019-02-05', '2019-02-10',null,null,1020,90);
+insert into task values (null, '과제 3',null, '2019-03-05', '2019-03-10',null,null,1020,80);
+insert into task values (null, '과제 4',null, '2019-04-05', '2019-04-10',null,null,1020,100);
+insert into task values (null, '과제 5',null, '2019-05-05', '2019-05-10',null,null,1020,100);
+insert into task values (null, '과제 6',null, '2019-06-05', '2019-06-10',null,null,1020,100);
+insert into task values (null, '과제 1',null, '2020-07-15', '2020-07-20',null,null,1008,100);
+insert into task values (null, '과제 2',null, '2020-08-05', '2020-08-10',null,null,1008,90);
+insert into task values (null, '과제 3',null, '2020-09-05', '2020-09-10',null,null,1008,80);
+insert into task values (null, '과제 4',null, '2020-10-05', '2020-10-10',null,null,1008,100);
+insert into task values (null, '과제 5',null, '2020-11-05', '2020-11-10',null,null,1008,100);
+insert into task values (null, '과제 6',null, '2020-12-05', '2020-12-10',null,null,1008,100);
+insert into task values (null, '과제 1',null, '2020-01-15', '2020-01-20',null,null,1032,100);
+insert into task values (null, '과제 2',null, '2020-02-05', '2020-02-10',null,null,1032,90);
+insert into task values (null, '과제 3',null, '2020-03-05', '2020-03-10',null,null,1032,80);
+insert into task values (null, '과제 4',null, '2020-04-05', '2020-04-10',null,null,1032,100);
+insert into task values (null, '과제 5',null, '2020-05-05', '2020-05-10',null,null,1032,100);
+insert into task values (null, '과제 6',null, '2020-06-05', '2020-06-10',null,null,1032,100);
 update task
    set task_desc = "면세범위 초과 물품, 위장 반입, 원산지 조작 등 세관에서 벌어지는 불법적 행위를 빈틈없이 적발할 수 있는 기술이 개발됐다.
 
@@ -485,164 +499,159 @@ IBS가 WCO, 대만 국립성공대(NKCU)와 함께 개발한 알고리즘 '데�
 ";
 
 -- 수강신청
-select * from request_class;
+insert into request_class values ( 'o321',1001);
+insert into request_class values ( 'p321',1001);
+insert into request_class values ( 'q321',1001);
+insert into request_class values ( 'r321',1001);
+insert into request_class values ( 's321',1001);
+insert into request_class values ( 't321',1001);
+insert into request_class values ( 'u321',1001);
+insert into request_class values ( 'v321',1001);
+insert into request_class values ( 'w321',1001);
+insert into request_class values ( 'x321',1001);
+insert into request_class values ( 'y321',1001);
+insert into request_class values ( 'z321',1001);
+insert into request_class values ( 'aa321',1001);
+insert into request_class values ( 'bb321',1001);
+insert into request_class values ( 'cc321',1001);
+insert into request_class values ( 'dd321',1001);
+insert into request_class values ( 'ee321',1001);
+insert into request_class values ( 'ff321',1001);
+insert into request_class values ( 'gg321',1001);
+insert into request_class values ( 'hh321',1001);
+insert into request_class values ( 'ii321',1001);
+insert into request_class values ( 'jj321',1001);
+insert into request_class values ( 'kk321',1001);
+insert into request_class values ( 'll321',1001);
+insert into request_class values ( 'mm321',1001);
+insert into request_class values ( 'nn321',1001);
+insert into request_class values ( 'oo321',1001);
+insert into request_class values ( 'pp321',1005);
+insert into request_class values ( 'qq321',1006);
+insert into request_class values ( 'rr321',1007);
+insert into request_class values ( 'ss321',1008);
+insert into request_class values ( 'tt321',1009);
+insert into request_class values ( 'uu321',1010);
+insert into request_class values ( 'vv321',1011);
+insert into request_class values ( 'ww321',1012);
+insert into request_class values ( 'xx321',1013);
+insert into request_class values ( 'yy321',1014);
+insert into request_class values ( 'zz321',1015);
+insert into request_class values ( 'aaa321',1016);
+insert into request_class values ( 'bbb321',1016);
+insert into request_class values ( 'ccc321',1016);
+insert into request_class values ( 'ddd321',1016);
+insert into request_class values ( 'eee321',1016);
+insert into request_class values ( 'fff321',1016);
+insert into request_class values ( 'ggg321',1016);
+insert into request_class values ( 'hhh321',1016);
+insert into request_class values ( 'iii321',1016);
+insert into request_class values ( 'jjj321',1016);
+insert into request_class values ( 'kkk321',1016);
+insert into request_class values ( 'lll321',1016);
+insert into request_class values ( 'mmm321',1016);
+insert into request_class values ( 'nnn321',1005);
+insert into request_class values ( 'ooo321',1005);
+insert into request_class values ( 'ppp321',1005);
+insert into request_class values ( 'qqq321',1005);
+insert into request_class values ( 'rrr321',1005);
+insert into request_class values ( 'sss321',1005);
+insert into request_class values ( 'ttt321',1014);
+insert into request_class values ( 'uuu321',1014);
+insert into request_class values ( 'vvv321',1014);
+insert into request_class values ( 'xxx321',1014);
+insert into request_class values ( 'www321',1014);
+insert into request_class values ( 'yyy321',1014);
+insert into request_class values ( 'zzz321',1014);
+insert into request_class values ( 'a321',1001);
+insert into request_class values ( 'b321',1001);
+insert into request_class values ( 'c321',1001);
+insert into request_class values ( 'd321',1001);
+insert into request_class values ( 'e321',1001);
+insert into request_class values ( 'f321',1001);
+insert into request_class values ( 'g321',1001);
+insert into request_class values ( 'h321',1001);
+insert into request_class values ( 'i321',1001);
+insert into request_class values ( 'j321',1001);
+insert into request_class values ( 'k321',1001);
+insert into request_class values ( 'l321',1001);
+insert into request_class values ( 'a321',1002);
+insert into request_class values ( 'b321',1002);
+insert into request_class values ( 'c321',1002);
+insert into request_class values ( 'd321',1002);
+insert into request_class values ( 'e321',1002);
+insert into request_class values ( 'f321',1002);
+insert into request_class values ( 'g321',1002);
+insert into request_class values ( 'h321',1002);
+insert into request_class values ( 'i321',1002);
+insert into request_class values ( 'j321',1002);
+insert into request_class values ( 'k321',1002);
+insert into request_class values ( 'l321',1002);
+insert into request_class values ( 'a321',1003);
+insert into request_class values ( 'b321',1003);
+insert into request_class values ( 'c321',1003);
+insert into request_class values ( 'd321',1003);
+insert into request_class values ( 'e321',1003);
+insert into request_class values ( 'f321',1003);
+insert into request_class values ( 'g321',1003);
+insert into request_class values ( 'h321',1003);
+insert into request_class values ( 'i321',1003);
+insert into request_class values ( 'j321',1003);
+insert into request_class values ( 'k321',1003);
+insert into request_class values ( 'l321',1003);
+insert into request_class values ( 'a321',1005);
+insert into request_class values ( 'b321',1005);
+insert into request_class values ( 'c321',1005);
+insert into request_class values ( 'd321',1005);
+insert into request_class values ( 'e321',1005);
+insert into request_class values ( 'f321',1005);
+insert into request_class values ( 'g321',1005);
+insert into request_class values ( 'h321',1005);
+insert into request_class values ( 'i321',1005);
+insert into request_class values ( 'j321',1005);
+insert into request_class values ( 'k321',1005);
+insert into request_class values ( 'l321',1005);
+insert into request_class values ( 'a321',1032);
+insert into request_class values ( 'b321',1032);
+insert into request_class values ( 'c321',1032);
+insert into request_class values ( 'd321',1032);
+insert into request_class values ( 'e321',1032);
+insert into request_class values ( 'f321',1032);
+insert into request_class values ( 'g321',1032);
+insert into request_class values ( 'h321',1032);
+insert into request_class values ( 'i321',1032);
+insert into request_class values ( 'j321',1032);
+insert into request_class values ( 'k321',1032);
+insert into request_class values ( 'l321',1032);
 insert into request_class values ( '321', 1001);
-insert into request_class values ( 'a321', 1001);
-insert into request_class values ( 'b321', 1001);
-insert into request_class values ( 'c321', 1001);
-insert into request_class values ( 'd321', 1001);
-insert into request_class values ( 'e321', 1001);
-insert into request_class values ( 'f321', 1001);
-insert into request_class values ( 'g321', 1001);
-insert into request_class values ( 'h321', 1001);
-insert into request_class values ( 'i321', 1001);
-insert into request_class values ( 'j321', 1001);
-insert into request_class values ( 'k321', 1001);
-insert into request_class values ( 'l321', 1001);
-insert into request_class values ( 'm321', 1001);
-insert into request_class values ( 'n321', 1001);
-insert into request_class values ( 'o321', 1001);
-insert into request_class values ( 'p321', 1001);
-insert into request_class values ( 'q321', 1001);
-insert into request_class values ( 'r321', 1001);
-insert into request_class values ( 's321', 1001);
-insert into request_class values ( 't321', 1001);
-insert into request_class values ( 'u321', 1001);
-insert into request_class values ( 'v321', 1001);
-insert into request_class values ( 'w321', 1001);
-insert into request_class values ( 'x321', 1001);
-insert into request_class values ( 'y321', 1001);
-insert into request_class values ( 'z321', 1001);
-insert into request_class values ( 'aa321', 1001);
-insert into request_class values ( 'bb321', 1001);
-insert into request_class values ( 'cc321', 1001);
-insert into request_class values ( 'dd321', 1001);
-insert into request_class values ( 'ee321', 1001);
-insert into request_class values ( 'ff321', 1001);
-insert into request_class values ( 'gg321', 1001);
-insert into request_class values ( 'hh321', 1001);
-insert into request_class values ( 'ii321', 1001);
-insert into request_class values ( 'jj321', 1001);
-insert into request_class values ( 'kk321', 1001);
-insert into request_class values ( 'll321', 1001);
-insert into request_class values ( 'mm321', 1001);
-
 insert into request_class values ( '321', 1002);
-insert into request_class values ( 'a321', 1001);
-insert into request_class values ( 'b321', 1001);
-insert into request_class values ( 'c321', 1001);
-insert into request_class values ( 'd321', 1001);
-insert into request_class values ( 'e321', 1001);
-insert into request_class values ( 'f321', 1001);
-insert into request_class values ( 'g321', 1001);
-insert into request_class values ( 'h321', 1001);
-insert into request_class values ( 'i321', 1001);
-insert into request_class values ( 'j321', 1001);
-insert into request_class values ( 'k321', 1001);
-insert into request_class values ( 'l321', 1001);
-insert into request_class values ( 'm321', 1001);
-insert into request_class values ( 'n321', 1001);
-insert into request_class values ( 'o321', 1001);
-insert into request_class values ( 'p321', 1001);
-
-insert into request_class values ( 'eee321', 1005);
-insert into request_class values ( 'fff321', 1005);
-insert into request_class values ( 'ggg321', 1005);
-insert into request_class values ( 'hhh321', 1005);
-insert into request_class values ( 'iii321', 1005);
-insert into request_class values ( 'jjj321', 1005);
-insert into request_class values ( 'kkk321', 1005);
-insert into request_class values ( 'lll321', 1005);
-insert into request_class values ( 'mmm321', 1005);
-insert into request_class values ( 'nnn321', 1005);
-insert into request_class values ( 'ooo321', 1005);
-insert into request_class values ( 'ppp321', 1005);
-insert into request_class values ( 'qqq321', 1005);
-insert into request_class values ( 'rrr321', 1005);
-insert into request_class values ( 'sss321', 1005);
-insert into request_class values ( 'ttt321', 1005);
-insert into request_class values ( 'uuu321', 1005);
-insert into request_class values ( 'vvv321', 1005);
-insert into request_class values ( 'www321', 1005);
-insert into request_class values ( 'xxx321', 1005);
-
+insert into request_class values ( '321', 1003);
+insert into request_class values ( '321', 1004);
+insert into request_class values ( '321', 1005);
+insert into request_class values ( '321', 1006);
+insert into request_class values ( '321', 1007);
+insert into request_class values ( '321', 1008);
+insert into request_class values ( '321', 1009);
+insert into request_class values ( '321', 1010);
+insert into request_class values ( '321', 1011);
+insert into request_class values ( '321', 1012);
+insert into request_class values ( '321', 1013);
+insert into request_class values ( '321', 1014);
+insert into request_class values ( '321', 1015);
 insert into request_class values ( '321', 1016);
-insert into request_class values ( 'a321', 1016);
-insert into request_class values ( 'b321', 1016);
-insert into request_class values ( 'c321', 1016);
-insert into request_class values ( 'd321', 1016);
-insert into request_class values ( 'e321', 1016);
-insert into request_class values ( 'f321', 1016);
-insert into request_class values ( 'g321', 1016);
-insert into request_class values ( 'h321', 1016);
-insert into request_class values ( 'i321', 1016);
-insert into request_class values ( 'j321', 1016);
-insert into request_class values ( 'k321', 1016);
-insert into request_class values ( 'l321', 1016);
-insert into request_class values ( 'm321', 1016);
-insert into request_class values ( 'n321', 1016);
-insert into request_class values ( 'o321', 1016);
-insert into request_class values ( 'p321', 1016);
-insert into request_class values ( 'q321', 1016);
-insert into request_class values ( 'r321', 1016);
-insert into request_class values ( 's321', 1016);
-insert into request_class values ( 't321', 1016);
-insert into request_class values ( 'u321', 1016);
-insert into request_class values ( 'v321', 1016);
-insert into request_class values ( 'w321', 1016);
-insert into request_class values ( 'x321', 1016);
-insert into request_class values ( 'y321', 1016);
-insert into request_class values ( 'z321', 1016);
-insert into request_class values ( 'aa321', 1016);
-insert into request_class values ( 'bb321', 1016);
-
 insert into request_class values ( '321', 1017);
-insert into request_class values ( 'a321', 1017);
-insert into request_class values ( 'b321', 1017);
-insert into request_class values ( 'c321', 1017);
-insert into request_class values ( 'd321', 1017);
-insert into request_class values ( 'e321', 1017);
-insert into request_class values ( 'f321', 1017);
-insert into request_class values ( 'g321', 1017);
-insert into request_class values ( 'h321', 1017);
-insert into request_class values ( 'i321', 1017);
-insert into request_class values ( 'j321', 1017);
-insert into request_class values ( 'k321', 1017);
-insert into request_class values ( 'l321', 1017);
-insert into request_class values ( 'm321', 1017);
-insert into request_class values ( 'n321', 1017);
-insert into request_class values ( 'o321', 1017);
-insert into request_class values ( 'p321', 1017);
-insert into request_class values ( 'q321', 1017);
-insert into request_class values ( 'r321', 1017);
-insert into request_class values ( 's321', 1017);
-insert into request_class values ( 't321', 1017);
-insert into request_class values ( 'u321', 1017);
-insert into request_class values ( 'v321', 1017);
-insert into request_class values ( 'w321', 1017);
-insert into request_class values ( 'x321', 1017);
-insert into request_class values ( 'y321', 1017);
-insert into request_class values ( 'z321', 1017);
-insert into request_class values ( 'aa321', 1017);
-insert into request_class values ( 'bb321', 1017);
-
-insert into request_class values ( '321', 1017);
-insert into request_class values ( 'dd321', 1017);
-insert into request_class values ( 'ee321', 1017);
-insert into request_class values ( 'ff321', 1017);
-insert into request_class values ( 'gg321', 1017);
-insert into request_class values ( 'hh321', 1017);
-insert into request_class values ( 'ii321', 1017);
-insert into request_class values ( 'jj321', 1017);
-insert into request_class values ( 'kk321', 1017);
-insert into request_class values ( 'll321', 1017);
-insert into request_class values ( 'mm321', 1017);
-insert into request_class values ( 'nn321', 1017);
-insert into request_class values ( 'mm321', 1017);
-insert into request_class values ( 'zz321', 1017);
-insert into request_class values ( 'xx321', 1017);
-insert into request_class values ( 'yy321', 1017);
-insert into request_class values ( 'ww321', 1017);
-insert into request_class values ( 'pp321', 1017);
-insert into request_class values ( 'oo321', 1017);
-insert into request_class values ( 'qq321', 1017);
+insert into request_class values ( '321', 1018);
+insert into request_class values ( '321', 1019);
+insert into request_class values ( '321', 1020);
+insert into request_class values ( '321', 1021);
+insert into request_class values ( '321', 1022);
+insert into request_class values ( '321', 1023);
+insert into request_class values ( '321', 1024);
+insert into request_class values ( '321', 1025);
+insert into request_class values ( '321', 1026);
+insert into request_class values ( '321', 1027);
+insert into request_class values ( '321', 1028);
+insert into request_class values ( '321', 1029);
+insert into request_class values ( '321', 1030);
+insert into request_class values ( '321', 1031);
+insert into request_class values ( '321', 1032);
