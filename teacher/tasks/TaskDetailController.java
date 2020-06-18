@@ -86,7 +86,7 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
+
 		// 과제명 표시 라벨링
 		setLabel();
 
@@ -108,7 +108,7 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 	private void setCombo() {
 		ObservableList<String> classTaskList = FXCollections.observableArrayList();
 		TaskDao tDao = new TaskDao();
-		int classNo =currentTask.getClassNo();
+		int classNo = currentTask.getClassNo();
 		System.out.println(classNo);
 		classTaskList = tDao.selectUserTaskComoboList(classNo);
 
@@ -127,8 +127,14 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 			int selectedNo = Integer
 					.valueOf(selectedCombo.substring(selectedCombo.indexOf("[") + 1, selectedCombo.lastIndexOf("]")));
 			System.out.println(selectedNo);
-			// 선택된 과제로 테이블 데이터변경
+			
+			// 선택된 과제로 데이터변경
 			taskNo = selectedNo;
+			currentTask = tDao.selectTask(taskNo);
+			
+			Platform.runLater(() -> {
+				setLabel();
+			});
 			refreshTable();
 		});
 	}
