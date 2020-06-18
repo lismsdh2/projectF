@@ -208,9 +208,11 @@ public class TaskDao {
 
 			if (subBtnNo == 1) { // 현재 과제
 				// c.teacher_id=123 and end_date >= sysdate();
-				sql += " and expire_date >= sysdate();";
+				System.out.println("현재과제");
+				sql += " t.expire_date >= curdate();";
 			} else if (subBtnNo == 2) { // 지난 과제
-				sql += " and expire_date < sysdate();";
+				System.out.println("지난과제");
+				sql += " t.expire_date < curdate();;";
 			}
 
 			pstmt = connection.prepareStatement(sql);
@@ -387,10 +389,10 @@ public class TaskDao {
 
 			if (subBtnNo == 1) { // 현재 과제
 				// select * from task t join class c on t.class_no = c.class_no where
-				// c.teacher_id=123 and end_date >= sysdate();
-				sql += " and expire_date >= sysdate();";
+				// c.teacher_id=123   AND t.expire_date >= curdate();
+				sql += " and expire_date >= curdate();";
 			} else if (subBtnNo == 2) { // 지난 과제
-				sql += " and expire_date < sysdate();";
+				sql += " and expire_date < curdate();";
 			}
 
 			pstmt = connection.prepareStatement(sql);
