@@ -143,7 +143,7 @@ public class EnrollmentPopupController implements Initializable {
 //			e.printStackTrace();
 			System.out.println("[SQL Error : " + e.getMessage() + "]");
 			System.out.println("강의 신청 실패");
-			Util.showAlert("", "이미 신청되어 있습니다", AlertType.ERROR);
+			Util.showAlert("", "수강 잔여 좌석이 없습니다.", AlertType.ERROR);
 		}
 	}
 	

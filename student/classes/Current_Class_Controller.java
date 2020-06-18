@@ -39,7 +39,7 @@ public class Current_Class_Controller implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 	
-		currentTableView();							//리스트 출력
+		currentTableView();									//리스트 출력
 		this.btnSearch.setOnAction(e-> handleBtnSearch());	//검색단추 클릭
 		//검색 시 엔터 효과
 		this.txtSearch.setOnKeyPressed(e ->{ 

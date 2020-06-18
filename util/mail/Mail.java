@@ -46,9 +46,10 @@ public class Mail implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {		
 	}
 	
-	
 	//메일 보내기
 	public void mailSend() { 
+	
+		//mail중복 체크
 		
 		
 		//세션생성

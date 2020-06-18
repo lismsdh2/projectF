@@ -73,7 +73,8 @@ public class EnrollmentDao {
 			       + "	left outer join user u"
 			       + "	  on c.teacher_id = u.user_id"
 			       + " where end_date >= curdate()"
-			       + " group by c.class_no;";
+			       + " group by c.class_no"
+			       + " order by c.start_date asc, c.end_date asc, c.class_no asc;";
 		
 		try {
 			pstmt = connection.prepareStatement(sql);
@@ -287,7 +288,8 @@ public class EnrollmentDao {
 				   + " where (end_date >= curdate())"
 				   + "   and (c.class_name like ?"
 				   + "    or u.user_name like ?)"
-				   + " group by c.class_no;";
+				   + " group by c.class_no"
+				   + " order by c.start_date asc, c.end_date asc, c.class_no asc;";
 		String like_word = "%"+search_word+"%";
 	
 		try {

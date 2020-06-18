@@ -77,7 +77,6 @@ public class AssignmentPopupController_no implements Initializable {
 			loader.setController(this);
 			this.popupStage.setScene(new Scene(loader.load()));
 			this.popupStage.setResizable(false);
-			this.popupStage.setAlwaysOnTop(true);
 			this.popupStage.setTitle("과제 제출");
 			this.popupStage.initModality(Modality.WINDOW_MODAL);
 			this.popupStage.initOwner(this.window);

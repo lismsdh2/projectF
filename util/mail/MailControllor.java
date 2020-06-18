@@ -1,7 +1,6 @@
 package util.mail;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -10,7 +9,6 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -55,7 +53,7 @@ public class MailControllor implements Initializable {
 		String user = "projectfexam@gmail.com";  				// 보내는 사람의 메일 계정
 		String username = "과제제출프로그램";					// 보내는 이
 		String password = "rhjhilsijzuyzune";   				// 패스워드 - 지메일은 access용 비밀번호 입력해야됨
-		String to_user = "";
+//		String to_user = "";
 		
 		//세션생성
 		//SMTP 서버 정보를 설정한다. 

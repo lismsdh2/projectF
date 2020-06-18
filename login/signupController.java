@@ -1,8 +1,9 @@
 ﻿package login;
 
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
+
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import DAO.BasicDao;
 import javafx.event.ActionEvent;
@@ -11,7 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -113,26 +113,38 @@ public class signupController implements Initializable {
 	
 	//이메일 인증
 	private void handleEmailCheck() {
+		
 
 		if(this.emailfield.getText().length() != 0 &&
 		   this.email2.getSelectionModel().getSelectedItem() != null) {
 
 			String address = emailfield.getText() + "@" + this.email2.getSelectionModel().getSelectedItem();
-			//이메일 입력 라벨 숨기기
-			this.emaillabel.setVisible(false);
-			
-			//인증번홉 입력칸 생성
-			this.certificationfield.setVisible(true);
-
-			//메일 값 넣기
-			this.mail = new Mail(this.namefield.getText(), address);
-			this.mail.mailSend();
-			this.checkMail = this.mail.getCheckMail();
-			if(this.checkMail) {
-				Alert alert = Util.showAlert("", "인증메일이 발송되었습니다.", AlertType.INFORMATION);
-				alert.showAndWait();
+			//이메일 중복 체크
+			if(bDao.checkDuplicateMail(address)) {
+				
+					Alert alert = Util.showAlert("", "가입된 이메일 주소가 있습니다.", AlertType.INFORMATION);
+					alert.showAndWait();
+				
+			} else {
+				
+				//이메일 입력 라벨 숨기기
+				this.emaillabel.setVisible(false);
+				
+				//인증번홉 입력칸 생성
+				this.certificationfield.setVisible(true);
+				
+				//메일 값 넣기
+				this.mail = new Mail(this.namefield.getText(), address);
+				this.mail.mailSend();
+				this.checkMail = this.mail.getCheckMail();
+				if(this.checkMail) {
+					Alert alert = Util.showAlert("", "인증메일이 발송되었습니다.", AlertType.INFORMATION);
+					alert.showAndWait();
+				}
+				this.certificationNum = this.mail.getCertificationNum();
+				System.out.println(this.certificationNum);
 			}
-			this.certificationNum = this.mail.getCertificationNum();
+			
 		} else {
 			
 			this.emaillabel.setText("이메일을 입력해주세요.");
@@ -239,8 +251,8 @@ public class signupController implements Initializable {
 				alert.setContentText("인증메일발송버튼을 눌러 주세요.");
 			    alert.show();
 			    throw new Exception();
-			} else if(this.certificationNum.equals(certificationfield.getText())){
-				
+			} else if(!(this.certificationNum.equals(certificationfield.getText().toLowerCase()))){
+			
 				alert.setContentText("인증번호가 일치하지 않습니다.");
 			    alert.show();
 			    throw new Exception();
@@ -253,6 +265,10 @@ public class signupController implements Initializable {
 			
 			pop = (Stage)cancle.getScene().getWindow(); 
 	        pop.close();
+		}
+		catch (MySQLIntegrityConstraintViolationException e1) {
+			
+			System.out.println("이메일중복");
 		}
 		catch (Exception ex){
 			System.out.println("회원가입 실패");
