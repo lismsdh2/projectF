@@ -113,14 +113,17 @@ public class signupController implements Initializable {
 
 	//이메일 인증
 	private void handleEmailCheck() {
-	
+		Alert waitAlert = new Alert(AlertType.INFORMATION);
+		waitAlert.setContentText("인증메일을 보내는중입니다. 잠시만 기다려 주세요");
+		waitAlert.show();
+		
 		if(this.emailfield.getText().length() != 0 &&
 		   this.email2.getSelectionModel().getSelectedItem() != null) {
 
 			String address = emailfield.getText() + "@" + this.email2.getSelectionModel().getSelectedItem();
 			//이메일 중복 체크
 			if(bDao.checkDuplicateMail(address)) {
-				
+					waitAlert.close();
 					Alert alert = Util.showAlert("", "가입된 이메일 주소가 있습니다.", AlertType.INFORMATION);
 					alert.showAndWait();
 				
@@ -137,6 +140,7 @@ public class signupController implements Initializable {
 				this.mail.mailSend();
 				this.checkMail = this.mail.getCheckMail();
 				if(this.checkMail) {
+					waitAlert.close();
 					Alert alert = Util.showAlert("", "인증메일이 발송되었습니다.", AlertType.INFORMATION);
 					alert.showAndWait();
 				}
