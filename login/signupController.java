@@ -110,11 +110,10 @@ public class signupController implements Initializable {
 		System.out.println("학생으로 전환");
 		identityType=false;
 	}
-	
+
 	//이메일 인증
 	private void handleEmailCheck() {
-		
-
+	
 		if(this.emailfield.getText().length() != 0 &&
 		   this.email2.getSelectionModel().getSelectedItem() != null) {
 

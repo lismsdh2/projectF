@@ -50,7 +50,8 @@ public class AssignmentPopupController_yes implements Initializable {
 	@FXML private Label lblExpireDate;
 	@FXML private Label lblAttachedFilename;
 	@FXML private TextArea txtQuestion;
-	@FXML private Label lblAnswer;
+	@FXML private Label lblDescCount;
+	@FXML private TextArea txtAnswer;
 	@FXML private Label lblTaskFilename;
 	@FXML private Button btnDownload;
 	@FXML private Button btnSubmitFile;
@@ -97,6 +98,12 @@ public class AssignmentPopupController_yes implements Initializable {
 		this.txtTaskDesc.setWrapText(true);
 		//강좌설명 입력제한
 		this.txtTaskDesc.setEditable(false);
+		//답변 자동줄바꿈
+		this.txtAnswer.setWrapText(true);
+		//답변 입력제한
+		this.txtAnswer.setEditable(false);
+		//글자수 제한
+		Util.textLengthLimit(txtQuestion, lblDescCount, 5000);
 	}
 
 
@@ -127,7 +134,7 @@ public class AssignmentPopupController_yes implements Initializable {
 		this.lblExpireDate.setText(this.assign.getExpire_date().toString());					//과제 마감일
 		this.lblAttachedFilename.setText(this.assign.getAttachedFile_name());					//첨부파일명
 		this.txtQuestion.setText(this.assign.getTaskQuestion());								//문의사항
-		this.lblAnswer.setText(this.assign.getTaskAnswer());									//답변
+		this.txtAnswer.setText(this.assign.getTaskAnswer());									//답변
 		this.lblTaskFilename.setText(this.assign.getTaskFile_name());							//제출파일명
 		//과제설명 줄바꿈
 		this.txtTaskDesc.setWrapText(true);

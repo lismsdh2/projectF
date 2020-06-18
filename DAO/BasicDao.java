@@ -127,18 +127,17 @@ public class BasicDao {
 		}
 	}
 
-
-
-    //아이디 찾기
-    public void search_id(String name, String email, String phone, boolean type) {
-    	
-		//DB연결
-		connectionJDBC();
-		
-    	String sql = "select user_id, user_name, email, phoneNum from student where user_name = ? and email=? and phoneNum = ?;";
-    	if(type==true) {
-    		sql = "select user_id, user_name, email, phoneNum from teacher where user_name = ? and email=? and phoneNum = ?;";
-    	}
+	//아이디 찾기 BasicDao
+    public String search_id(String name, String email, String phone, boolean type) {
+       
+      //DB연결
+      connectionJDBC();
+      
+      String success = "fail";
+       String sql = "select user_id, user_name, email, phoneNum from student where user_name = ? and email=? and phoneNum = ?;";
+       if(type==true) {
+          sql = "select user_id, user_name, email, phoneNum from teacher where user_name = ? and email=? and phoneNum = ?;";
+       }
  
         try {
             pstmt = connection.prepareStatement(sql);
@@ -148,30 +147,32 @@ public class BasicDao {
             rs = pstmt.executeQuery();
             
             if (rs.next()) {  
-            	String name2 = rs.getString("user_name");
-            	String email2 = rs.getString("email");
-            	String phone2 = rs.getString("phoneNum");
-            	
-            	if(name.equals(name2)&&email.equals(email2)&&phone.equals(phone2)) {
-            		
-            		String user_id = rs.getString("user_id");
-            	    
-            	    Alert alert =new Alert(AlertType.INFORMATION);
-            	    alert.setContentText("아이디 찾은 결과:"+user_id);
-            	    alert.show();
-            	}
+               String name2 = rs.getString("user_name");
+               String email2 = rs.getString("email");
+               String phone2 = rs.getString("phoneNum");
+               
+               if(name.equals(name2)&&email.equals(email2)&&phone.equals(phone2)) {
+                  
+                  String user_id = rs.getString("user_id");
+                   Alert alert =new Alert(AlertType.INFORMATION);
+                   alert.setContentText("아이디 찾은 결과:"+user_id);
+                   alert.show();
+                   success = "success";
+               }
+          return success;
             }
-		} catch (SQLException e) {
-//			e.printStackTrace();
-			System.out.println("[SQL Error : " + e.getMessage() + "]");
-			System.out.println("아이디 조회 실패");
-		} finally {
-	
-			//접속종료
-			ju.disconnect(connection, pstmt, rs);
-		}
-    }
+      } catch (SQLException e) {
+//         e.printStackTrace();
+         System.out.println("[SQL Error : " + e.getMessage() + "]");
+         System.out.println("아이디 조회 실패");
+      } finally {
    
+         //접속종료
+         ju.disconnect(connection, pstmt, rs);
+      }
+      return success;
+    } 
+    
     //비밀번호 찾기
     public String search_pass(String id, String name, String email, boolean type) {
         

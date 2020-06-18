@@ -50,7 +50,8 @@ public class AssignmentPopupController_no implements Initializable {
 	@FXML private Label lblExpireDate;
 	@FXML private Label lblAttachedFilename;
 	@FXML private TextArea txtQuestion;
-	@FXML private Label lblAnswer;
+	@FXML private Label lblDescCount;
+	@FXML private TextArea txtAnswer;
 	@FXML private Label lblTaskFilename;
 	@FXML private Button btnDownload;
 	@FXML private Button btnSubmitFile;
@@ -98,6 +99,12 @@ public class AssignmentPopupController_no implements Initializable {
 		this.txtTaskDesc.setWrapText(true);
 		//강좌설명 입력제한
 		this.txtTaskDesc.setEditable(false);
+		//답변 자동줄바꿈
+		this.txtAnswer.setWrapText(true);
+		//답변 입력제한
+		this.txtAnswer.setEditable(false);
+		//글자수 제한
+		Util.textLengthLimit(txtQuestion, lblDescCount, 5000);
 	}
 
 	//과제제출 상세화면 띄우기
@@ -126,7 +133,7 @@ public class AssignmentPopupController_no implements Initializable {
 		this.lblExpireDate.setText(this.assign.getExpire_date().toString());				//과제 마김일
 		this.lblAttachedFilename.setText(assign.getAttachedFile_name());				//첨부파일명
 		this.txtQuestion.setText("");												//문의사항
-		this.lblAnswer.setText("");													//답변
+		this.txtAnswer.setText("");													//답변
 		this.lblTaskFilename.setText(this.assign.getTaskFile_name());						//과제제출
 		//과제설명 줄바꿈
 		this.txtTaskDesc.setWrapText(true);
@@ -167,7 +174,7 @@ public class AssignmentPopupController_no implements Initializable {
 		
 		//파일 확장자 찾기
 		String fileName = assign.getAttachedFile_name();
-		int extension_idx = fileName.lastIndexOf(".")+1;			//마지막 위치의 앞 인덱스 리턴하기에 +1
+		int extension_idx = fileName.lastIndexOf(".")+1;			//마지막 위치의 앞 인덱스 리턴하기에 +1(또한 찾지못하면 -1을 리턴하기에 0으로 만들어줌)
 		String fileExtension = fileName.substring(extension_idx, fileName.length());
 		
 		//파일 저장DIALOG 띄우기 - 기존 파일 확장자로 바로 저장하기

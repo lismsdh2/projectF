@@ -89,21 +89,149 @@ public class AssignmentDao {
 		}
 	}
 	
-	//전체 과제 조회-현재
-	public ObservableList<AssignmentDto> assignment_selectAll(String stu_id){
+	//전체과제 탭 - 전체과제 조회
+	public ObservableList<AssignmentDto> assignment_selectAll_Full(String stu_id){
 		
 		//DB연결
 		connectionJDBC();
 	
 		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
-		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name, c.class_no"
+		String sql = "select t.task_no, t.task_name, st.tasksubmit, st.tasksubmit_date, t.expire_date, st.taskscore, t.perfect_score, c.class_name, c.class_no, c.start_date, c.end_date" 
+				   + "  from task t" 
+				   + " inner join request_class rc" 
+				   + "    on t.class_no = rc.class_no" 
+				   + " inner join class c" 
+				   + "    on c.class_no = t.class_no" 
+				   + "  left outer join submission_task st" 
+				   + "    on t.class_no = st.class_no"
+				   + "   and t.task_no = st.task_no" 
+				   + " where rc.student_id = ?;";
+		
+		try {
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, stu_id);
+			rs = pstmt.executeQuery();
+			int i = 0;										//연번을 나타내기 위한 변수
+		
+			while(rs.next()) {
+				i++;
+				AssignmentDto assign = new AssignmentDto();			//DTO객체가 밖에 있는 경우 출력값이 통일됨
+				//제출여부 표시(null이거나 N 이면 N표시, 아니면 Y표시)
+				String yorn = "";
+				if(rs.getString(3)==null ||rs.getString(3).equals("N")) {
+					yorn = "N";
+				} else {
+					yorn = "Y";
+				}
+				
+				assign.setTaskList_no(i);
+				assign.setTask_no(rs.getInt(1));
+				assign.setTask_name(rs.getString(2));
+				assign.setSubmitornot(yorn);
+				assign.setReg_date(rs.getDate(4));
+				assign.setExpire_date(rs.getDate(5));
+				if(rs.getInt(6)>=0) {									//내 점수를 확인해서 -1이면 점수책정여부(CheckTask값) false, 0이상이면 true
+					assign.setScore(rs.getInt(6)+" / "+rs.getInt(7));	//그리고 -1이면 점수를 0점으로 변환하여 화면에 출력
+				} else {
+					assign.setScore(0+" / "+rs.getInt(7));
+				}
+				assign.setClass_name(rs.getString(8));
+				assign.setClass_no(rs.getInt(9));
+				assign.setStart_date(rs.getDate(10));
+				assign.setEnd_date(rs.getDate(11));
+				list.add(assign);
+			}
+			System.out.println("전체 과제 조회 성공");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("전체 과제 조회 실패");
+		} finally {
+			//접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
+		return list;
+	}
+	
+	//전체과제탭 - 강의별 과제 조회
+	public ObservableList<AssignmentDto> assignment_selectAll_Full(int class_no, String stu_id){
+		
+		//DB연결
+		connectionJDBC();
+	
+		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
+		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name, c.class_no, c.start_date, c.end_date"
 				   + "  from task t"
 				   + " inner join class c"
 				   + "    on c.class_no = t.class_no"
 				   + "  left outer join submission_task ts"
 				   + "    on t.task_no = ts.task_no"
 				   + "   and ts.student_id = ?"
-				   + " where (t.expire_date >= curdate())"
+				   + " where t.class_no = ?;";
+		
+		try {
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, stu_id);
+			pstmt.setInt(2, class_no);
+			rs = pstmt.executeQuery();
+			int i = 0;												//연번을 나타내기 위한 변수
+		
+			while(rs.next()) {
+				i++;
+				AssignmentDto assign = new AssignmentDto();			//DTO객체가 밖에 있는 경우 출력값이 통일됨
+				//제출여부 표시(null이거나 N 이면 N표시, 아니면 Y표시)
+				String yorn = "";
+				if(rs.getString(3)==null ||rs.getString(3).equals("N")) {
+					yorn = "N";
+				} else {
+					yorn = "Y";
+				}
+				
+				assign.setTaskList_no(i);
+				assign.setTask_no(rs.getInt(1));
+				assign.setTask_name(rs.getString(2));
+				assign.setSubmitornot(yorn);
+				assign.setReg_date(rs.getDate(4));
+				assign.setExpire_date(rs.getDate(5));
+				if(rs.getInt(6)>=0) {								//내 점수를 확인해서 -1이면 점수책정여부(CheckTask값) false, 0이상이면 true
+					assign.setScore(rs.getInt(6)+" / "+rs.getInt(7));//그리고 -1이면 점수를 0점으로 변환하여 화면에 출력
+				} else {
+					assign.setScore(0+" / "+rs.getInt(7));
+				}
+				assign.setClass_name(rs.getString(8));
+				assign.setClass_no(rs.getInt(9));
+				assign.setStart_date(rs.getDate(10));
+				assign.setEnd_date(rs.getDate(11));
+				list.add(assign);
+			}
+			System.out.println("전체 과제 조회 성공");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("전체 과제 조회 실패");
+		} finally {
+			//접속종료
+			ju.disconnect(connection, pstmt, rs);
+		}
+		return list;
+	}
+	
+	//진행중 과제 탭 - 전체과제
+	public ObservableList<AssignmentDto> assignment_selectAll(String stu_id){
+		
+		//DB연결
+		connectionJDBC();
+	
+		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
+		String sql = "select t.task_no, t.task_name, st.tasksubmit, st.tasksubmit_date, t.expire_date, st.taskscore, t.perfect_score, c.class_name, c.class_no, c.start_date, c.end_date" 
+				   + "  from task t" 
+				   + " inner join request_class rc" 
+				   + "    on t.class_no = rc.class_no" 
+				   + " inner join class c" 
+				   + "    on c.class_no = t.class_no" 
+				   + "  left outer join submission_task st" 
+				   + "    on t.class_no = st.class_no"
+				   + "   and t.task_no = st.task_no" 
+				   + " where rc.student_id = ?"
+				   + "   and (t.expire_date >= curdate())"
 				   + "   and (c.start_date < curdate()"
 				   + "   and c.end_date > curdate())"
 				   + " order by t.expire_date, c.class_name, t.task_name;";
@@ -151,7 +279,7 @@ public class AssignmentDao {
 		return list;
 	}
 	
-	//강의별 과제 조회-현재
+	//진행 중 과제 탭 - 강의별
 	public ObservableList<AssignmentDto> assignment_selectAll(int class_no, String stu_id){
 		
 		//DB연결
@@ -215,129 +343,7 @@ public class AssignmentDao {
 		return list;
 	}
 	
-	//과제 조회-전체
-	public ObservableList<AssignmentDto> assignment_selectAll_Full(String stu_id){
-		
-		//DB연결
-		connectionJDBC();
 	
-		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
-		String sql = "select t.task_no, t.task_name, st.tasksubmit, st.tasksubmit_date, t.expire_date, st.taskscore, t.perfect_score, c.class_name, c.class_no, c.start_date, c.end_date" 
-				   + "  from task t" 
-				   + " inner join request_class rc" 
-				   + "    on t.class_no = rc.class_no" 
-				   + " inner join class c" 
-				   + "    on c.class_no = t.class_no" 
-				   + " left outer join submission_task st" 
-				   + "    on t.class_no = st.class_no" 
-				   + " where rc.student_id = ?;";
-		
-		try {
-			pstmt = connection.prepareStatement(sql);
-			pstmt.setString(1, stu_id);
-			rs = pstmt.executeQuery();
-			int i = 0;										//연번을 나타내기 위한 변수
-		
-			while(rs.next()) {
-				i++;
-				AssignmentDto assign = new AssignmentDto();			//DTO객체가 밖에 있는 경우 출력값이 통일됨
-				//제출여부 표시(null이거나 N 이면 N표시, 아니면 Y표시)
-				String yorn = "";
-				if(rs.getString(3)==null ||rs.getString(3).equals("N")) {
-					yorn = "N";
-				} else {
-					yorn = "Y";
-				}
-				
-				assign.setTaskList_no(i);
-				assign.setTask_no(rs.getInt(1));
-				assign.setTask_name(rs.getString(2));
-				assign.setSubmitornot(yorn);
-				assign.setReg_date(rs.getDate(4));
-				assign.setExpire_date(rs.getDate(5));
-				if(rs.getInt(6)>=0) {									//내 점수를 확인해서 -1이면 점수책정여부(CheckTask값) false, 0이상이면 true
-					assign.setScore(rs.getInt(6)+" / "+rs.getInt(7));	//그리고 -1이면 점수를 0점으로 변환하여 화면에 출력
-				} else {
-					assign.setScore(0+" / "+rs.getInt(7));
-				}
-				assign.setClass_name(rs.getString(8));
-				assign.setClass_no(rs.getInt(9));
-				assign.setStart_date(rs.getDate(10));
-				assign.setEnd_date(rs.getDate(11));
-				list.add(assign);
-			}
-			System.out.println("전체 과제 조회 성공");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("전체 과제 조회 실패");
-		} finally {
-			//접속종료
-			ju.disconnect(connection, pstmt, rs);
-		}
-		return list;
-	}
-	
-	//강의별 과제 조회-전체
-	public ObservableList<AssignmentDto> assignment_selectAll_Full(int class_no, String stu_id){
-		
-		//DB연결
-		connectionJDBC();
-	
-		ObservableList<AssignmentDto> list = FXCollections.observableArrayList();
-		String sql = "select t.task_no, t.task_name, ts.tasksubmit, ts.tasksubmit_date, t.expire_date, ts.taskscore, t.perfect_score, c.class_name, c.class_no, c.start_date, c.end_date"
-				   + "  from task t"
-				   + " inner join class c"
-				   + "    on c.class_no = t.class_no"
-				   + "  left outer join submission_task ts"
-				   + "    on t.task_no = ts.task_no"
-				   + "   and ts.student_id = ?"
-				   + " where t.class_no = ?;";
-		
-		try {
-			pstmt = connection.prepareStatement(sql);
-			pstmt.setString(1, stu_id);
-			pstmt.setInt(2, class_no);
-			rs = pstmt.executeQuery();
-			int i = 0;												//연번을 나타내기 위한 변수
-		
-			while(rs.next()) {
-				i++;
-				AssignmentDto assign = new AssignmentDto();			//DTO객체가 밖에 있는 경우 출력값이 통일됨
-				//제출여부 표시(null이거나 N 이면 N표시, 아니면 Y표시)
-				String yorn = "";
-				if(rs.getString(3)==null ||rs.getString(3).equals("N")) {
-					yorn = "N";
-				} else {
-					yorn = "Y";
-				}
-				
-				assign.setTaskList_no(i);
-				assign.setTask_no(rs.getInt(1));
-				assign.setTask_name(rs.getString(2));
-				assign.setSubmitornot(yorn);
-				assign.setReg_date(rs.getDate(4));
-				assign.setExpire_date(rs.getDate(5));
-				if(rs.getInt(6)>=0) {								//내 점수를 확인해서 -1이면 점수책정여부(CheckTask값) false, 0이상이면 true
-					assign.setScore(rs.getInt(6)+" / "+rs.getInt(7));//그리고 -1이면 점수를 0점으로 변환하여 화면에 출력
-				} else {
-					assign.setScore(0+" / "+rs.getInt(7));
-				}
-				assign.setClass_name(rs.getString(8));
-				assign.setClass_no(rs.getInt(9));
-				assign.setStart_date(rs.getDate(10));
-				assign.setEnd_date(rs.getDate(11));
-				list.add(assign);
-			}
-			System.out.println("전체 과제 조회 성공");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("전체 과제 조회 실패");
-		} finally {
-			//접속종료
-			ju.disconnect(connection, pstmt, rs);
-		}
-		return list;
-	}
 	
 	//제출한 적이 있는 학생 데이터 조회
 	public AssignmentDto assignment_selectOne(int task_no, String stu_id) {
