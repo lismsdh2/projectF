@@ -58,6 +58,7 @@ public class AssignmentPopupController_no implements Initializable {
 	@FXML private Button btnDeleteFile;
 	@FXML private Button btnSubmit;
 	@FXML private Button btnCancle;
+	@FXML private Label lblFileSize;
 
 	private AssignmentDao aDao = new AssignmentDao();
 	private AssignmentDto assign = new AssignmentDto();
@@ -105,6 +106,8 @@ public class AssignmentPopupController_no implements Initializable {
 		this.txtAnswer.setEditable(false);
 		//글자수 제한
 		Util.textLengthLimit(txtQuestion, lblDescCount, 5000);
+		//파일크기 출력
+		this.lblFileSize.setVisible(true);
 	}
 
 	//과제제출 상세화면 띄우기
@@ -227,29 +230,37 @@ public class AssignmentPopupController_no implements Initializable {
 			//첨부할 파일 지정
 			File file = fileChooser.showOpenDialog(this.popupStage);
 		
-			if(file != null) {//취소단추 누를 때 예외방지
-				FileInputStream fis = new FileInputStream(file);
-				BufferedInputStream bis = new BufferedInputStream(fis);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				try {
-					
-					int data = 0;
-					byte[] readData = new byte[10000];
-					while((data = bis.read(readData))!= -1 ) {
+			if(file != null ) {//취소단추 누를 때 예외방지
+				
+				String sizeResult = Util.fileSizeCheck(file);			//파일용량체크
+				if(sizeResult != null) {
+					this.lblFileSize.setText("파일크기 : "+sizeResult);
+					FileInputStream fis = new FileInputStream(file);
+					BufferedInputStream bis = new BufferedInputStream(fis);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					try {
 						
-						baos.write(readData,0,data);
+						int data = 0;
+						byte[] readData = new byte[10000];
+						while((data = bis.read(readData))!= -1 ) {
+							
+							baos.write(readData,0,data);
+						}
+						System.out.println("파일 읽기 성공");
+					} catch (IOException e) {
+						
+						e.printStackTrace();
+						System.out.println("파일 읽기 실패");
 					}
-					System.out.println("파일 읽기 성공");
-				} catch (IOException e) {
+					this.assign.setTaskFile(baos.toByteArray());		//property에 넣기
+					String file_name = file.getName();					//파일명 출력
+					this.assign.setTaskFile_name(file_name);
+					this.lblTaskFilename.setText(file_name);
+					System.out.println("파일명 : " + file_name);
+				} else {
 					
-					e.printStackTrace();
-					System.out.println("파일 읽기 실패");
+					Util.showAlert("", "10MB 이하만 등록 가능합니다.", AlertType.ERROR);
 				}
-				this.assign.setTaskFile(baos.toByteArray());				//property에 넣기
-				String file_name = file.getName();					//파일명 출력
-				this.assign.setTaskFile_name(file_name);
-				this.lblTaskFilename.setText(file_name);
-				System.out.println("파일명 : " + file_name);
 			} 
 		} catch (FileNotFoundException e) {
 //			e.printStackTrace();
@@ -263,6 +274,7 @@ public class AssignmentPopupController_no implements Initializable {
 		this.assign.setTaskFile(null);
 		this.assign.setTaskFile_name(null);
 		this.lblTaskFilename.setText(null);
+		this.lblFileSize.setText(null);
 	}
 	
 	//제출 버튼
