@@ -35,8 +35,14 @@
             <Button id="btnFile" fx:id="btnFileDel" prefHeight="23.0" prefWidth="40.0" text="삭제" />
          </children>
       </HBox>
+      
+      <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
+         <children>
+            <Label fx:id="lblFileSize" />
+         </children>
+      </VBox>
 
-      <Button id="btnSubmit" fx:id="btnSubmit" prefWidth="100.0" text="등록" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+      <Button id="btnSubmit" fx:id="btnSubmit" prefWidth="100.0" text="등록" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
       <Button id="btnFile" fx:id="btnDateDel" prefHeight="23.0" prefWidth="40.0" text="삭제" GridPane.columnIndex="2" GridPane.rowIndex="4" />
    </children>
 

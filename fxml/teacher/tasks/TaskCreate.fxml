@@ -38,7 +38,13 @@
          </children>
       </HBox>
 
-      <Button id="btnSubmit" fx:id="btnSubmit" prefWidth="100.0" text="등록" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
+      <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
+         <children>
+            <Label fx:id="lblFileSize" />
+         </children>
+      </VBox>
+      
+      <Button id="btnSubmit" fx:id="btnSubmit" prefWidth="100.0" text="등록" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
       <Label text="강의명" GridPane.rowIndex="1" />
       <Label fx:id="txtClassName" prefHeight="15.0" prefWidth="318.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
     
