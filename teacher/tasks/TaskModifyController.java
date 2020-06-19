@@ -62,6 +62,8 @@ public class TaskModifyController implements Initializable {
 	private Label lblDesc;
 	@FXML
 	private Label lblTitle;
+	@FXML
+	private Label lblFileSize;
 
 	TaskDao tDao = new TaskDao();
 	int selectedTaskNo;
@@ -95,6 +97,7 @@ public class TaskModifyController implements Initializable {
 		btnFileDel.setOnAction(e -> {
 			arr = null;
 			txtFile.clear();
+			this.lblFileSize.setText(null);
 		});
 	}
 
@@ -109,38 +112,45 @@ public class TaskModifyController implements Initializable {
 
 		// 선택된 파일이 있을 경우
 		if (file != null) {
-			try {
-				FileInputStream fis = new FileInputStream(file);
-				BufferedInputStream bis = new BufferedInputStream(fis);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			String sizeResult = Util.fileSizeCheck(file);			//파일용량체크
+			if(sizeResult != null) {
+				try {
+					this.lblFileSize.setText("파일크기 : "+sizeResult);
+					FileInputStream fis = new FileInputStream(file);
+					BufferedInputStream bis = new BufferedInputStream(fis);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-				int data = 0;
-				byte[] readData = new byte[10000];
-				while ((data = bis.read(readData)) != -1) {
-					baos.write(readData, 0, data);
+					int data = 0;
+					byte[] readData = new byte[10000];
+					while ((data = bis.read(readData)) != -1) {
+						baos.write(readData, 0, data);
+					}
+
+					arr = baos.toByteArray();
+
+					String filePath = file.getPath();
+					System.out.println("selected file path : " + filePath);
+
+					String fileName = filePath.substring(filePath.lastIndexOf("\\") + 1, filePath.length());
+					System.out.println("selected file name : " + fileName);
+
+					txtFile.setText(fileName);
+
+					baos.close();
+					bis.close();
+					fis.close();
+					System.out.println("file write 성공");
+
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					System.out.println("파일 선택 오류");
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.out.println("file write 실패");
 				}
-
-				arr = baos.toByteArray();
-
-				String filePath = file.getPath();
-				System.out.println("selected file path : " + filePath);
-
-				String fileName = filePath.substring(filePath.lastIndexOf("\\") + 1, filePath.length());
-				System.out.println("selected file name : " + fileName);
-
-				txtFile.setText(fileName);
-
-				baos.close();
-				bis.close();
-				fis.close();
-				System.out.println("file write 성공");
-
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				System.out.println("파일 선택 오류");
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("file write 실패");
+			} else {
+				
+				Util.showAlert("", "10MB 이하만 등록 가능합니다.", AlertType.ERROR);
 			}
 		}
 
