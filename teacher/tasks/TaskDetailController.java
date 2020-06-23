@@ -1,6 +1,5 @@
 ﻿package teacher.tasks;
 
-import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Optional;
@@ -197,8 +196,8 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 					stage.setTitle("과제 확인");
 
 					// fmxl, controller
-					FXMLLoader loader = new FXMLLoader(
-							getClass().getResource("../../fxml/teacher/tasks/TaskMark.fxml"));
+//					FXMLLoader loader = new FXMLLoader(getClass().getResource("../../fxml/teacher/tasks/TaskMark.fxml"));
+					FXMLLoader loader = FXMLLoader.load(Class.forName("teacher.tasks.TaskDetailController").getResource("/fxml/teacher/tasks/TaskMark.fxml"));
 					loader.setController(new TaskMarkController(selectedTdDto));
 
 					Parent parent = loader.load();
@@ -228,7 +227,7 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 					Button btnCancel = (Button) parent.lookup("#btnCancel");
 					btnCancel.setOnMouseClicked(mouseEvent -> stage.close());
 
-				} catch (IOException e2) {
+				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
 			}
@@ -283,5 +282,4 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 			pbarAvg.setProgress(avg / pscore);
 		});
 	}
-
 }

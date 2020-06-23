@@ -126,5 +126,6 @@
             <Font size="11.0" />
          </font>
       </Label>
+	  <Label fx:id="lblTimer" layoutX="285.0" layoutY="478.0" text="00:00" textFill="RED" visible="false" />
    </children>
 </AnchorPane>

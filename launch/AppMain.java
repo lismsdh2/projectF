@@ -24,7 +24,13 @@ public class AppMain extends Application {
 
 	public void showLogin(Stage primaryStage) throws IOException {
 
-		Parent root = FXMLLoader.load(getClass().getResource("../fxml/login/login.fxml"));
+//		Parent root = FXMLLoader.load(getClass().getResource("../fxml/login/login.fxml"));
+		Parent root = null;
+		try {
+			root = FXMLLoader.load(Class.forName("launch.AppMain").getResource("/fxml/login/login.fxml"));
+		} catch (ClassNotFoundException e) {
+			System.out.println(e.getMessage());
+		} 
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("LOGIN");
 

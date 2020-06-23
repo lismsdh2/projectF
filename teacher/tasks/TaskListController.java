@@ -1,6 +1,5 @@
 ﻿package teacher.tasks;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -109,7 +108,8 @@ public class TaskListController extends Main_Master_Controller implements Initia
 			stage.setTitle("과제 생성");
 
 			// fxml 및 컨트롤러 연결
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../fxml/teacher/tasks/TaskCreate.fxml"));
+//			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../fxml/teacher/tasks/TaskCreate.fxml"));
+			FXMLLoader loader = FXMLLoader.load(Class.forName("teacher.tasks.TaskListController").getResource("/fxml/teacher/tasks/TaskCreate.fxml"));
 			loader.setController(new TaskCreateController(currentClass));
 			Parent parent = loader.load();
 			stage.setScene(new Scene(parent));
@@ -120,7 +120,7 @@ public class TaskListController extends Main_Master_Controller implements Initia
 			Button btn = (Button) parent.lookup("#btnSubmit");
 			btn.setOnMouseClicked(e -> refreshTable());
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -245,8 +245,8 @@ public class TaskListController extends Main_Master_Controller implements Initia
 					stage.setTitle("과제 수정");
 
 					// fmxl, controller
-					FXMLLoader loader = new FXMLLoader(
-							getClass().getResource("../../fxml/teacher/tasks/TaskModify.fxml"));
+//					FXMLLoader loader = new FXMLLoader( getClass().getResource("../../fxml/teacher/tasks/TaskModify.fxml"));
+					FXMLLoader loader = FXMLLoader.load(Class.forName("teacher.tasks.TaskDetailController").getResource("/fxml/teacher/tasks/TaskModify.fxml"));
 					loader.setController(new TaskModifyController(selectedReportNo));
 					Parent parent = loader.load();
 					stage.setScene(new Scene(parent));
@@ -269,10 +269,9 @@ public class TaskListController extends Main_Master_Controller implements Initia
 						if (btn.get().equals(ButtonType.CLOSE)) {
 							stage.close();
 						}
-
 					});
 
-				} catch (IOException e2) {
+				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
 			}

@@ -58,7 +58,7 @@ public class search_pass2_Controller implements Initializable {
 		}
 		catch (Exception ex){
 			System.out.println("비밀번호 찾기 실패");
-			ex.printStackTrace();
+			System.out.println(ex.getMessage());
 		}
 	}
 	

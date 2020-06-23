@@ -1,7 +1,7 @@
-﻿/*
+﻿package student.tasks.popup;
+/*
  * 작성자 : 도현호
  */
-package student.tasks.popup;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -75,15 +75,15 @@ public class AssignmentPopupController_no implements Initializable {
 		this.window = window;
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/tasks/assignment_popup.fxml"));
+//			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/tasks/assignment_popup.fxml"));
+			FXMLLoader loader = new FXMLLoader(Class.forName("student.tasks.popup.AssignmentPopupController_no").getResource("/fxml/student/tasks/assignment_popup.fxml"));
 			loader.setController(this);
 			this.popupStage.setScene(new Scene(loader.load()));
 			this.popupStage.setResizable(false);
 			this.popupStage.setTitle("과제 제출");
 			this.popupStage.initModality(Modality.WINDOW_MODAL);
 			this.popupStage.initOwner(this.window);
-		} catch (IOException e) {
-//			e.printStackTrace();
+		} catch (Exception e) {
 			System.out.println("과제제출(처음) 생성자 생성 실패");
 		}
 	}

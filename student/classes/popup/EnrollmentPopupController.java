@@ -3,7 +3,6 @@
  * 작성자 : 도현호
  */
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -53,7 +52,8 @@ public class EnrollmentPopupController implements Initializable {
 		this.popupStage = new Stage(StageStyle.UTILITY);
 		this.window = window;
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/classes/enrollment_popup.fxml"));
+//			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/classes/enrollment_popup.fxml"));
+			FXMLLoader loader = new FXMLLoader(Class.forName("student.classes.popup.EnrollmentPopupController").getResource("/fxml/student/classes/enrollment_popup.fxml"));
 			loader.setController(this);
 			this.anchorPane = (AnchorPane) loader.load();
 			this.popupStage.setScene(new Scene(anchorPane));
@@ -62,7 +62,7 @@ public class EnrollmentPopupController implements Initializable {
 			this.popupStage.initOwner(this.window);
 			
 			System.out.println("수강신청 화면 열기 성공");
-		} catch (IOException e) {
+		} catch (Exception e) {
 //			e.printStackTrace();
 			System.out.println("수강신청 화면 열기 실패");
 		}
@@ -87,7 +87,6 @@ public class EnrollmentPopupController implements Initializable {
 			} else {
 				handleBtnSubmit();						//수강신청
 			}
-			
 		});
 		this.btnCancle.setOnAction(e -> { handleBtnCancle(); });
 	}

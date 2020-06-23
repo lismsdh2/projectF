@@ -1,6 +1,5 @@
 ﻿package login;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -70,7 +69,6 @@ public class LoginController implements Initializable {
 			}
 		});
 		
-		
 	}
 
 	//교사버튼
@@ -108,18 +106,20 @@ public class LoginController implements Initializable {
 
 			if (user.gettype2()) { // 선생님일때 main_teacher.fxml
 				try {
-					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_teacher.fxml"));
+//					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_teacher.fxml"));
+					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_teacher.fxml"));
 					stage.setTitle("teacher_main");
 				} catch (Exception e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
 
 			} else { // 학생일때 main_student.fxml
 				try {
-					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_student.fxml"));
+//					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_student.fxml"));
+					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_student.fxml"));
 					stage.setTitle("student_main");
-				} catch (IOException e) {
-					e.printStackTrace();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
 				}
 			}
 
@@ -135,49 +135,52 @@ public class LoginController implements Initializable {
 	public void popupWindow(ActionEvent event) {
 
 	      try {
-	         Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/signup.fxml"));
+//	         Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/signup.fxml"));
+	         Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/signup.fxml"));
 	         Scene scene = new Scene(parent);
 	         Stage stage = new Stage();
 	         stage.setScene(scene);
 	         stage.show();
 	         
 	         System.out.println("팝업호출 성공");
-	      } catch (IOException e) {
+	      } catch (Exception e) {
 	         
-	         e.printStackTrace();
-	         System.out.println("팝업호출 실패");
+	    	  System.out.println(e.getMessage());
+	    	  System.out.println("팝업호출 실패");
 	      }
 	   }
 	
 	public void handleidsearch(ActionEvent e) {
 		try {
-	         Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_id.fxml"));
+//	         Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_id.fxml"));
+	         Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/search_id.fxml"));
 	         Scene scene = new Scene(parent);
 	         Stage stage = new Stage();
 	         stage.setScene(scene);
 	         stage.show();
 	         
 	         System.out.println("아이디 찾기 호출");
-	      } catch (IOException ex) {
+	      } catch (Exception e1) {
 	         
-	         ex.printStackTrace();
-	         System.out.println("아이디 찾기 호출 실패");
+	    	  System.out.println(e1.getMessage());
+	    	  System.out.println("아이디 찾기 호출 실패");
 	      }
 		
 	}
 	public void handlepasssearch(ActionEvent e) {
 		
 		try {
-			Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password.fxml"));
+//			Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password.fxml"));
+	        Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/search_password.fxml"));
 			Scene scene = new Scene(parent);
 			Stage stage = new Stage();
 			stage.setScene(scene);
 			stage.show();
 
 			System.out.println("비밀번호 찾기 호출");
-		} catch (IOException ex) {
+		} catch (Exception e1) {
 
-			ex.printStackTrace();
+			System.out.println(e1.getMessage());
 			System.out.println("비밀번호 찾기 호출 실패");
 		}
 	}

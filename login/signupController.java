@@ -2,10 +2,11 @@
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import DAO.BasicDao;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
@@ -14,110 +15,84 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import util.Mail;
 import util.Util;
-import util.mail.Mail;
 
 public class signupController implements Initializable {
-
-	@FXML
-	private TextField idfield;
-	@FXML
-	private TextField namefield;
-	@FXML
-	private PasswordField passfield;
-	@FXML
-	private PasswordField repassfield;
-	@FXML
-	private TextField emailfield;
-	@FXML
-	private TextField certificationfield;
-	@FXML
-	private ComboBox<String> combobox;
-	@FXML
-	private ComboBox<String> email2;
-	@FXML
-	private TextField phonefield1;
-	@FXML
-	private TextField phonefield2;
-	@FXML
-	private Button done;
-	@FXML
-	private Button cancle;
-	@FXML
-	private Button student;
-	@FXML
-	private Button teacher;
-	@FXML
-	private Button check;
-	@FXML
-	private Button btnCertification;
-	@FXML
-	private Label idlabel;
-	@FXML
-	private Label namelabel;
-	@FXML
-	private Label emaillabel;
-	@FXML
-	private Label lblCertification;
-	@FXML
-	private Label passlabel;
-	@FXML
-	private Label repasslabel;
-	@FXML
-	private Label numberlabel;
-	@FXML
-	private Label passchecklabel;
-	@FXML
-	private Label label;
-
+	
+	@FXML private TextField idfield;
+	@FXML private TextField namefield;
+	@FXML private PasswordField passfield;
+	@FXML private PasswordField repassfield;
+	@FXML private TextField emailfield;
+	@FXML private TextField certificationfield;
+	@FXML private ComboBox<String> combobox;
+	@FXML private ComboBox<String> email2;
+	@FXML private TextField phonefield1;
+	@FXML private TextField phonefield2;
+	@FXML private Button done;
+	@FXML private Button cancle; 
+	@FXML private Button student;
+	@FXML private Button teacher;
+	@FXML private Button check;
+	@FXML private Button btnCertification;
+	@FXML private Label idlabel;
+	@FXML private Label namelabel;
+	@FXML private Label emaillabel;
+	@FXML private Label lblCertification;
+	@FXML private Label lblCertification2;
+	@FXML private Label passlabel;
+	@FXML private Label repasslabel;
+	@FXML private Label numberlabel;
+	@FXML private Label passchecklabel;
+	@FXML private Label label;
+	@FXML private Label lblTimer;
+	
 	private Stage pop;
 	private int recheck;
 	private boolean identityType;
-	private boolean checkMail;
+	private boolean checkMail;						//인증번호 발송여부 체크
+	private boolean checkCertification;				//인증번호 일치여부 체크
+	private boolean isTimerRunning = false;			//타이머 플래그
+	private Timer timer;
+	private int timeLimit;							//sec
 	private String certificationNum;
 	private Mail mail;
 	BasicDao bDao = new BasicDao();
-	Alert alert = new Alert(AlertType.INFORMATION);
-
+	Alert alert =new Alert(AlertType.INFORMATION);
+	
 	public void initialize(URL location, ResourceBundle resources) {
-
-//		idlabel.setVisible(false);
-//		namelabel.setVisible(false);
-//		emaillabel.setVisible(false);
-//		passlabel.setVisible(false);
-//		repasslabel.setVisible(false);
-//		numberlabel.setVisible(false);
-//		passchecklabel.setVisible(false);
-
-		// 이메일 인증
+		
+		passchecklabel.setVisible(false);
+		
+		//이메일 인증
 		this.certificationfield.setVisible(false);
 		this.lblCertification.setVisible(false);
-		this.btnCertification.setOnAction(e -> {
-			handleEmailCheck();
-		});
-
-		done.setOnAction(e -> handledone(e));
-		cancle.setOnAction(e -> handlecancle(e));
-		student.setOnAction(e -> handlestudent(e));
-		teacher.setOnAction(e -> handleteacher(e));
-		check.setOnAction(e -> handlecheck(e));
-
-		// 입력양식 제한
+		this.btnCertification.setOnAction(e -> {handleEmailCheck();});
+		
+		done.setOnAction(e->handledone(e));
+		cancle.setOnAction(e->handlecancle(e));
+		student.setOnAction(e->handlestudent(e));
+		teacher.setOnAction(e->handleteacher(e));
+		check.setOnAction(e->handlecheck(e));
+		
+		//입력양식 제한
 		idfield.textProperty().addListener(Util.alphabetListener(idfield));
 		passfield.textProperty().addListener(Util.pwListener(passfield));
 		repassfield.textProperty().addListener(Util.pwListener(repassfield));
 		emailfield.textProperty().addListener(Util.alphabetListener(emailfield));
-
-		// 숫자만 입력
+		
+		//숫자만 입력
 		phonefield1.textProperty().addListener(Util.numberOnlyListener(phonefield1));
 		phonefield2.textProperty().addListener(Util.numberOnlyListener(phonefield2));
-
-		// 글자수 제한
+		
+		//글자수 제한
 		phonefield1.textProperty().addListener(Util.textCountLimit(phonefield1, 4));
 		phonefield2.textProperty().addListener(Util.textCountLimit(phonefield2, 4));
 		idfield.textProperty().addListener(Util.textCountLimit(idfield, 20));
@@ -125,7 +100,7 @@ public class signupController implements Initializable {
 		emailfield.textProperty().addListener(Util.textCountLimit(emailfield, 30));
 		passfield.textProperty().addListener(Util.textCountLimit(passfield, 20));
 		repassfield.textProperty().addListener(Util.textCountLimit(repassfield, 20));
-
+		
 		// 미입력 필드 존재 시 label보이기
 		Util.showWarningLabel(idfield, idlabel);
 		Util.showWarningLabel(namefield, namelabel);
@@ -156,199 +131,275 @@ public class signupController implements Initializable {
 						|| phonefield2.getText().length() == 0),
 				combobox.valueProperty(), phonefield1.textProperty(), phonefield2.textProperty());
 		numberlabel.visibleProperty().bind(isPhoneEmpty);
-
+		
 	}
 
-	// 교사신분 선택
+	//교사신분 선택
 	public void handleteacher(ActionEvent e) {
 		System.out.println("교사로 전환");
-		identityType = true;
+		identityType=true;
 	}
 
-	// 학생신분 선택
+	//학생신분 선택
 	public void handlestudent(ActionEvent e) {
 		System.out.println("학생으로 전환");
-		identityType = false;
+		identityType=false;
 	}
 
-	// 이메일 인증
+	//이메일 인증
 	private void handleEmailCheck() {
-		Alert waitAlert = new Alert(AlertType.INFORMATION);
-		waitAlert.setContentText("인증메일을 보내는중입니다. 잠시만 기다려 주세요");
-		waitAlert.show();
-
-		if (this.emailfield.getText().length() != 0 && this.email2.getSelectionModel().getSelectedItem() != null) {
+		
+		if(this.emailfield.getText().length() != 0 &&
+		   this.email2.getSelectionModel().getSelectedItem() != null) {
 
 			String address = emailfield.getText() + "@" + this.email2.getSelectionModel().getSelectedItem();
-			// 이메일 중복 체크
-			if (bDao.checkDuplicateMail(address)) {
-				waitAlert.close();
-				Alert alert = Util.showAlert("", "가입된 이메일 주소가 있습니다.", AlertType.INFORMATION);
-				alert.showAndWait();
-
+			//이메일 중복 체크
+			if(bDao.checkDuplicateMail(address)) {
+//					waitAlert.close();
+					Alert alert = Util.showAlert("", "가입된 이메일 주소가 있습니다.", AlertType.INFORMATION);
+					alert.showAndWait();
+				
 			} else {
-				// 인증번호 입력칸 생성
+				String txt = "인증메일 보내는 중";
+				Alert waitAlert = Util.showAlert("", txt, AlertType.NONE);
+				waitAlert.show();
+				
+				//인증번호 입력칸 생성
 				this.certificationfield.setVisible(true);
-				lblCertification.setVisible(true);
-				Util.showWarningLabel(certificationfield, lblCertification);
-
-				// 메일 값 넣기
+				this.lblCertification.setText("인증번호를 입력해주세요.");
+				
+				//메일 값 넣기
 				this.mail = new Mail(this.namefield.getText(), address);
 				this.mail.mailSend();
 				this.checkMail = this.mail.getCheckMail();
-				if (this.checkMail) {
-					waitAlert.close();
+				if(this.checkMail) {
+//					waitAlert.close();
 					Alert alert = Util.showAlert("", "인증메일이 발송되었습니다.", AlertType.INFORMATION);
 					alert.showAndWait();
 				}
+				new Thread(()-> {
+					
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException ex) {
+					}
+					Platform.runLater(() -> {
+						waitAlert.setResult(ButtonType.CANCEL);
+						waitAlert.close();
+					});
+					
+				}).start();
 				this.certificationNum = this.mail.getCertificationNum();
-				System.out.println(this.certificationNum);
+				//타이머
+				lblTimerSet();
+				
+				//인증번호 입력 안될 시 라벨
+				BooleanBinding isCertification = Bindings.createBooleanBinding(
+						() -> (this.certificationfield.isVisible() && this.certificationfield.getText().length() ==0 && !this.checkCertification),
+						this.certificationfield.textProperty());
+				this.lblCertification.visibleProperty().bind(isCertification);
+				this.certificationNum = this.mail.getCertificationNum();
+			
+				//버튼 이름 및 기능 변경
+				this.btnCertification.setText("확인");
+				this.btnCertification.setOnAction(e->{
+			
+					if(!this.isTimerRunning) {
+						
+						Alert alert = Util.showAlert("", "인증시간이 초과되었습니다.\n 다시 인증해주세요.", AlertType.INFORMATION);
+						alert.showAndWait();
+						this.btnCertification.setText("메일인증발송");
+						this.btnCertification.setOnAction(e1->{handleEmailCheck();});
+						this.lblTimer.setVisible(false);
+						
+					} else {
+						try {
+							if(this.checkMail && (this.certificationfield.getText().length()==0)) {
+							
+								this.lblCertification.setVisible(true);
+								throw new Exception();
+							} 
+							if(this.certificationfield.getText().length() != 0 &&
+									(!(this.certificationNum.equals(certificationfield.getText().toLowerCase())))){
+						
+								Util.showAlert("", "인증번호가 일치하지 않습니다.", AlertType.ERROR);
+								throw new Exception();
+							} 
+							this.checkCertification = true;
+							Alert alert = Util.showAlert("", "인증되었습니다.", AlertType.INFORMATION);
+							alert.showAndWait();
+						} catch (Exception e1) { }
+					}
+				});
 			}
-
 		}
 	}
 
-	// 완료버튼 선택
+	//완료버튼 선택
 	public void handledone(ActionEvent e) {
-//		idlabel.setVisible(false);
-//		namelabel.setVisible(false);
-//		emaillabel.setVisible(false);
-//		passlabel.setVisible(false);
-//		repasslabel.setVisible(false);
-//		numberlabel.setVisible(false);
-//		passchecklabel.setVisible(false);
-
 		try {
-//			// 아이디 입력 확인
-//			if (idfield.getText().length() == 0) {
-//				idlabel.setVisible(true);
-//			}
-//			// 이름 입력 확인
-//			if (namefield.getText().length() == 0) {
-//				namelabel.setVisible(true);
-//			}
-//			// 비밀번호 입력 확인
-//			if (passfield.getText().length() == 0) {
-//				passlabel.setVisible(true);
-//			}
-//			// 비밀번호 확인 입력 확인
-//			if (repassfield.getText().length() == 0) {
-//				repasslabel.setVisible(true);
-//			}
-//			// 이메일ID 입력 확인
-//			if (email2.getValue() == null) {
-//				emaillabel.setVisible(true);
-//			}
-//			// 이메일 주소 입력 확인
-//			if (emailfield.getText().length() == 0) {
-//				emaillabel.setVisible(true);
-//			}
-//			// 이메일 인증 번호 입력 확인
-//			if (certificationfield.getText().length() == 0) {
-//				lblCertification.setText("인증번호를 입력해주세요.");
-//				lblCertification.setVisible(true);
-//			}
-//			// 휴대폰번호 가운데 4자리 입력 확인
-//			if (phonefield1.getText().length() == 0) {
-//				numberlabel.setVisible(true);
-//			}
-//			// 휴대폰번호 마지막 4자리 입력 확인
-//			if (phonefield2.getText().length() == 0) {
-//				numberlabel.setVisible(true);
-//			}
-//			// 콤보박스 선택 확인
-//			if (combobox.getValue() == null) {
-//				numberlabel.setVisible(true);
-//			}
-
+			//아이디 입력 확인
+			if(idfield.getText().length()==0) {
+				idlabel.setVisible(true);
+			}
+			//이름 입력 확인
+			if(namefield.getText().length()==0) {
+				namelabel.setVisible(true);
+			}
+			//비밀번호 입력 확인
+			if(passfield.getText().length()==0) {
+				passlabel.setVisible(true);
+			}
+			//비밀번호 확인 입력 확인
+			if(repassfield.getText().length()==0) {
+				repasslabel.setVisible(true);
+			}
+			//이메일ID 입력 확인
+			if(email2.getValue()==null) {
+				emaillabel.setVisible(true);
+			}
+			//이메일 주소 입력 확인 
+			if(emailfield.getText().length()==0) {
+				emaillabel.setVisible(true);
+			}
+			//휴대폰번호 가운데 4자리 입력 확인
+			if(phonefield1.getText().length()==0) {
+				numberlabel.setVisible(true);
+			}
+			//휴대폰번호 마지막 4자리 입력 확인
+			if(phonefield2.getText().length()==0) {
+				numberlabel.setVisible(true);
+			}
+			//콤보박스 선택 확인
+			if(combobox.getValue()==null) {
+				numberlabel.setVisible(true);
+			}
+		
 			String id = idfield.getText();
-			String name = namefield.getText().trim();
+			String name = namefield.getText();
 			String pass1 = passfield.getText();
 			String pass2 = repassfield.getText();
-			String email = emailfield.getText() + "@" + (String) email2.getValue();
+			String email = emailfield.getText()+"@"+(String)email2.getValue();
 			String pass = passfield.getText();
 			String phone1 = phonefield1.getText();
 			String phone2 = phonefield2.getText();
 			String combo = (String) combobox.getValue();
-			String phone = combo + phone1 + phone2;
-
-			if (!(pass1.equals(pass2))) {
-//				repasslabel.setVisible(false);
-//				passchecklabel.setVisible(true);
+			String phone = combo+phone1+phone2;
+			
+			if(!(pass1.equals(pass2))) { 
+				repasslabel.setVisible(false);
+				passchecklabel.setVisible(true);
 				throw new Exception();
 			}
-
-			if (id.length() == 0 || name.length() == 0 || pass1.length() == 0 || pass2.length() == 0
-					|| email.length() == 0 || phone1.length() == 0 || phone2.length() == 0
-					|| combobox.getValue() == null || email2.getValue() == null) {
-
-				System.out.println("데이터가 없습니다.");
-				throw new Exception();
+			
+			if(id.length()==0 || name.length()==0 || pass1.length()==0 
+				|| pass2.length()==0 || email.length()==0 || phone1.length()==0 
+				  || phone2.length()==0 || combobox.getValue()==null || email2.getValue()==null){
+				
+			 System.out.println("데이터가 없습니다.");
+			 throw new Exception();
 			}
-
-			if (!(phonefield1.getText().length() == 4)) {
-				System.out.println("핸드폰 번호 4자리를 입력해 주세요.");
-				throw new Exception();
-			} else if (!(phonefield2.getText().length() == 4)) {
+			
+			if(!(phonefield1.getText().length()==4)) {
 				System.out.println("핸드폰 번호 4자리를 입력해 주세요.");
 				throw new Exception();
 			}
-			if (recheck == 0) { // 중복체크를 안 했을시
+			else if(!(phonefield2.getText().length()==4)) {
+				System.out.println("핸드폰 번호 4자리를 입력해 주세요.");
+				throw new Exception();
+			}
+			if(recheck==0) { //중복체크를 안 했을시
 				alert.setContentText("중복체크를 해 주세요.");
-				alert.show();
-				throw new Exception();
+			    alert.show();
+			    throw new Exception();
 			}
-
-			// 인증메일
-			if (!checkMail) {
+		
+			//인증메일발송여부
+			if(!this.checkMail) {
+				
 				alert.setContentText("인증메일발송버튼을 눌러 주세요.");
 				alert.show();
 				throw new Exception();
-			} else if (!(this.certificationNum.equals(certificationfield.getText().toLowerCase()))) {
-				alert.setContentText("인증번호가 일치하지 않습니다.");
+			} 
+			//메일 인증 여부
+			if(!this.checkCertification) {
+				
+				alert.setContentText("메일을 인증해주세요.");
 				alert.show();
 				throw new Exception();
 			}
 
-			bDao.insertBoard(id, pass, name, email, phone, identityType);
-
+			bDao.insertBoard(id, pass, name, email, phone ,identityType);	
+	
 			alert.setContentText("회원가입완료");
 			alert.show();
-
-			pop = (Stage) cancle.getScene().getWindow();
-			pop.close();
 			
-		} catch (MySQLIntegrityConstraintViolationException e1) {
-			Util.showAlert("회원가입 실패", "이미 존재하는 이메일입니다.", AlertType.ERROR);
-			System.out.println("이메일중복");
-			
-		} catch (Exception ex) {
-			Util.showAlert("회원가입 실패", "회원가입에 실패하였습니다.", AlertType.ERROR);
+			pop = (Stage)cancle.getScene().getWindow(); 
+	        pop.close();
+		} catch (Exception ex){
 			System.out.println("회원가입 실패");
 //			ex.printStackTrace();
 		}
 	}
+	
+	// 인증시간 제한 타이머 라벨링
+	private void lblTimerSet() {
+		lblTimer.setVisible(true);
 
-	// 취소버튼
-	public void handlecancle(ActionEvent e) {
-		pop = (Stage) cancle.getScene().getWindow(); // 버튼을 통해서 현재 스테이지를 알아냄
-		pop.close();
-	}
-
-	public void handlecheck(ActionEvent e) {
-
-		try {
-			String id = idfield.getText();
-			if (id.length() == 0) {
-				alert.setContentText("아이디를 입력해주세요.");
-				alert.show();
-				throw new Exception();
-			}
-			bDao.check(id);
-
-			recheck = 1;
-		} catch (Exception ex) {
-			System.out.println("회원가입 중복체크 에러");
+		// 실행중인 타이머가 있으면 취소시키고 새로실행
+		if (isTimerRunning) {
+			timer.cancel();
+//			System.out.println("타이머중지");
 		}
+
+		// 시간제한 (sec) -- 현재 3분30초 설정
+		timeLimit = 10;
+
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				isTimerRunning = true;				// 실행중에는 플래그 true
+
+				Platform.runLater(() -> {
+
+					timeLimit--;
+
+					String time = String.format("%02d", (timeLimit / 60)) + " : "
+							+ String.format("%02d", (timeLimit % 60));
+					lblTimer.setText(time);
+
+					if (timeLimit == 0) { 			// timeout되면
+						isTimerRunning = false; 	// 플래그 false
+						certificationNum = null; 	// 인증번호 리셋
+						timer.cancel();				// 타이머 취소
+//						System.out.println("timeout 후 인증번호 :" + certificationNum);
+					}
+				});
+			}
+		};
+
+		timer = new Timer();
+		timer.schedule(task, 1000, 1000);
 	}
+
+
+	//취소버튼 
+	public void handlecancle(ActionEvent e) {
+		pop = (Stage)cancle.getScene().getWindow(); // 버튼을 통해서 현재 스테이지를 알아냄
+        pop.close();
+	}
+    public void handlecheck(ActionEvent e) {
+		
+	    try {
+		String id = idfield.getText();
+		if(id.length()==0) {
+			 alert.setContentText("아이디를 입력해주세요.");
+			 alert.show();
+			 throw new Exception();
+		}
+		bDao.check(id);
+		
+		recheck=1;
+	   }catch(Exception ex) {System.out.println("회원가입 중복체크 에러");}
+     }
 }

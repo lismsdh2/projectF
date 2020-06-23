@@ -73,15 +73,15 @@ public class AssignmentPopupController_yes implements Initializable {
 		this.popupStage = new Stage(StageStyle.UTILITY);
 		this.window = window;
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/tasks/assignment_popup.fxml"));
+//			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../fxml/student/tasks/assignment_popup.fxml"));
+			FXMLLoader loader = new FXMLLoader(Class.forName("student.tasks.popup.AssignmentPopupController_yes").getResource("/fxml/student/tasks/assignment_popup.fxml"));
 			loader.setController(this);
 			this.popupStage.setScene(new Scene(loader.load()));
 			this.popupStage.setResizable(false);
 			this.popupStage.setTitle("과제 수정");
 			this.popupStage.initModality(Modality.WINDOW_MODAL);
 			this.popupStage.initOwner(this.window);
-		} catch (IOException e) {
-//			e.printStackTrace();
+		} catch (Exception e) {
 			System.out.println("과제제출(제출 후) 생성자 생성 실패");
 		}
 	}
@@ -105,7 +105,6 @@ public class AssignmentPopupController_yes implements Initializable {
 		//글자수 제한
 		Util.textLengthLimit(txtQuestion, lblDescCount, 5000);
 	}
-
 
 	//과제제출 상세화면 띄우기
 	public void showStage() {
