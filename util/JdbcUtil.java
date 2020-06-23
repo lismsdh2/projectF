@@ -9,33 +9,40 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javafx.fxml.FXMLLoader;
+
 /**
  * @author 도현호
  */
 public class JdbcUtil {
 
 	private Connection connection;
-	private Properties properties;
-	private String path;
+//	private Properties properties;
+//	private String path;
 	
 	public JdbcUtil() {
 
 		init();
 	}
+	
 	public void init() {
 		
 		//db연동을 위한 properties 읽기
 		try {
+			String driver = "com.mysql.jdbc.Driver";
+			String url = "jdbc:mysql://projectf.cqwdlyjz7pdl.ap-northeast-2.rds.amazonaws.com:3306/projectdb?useSSL=false";
+			String username = "admin";
+			String password = "12341234";
+//			path = Class.forName("util.JdbcUtil").getResource("mysql_connection/database.properties").getPath();
+//			//path = getClass().getResource("mysql_connection/database.properties").getPath();
+//			path = URLDecoder.decode(path, "UTF-8");
+//			properties = new Properties();
+//			properties.load(new FileReader(path));
 			
-			path = getClass().getResource("mysql_connection/database.properties").getPath();
-			path = URLDecoder.decode(path, "UTF-8");
-			properties = new Properties();
-			properties.load(new FileReader(path));
-			
-			String driver = properties.getProperty("driver");
-			String url = properties.getProperty("url");
-			String username = properties.getProperty("username");
-			String password = properties.getProperty("password");
+//			String driver = properties.getProperty("driver");
+//			String url = properties.getProperty("url");
+//			String username = properties.getProperty("username");
+//			String password = properties.getProperty("password");
 			
 			Class.forName(driver);		//driver 가져오기
 			connection = DriverManager.getConnection(url, username, password);
