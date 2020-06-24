@@ -1,15 +1,10 @@
 package util;
 
-import java.io.FileReader;
-import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
-
-import javafx.fxml.FXMLLoader;
 
 /**
  * @author 도현호
@@ -24,25 +19,25 @@ public class JdbcUtil {
 
 		init();
 	}
-	
 	public void init() {
 		
 		//db연동을 위한 properties 읽기
 		try {
-			String driver = "com.mysql.jdbc.Driver";
-			String url = "jdbc:mysql://projectf.cqwdlyjz7pdl.ap-northeast-2.rds.amazonaws.com:3306/projectdb?useSSL=false";
-			String username = "admin";
-			String password = "12341234";
+//			exe파일로 만들었을 때, properties를 읽지 못하기에 직접입력해야함	
 //			path = Class.forName("util.JdbcUtil").getResource("mysql_connection/database.properties").getPath();
-//			//path = getClass().getResource("mysql_connection/database.properties").getPath();
 //			path = URLDecoder.decode(path, "UTF-8");
 //			properties = new Properties();
 //			properties.load(new FileReader(path));
-			
+//			
 //			String driver = properties.getProperty("driver");
 //			String url = properties.getProperty("url");
 //			String username = properties.getProperty("username");
 //			String password = properties.getProperty("password");
+			
+			String driver = "com.mysql.jdbc.Driver";
+			String url = "jdbc:mysql://projectf.cqwdlyjz7pdl.ap-northeast-2.rds.amazonaws.com:3306/projectdb?useSSL=false";
+			String username = "admin";
+			String password = "12341234";
 			
 			Class.forName(driver);		//driver 가져오기
 			connection = DriverManager.getConnection(url, username, password);
