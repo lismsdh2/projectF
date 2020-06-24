@@ -38,30 +38,37 @@ public class Util {
 	}
 
 	// TextInputControl에 알파벳과 숫자만 오도록
-	public static ChangeListener<String> alphabetListener(TextInputControl textInputControl) {
-		return new ChangeListener<String>() {
+		public static ChangeListener<String> alphabetListener(TextInputControl textInputControl, Label lbl) {
+			return new ChangeListener<String>() {
 
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (!(newValue.matches("\\d*") || newValue.matches("[a-z]") || newValue.matches("[A-Z]"))) {
-					textInputControl.setText(newValue.replaceAll("[^\\d||a-z||A-Z]", ""));
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					if (!(newValue.matches("\\d*") || newValue.matches("[a-z]*") || newValue.matches("[A-Z]*"))) {
+						textInputControl.setText(newValue.replaceAll("[^\\d||a-z||A-Z]", ""));
+						lbl.setVisible(true);
+					} else {
+						lbl.setVisible(false);
+					}
 				}
-			}
-		};
-	}
+			};
+		}
 
-	// TextInputControl에 알파벳,숫자,특수문자만 오도록
-	public static ChangeListener<String> pwListener(TextInputControl textInputControl) {
-		return new ChangeListener<String>() {
+		// TextInputControl에 알파벳,숫자,특수문자만 오도록
+		public static ChangeListener<String> pwListener(TextInputControl textInputControl, Label lbl) {
+			return new ChangeListener<String>() {
 
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (!newValue.matches("[!-z]")) {
-					textInputControl.setText(newValue.replaceAll("[^!-z]", ""));
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					if (!newValue.matches("[!-z]*")) {
+						textInputControl.setText(newValue.replaceAll("[^!-z]", ""));
+						lbl.setVisible(true);
+					} else {
+						lbl.setVisible(false);
+					}
 				}
-			}
-		};
-	}
+
+			};
+		}
 
 	// TextInputControl에 글자 입력수 제한
 	public static ChangeListener<String> textCountLimit(TextInputControl textInputControl, int count) {

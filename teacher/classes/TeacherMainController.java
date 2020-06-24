@@ -187,9 +187,11 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							ClassDto class1 = cDao.selectClassOne(selectedClassNo);
 							
 							TextField txtClassName = (TextField) parent.lookup("#className");
+							Label lblClassName = (Label) parent.lookup("#lblclassname");
 							Label txtTeacherName = (Label) parent.lookup("#teacherName");
 							txtTeacherName.setText(username);
 							TextArea txtDescription = (TextArea) parent.lookup("#description");
+							Label lblClassDesc = (Label) parent.lookup("#lblclassdesc");
 							DatePicker localDateStartDate = (DatePicker) parent.lookup("#startDate");
 							DatePicker localDateEndDate = (DatePicker) parent.lookup("#endDate");
 							Label txtCurrentStudent = (Label) parent.lookup("#currentStudent");
@@ -198,9 +200,10 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							Button btnCancel = (Button) parent.lookup("#cancel");
 							
 							//글자수 입력제한
-							txtClassName.textProperty().addListener(Util.textCountLimit(txtClassName, 20));
 							txtLimitStudent.textProperty().addListener(Util.textCountLimit(txtLimitStudent, 9));
-							txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 5000));
+							//라벨에 글자수 표시
+							Util.textLengthLimit(txtClassName, lblClassName, 20);
+							Util.textLengthLimit(txtDescription, lblClassDesc, 5000);
 							//숫자만 입력가능
 							txtLimitStudent.textProperty().addListener(Util.numberOnlyListener(txtLimitStudent));
 							//상세정보 줄바꿈
@@ -414,18 +417,21 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		Parent parent = FXMLLoader.load(Class.forName("teacher.classes.TeacherMainController").getResource("/fxml/teacher/classes/add_class.fxml"));
 		
 		TextField txtClassName = (TextField) parent.lookup("#className");
+		Label lblClassName = (Label) parent.lookup("#lblclassname");
 		Label txtTeacherName = (Label) parent.lookup("#teacherName");
 		txtTeacherName.setText(username);
 		TextArea txtDescription = (TextArea) parent.lookup("#description");
+		Label lblClassDesc = (Label) parent.lookup("#lblclassdesc");
 		DatePicker localDateStartDate = (DatePicker) parent.lookup("#startDate");
 		DatePicker localDateEndDate = (DatePicker) parent.lookup("#endDate");
 		TextField txtLimitStudent = (TextField) parent.lookup("#limitStudent");
 		Button btnSave = (Button) parent.lookup("#save");
 		
 		//글자수 입력제한
-		txtClassName.textProperty().addListener(Util.textCountLimit(txtClassName, 20));
 		txtLimitStudent.textProperty().addListener(Util.textCountLimit(txtLimitStudent, 9));
-		txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 5000));
+		//라벨에 글자수 표시
+		Util.textLengthLimit(txtClassName, lblClassName, 20);
+		Util.textLengthLimit(txtDescription, lblClassDesc, 5000);
 		//숫자만 입력가능
 		txtLimitStudent.textProperty().addListener(Util.numberOnlyListener(txtLimitStudent));
 		//상세정보 줄바꿈

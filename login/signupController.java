@@ -30,7 +30,8 @@ public class signupController implements Initializable {
 	@FXML private TextField namefield;
 	@FXML private PasswordField passfield;
 	@FXML private PasswordField repassfield;
-	@FXML private TextField emailfield;
+	@FXML private TextField emailfield1;
+	@FXML private TextField emailfield2;
 	@FXML private TextField certificationfield;
 	@FXML private ComboBox<String> combobox;
 	@FXML private ComboBox<String> email2;
@@ -53,6 +54,10 @@ public class signupController implements Initializable {
 	@FXML private Label passchecklabel;
 	@FXML private Label label;
 	@FXML private Label lblTimer;
+	@FXML private Label idinputlabel;
+	@FXML private Label passinputlabel;
+	@FXML private Label repassinputlabel;
+	@FXML private Label emailinputlabel;
 	
 	private Stage pop;
 	private int recheck;
@@ -69,7 +74,12 @@ public class signupController implements Initializable {
 	
 	public void initialize(URL location, ResourceBundle resources) {
 		
+		emailfield2.setEditable(false);
 		passchecklabel.setVisible(false);
+		idinputlabel.setVisible(false);
+		passinputlabel.setVisible(false);
+		repassinputlabel.setVisible(false);
+		emailinputlabel.setVisible(false);
 		
 		//이메일 인증
 		this.certificationfield.setVisible(false);
@@ -81,12 +91,14 @@ public class signupController implements Initializable {
 		student.setOnAction(e->handlestudent(e));
 		teacher.setOnAction(e->handleteacher(e));
 		check.setOnAction(e->handlecheck(e));
+		email2.setOnAction(e -> handleCombobox());
 		
 		//입력양식 제한
-		idfield.textProperty().addListener(Util.alphabetListener(idfield));
-		passfield.textProperty().addListener(Util.pwListener(passfield));
-		repassfield.textProperty().addListener(Util.pwListener(repassfield));
-		emailfield.textProperty().addListener(Util.alphabetListener(emailfield));
+		idfield.textProperty().addListener(Util.alphabetListener(idfield,idinputlabel));
+		passfield.textProperty().addListener(Util.pwListener(passfield,passinputlabel));
+		repassfield.textProperty().addListener(Util.pwListener(repassfield,repassinputlabel));
+		emailfield1.textProperty().addListener(Util.pwListener(emailfield1,emailinputlabel));
+		emailfield2.textProperty().addListener(Util.pwListener(emailfield2,emailinputlabel));
 		
 		//숫자만 입력
 		phonefield1.textProperty().addListener(Util.numberOnlyListener(phonefield1));
@@ -97,7 +109,8 @@ public class signupController implements Initializable {
 		phonefield2.textProperty().addListener(Util.textCountLimit(phonefield2, 4));
 		idfield.textProperty().addListener(Util.textCountLimit(idfield, 20));
 		namefield.textProperty().addListener(Util.textCountLimit(namefield, 20));
-		emailfield.textProperty().addListener(Util.textCountLimit(emailfield, 30));
+		emailfield1.textProperty().addListener(Util.textCountLimit(emailfield1, 30));
+		emailfield2.textProperty().addListener(Util.textCountLimit(emailfield2, 18));
 		passfield.textProperty().addListener(Util.textCountLimit(passfield, 20));
 		repassfield.textProperty().addListener(Util.textCountLimit(repassfield, 20));
 		
@@ -120,9 +133,9 @@ public class signupController implements Initializable {
 
 		// 이메일 텍스트필드, 콤보박스 모두 입력 안될 시 라벨
 		BooleanBinding isEmailEmpty = Bindings.createBooleanBinding(
-				// 이메일 텍스트필드 비었거나 / 콤보박스 선택 안되면 true 리턴
-				() -> (emailfield.getText().length() == 0 || email2.getValue() == null), emailfield.textProperty(),
-				email2.valueProperty());
+				// 이메일 텍스트필드1,2 비었으면 true 리턴
+				() -> (emailfield1.getText().length() == 0 || emailfield2.getText().length() ==0 ), emailfield1.textProperty(),
+				emailfield2.textProperty());
 		emaillabel.visibleProperty().bind(isEmailEmpty); // true면 보이고 false면 lblWarning 안보이게
 
 		// 핸드폰 콤보, 텍스트필드 1,2 모두 입력 안될 시 라벨
@@ -146,13 +159,24 @@ public class signupController implements Initializable {
 		identityType=false;
 	}
 
+	//이메일 콤보박스 선택
+	public void handleCombobox() {
+		if(email2.getValue().equals("직접입력")) {
+			emailfield2.setEditable(true);
+			emailfield2.setText("");
+		} else {
+			emailfield2.setEditable(false);
+			String emailField2 = email2.getValue();	
+			emailfield2.setText(emailField2);
+		}
+	}
+	
 	//이메일 인증
 	private void handleEmailCheck() {
 		
-		if(this.emailfield.getText().length() != 0 &&
-		   this.email2.getSelectionModel().getSelectedItem() != null) {
+		if(this.emailfield1.getText().length() != 0 && this.emailfield2.getText().length() != 0) {
 
-			String address = emailfield.getText() + "@" + this.email2.getSelectionModel().getSelectedItem();
+			String address = emailfield1.getText() + "@" + emailfield2.getText();
 			//이메일 중복 체크
 			if(bDao.checkDuplicateMail(address)) {
 //					waitAlert.close();
@@ -259,7 +283,10 @@ public class signupController implements Initializable {
 				emaillabel.setVisible(true);
 			}
 			//이메일 주소 입력 확인 
-			if(emailfield.getText().length()==0) {
+			if(emailfield1.getText().length()==0) {
+				emaillabel.setVisible(true);
+			}
+			if(emailfield2.getText().length()==0) {
 				emaillabel.setVisible(true);
 			}
 			//휴대폰번호 가운데 4자리 입력 확인
@@ -279,7 +306,7 @@ public class signupController implements Initializable {
 			String name = namefield.getText();
 			String pass1 = passfield.getText();
 			String pass2 = repassfield.getText();
-			String email = emailfield.getText()+"@"+(String)email2.getValue();
+			String email = emailfield1.getText()+"@"+emailfield2.getText();
 			String pass = passfield.getText();
 			String phone1 = phonefield1.getText();
 			String phone2 = phonefield2.getText();
@@ -353,7 +380,7 @@ public class signupController implements Initializable {
 		}
 
 		// 시간제한 (sec) -- 현재 3분30초 설정
-		timeLimit = 10;
+		timeLimit = 210;
 
 		TimerTask task = new TimerTask() {
 			@Override

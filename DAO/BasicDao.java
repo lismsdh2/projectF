@@ -194,7 +194,7 @@ public class BasicDao {
               System.out.println(email);
               
               this.private_id=id;
-             this.private_type=type;
+              this.private_type=type;
               
               rs = pstmt.executeQuery();
               if (rs.next()) {  
@@ -207,7 +207,7 @@ public class BasicDao {
               if(name.equals(name2)&&email.equals(email2)&&id.equals(id2)) {
                  success="success";
                  try {
-                    Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password2.fxml"));
+                    Parent parent = FXMLLoader.load(getClass().getResource("/fxml/login/search_password2.fxml"));
                     Scene scene = new Scene(parent);
                     Stage stage = new Stage();
                     stage.setScene(scene);
@@ -234,12 +234,8 @@ public class BasicDao {
 
 		//DB연결
 		connectionJDBC();
-		String sql2 = "UPDATE student SET user_password =? WHERE user_id=?;";
-		if(this.private_type==true) {
-			
-			sql2 = "UPDATE teacher SET user_password =? WHERE user_id=?;";
-		}
-
+		String sql2 = "UPDATE user SET user_password =? WHERE user_id=?;";
+		
 		try {
 			pstmt = connection.prepareStatement(sql2);
 			pstmt.setString(1, pass);

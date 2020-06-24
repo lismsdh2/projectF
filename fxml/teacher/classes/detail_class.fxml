@@ -24,7 +24,7 @@
       <Separator layoutX="32.0" layoutY="132.0" prefHeight="3.0" prefWidth="303.0" />
       <Separator layoutX="32.0" layoutY="317.0" prefHeight="3.0" prefWidth="303.0" />
       <Label id="startDate" layoutX="121.0" layoutY="328.0" prefWidth="180.0" />
-      <Label layoutX="96.0" layoutY="366.0" text="~" />
+      <Label layoutX="97.0" layoutY="364.0" text="~" />
       <Label id="endDate" layoutX="121.0" layoutY="362.0" prefWidth="180.0" />
       <Separator layoutX="32.0" layoutY="395.0" prefHeight="3.0" prefWidth="303.0" />
       <Label layoutX="42.0" layoutY="415.0" text="수강인원" />
