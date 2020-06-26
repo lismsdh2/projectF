@@ -30,7 +30,7 @@
       
       <!-- 과제설명 -->
       <Label layoutX="15.0" layoutY="165.0" prefHeight="35.0" prefWidth="60.0" text="과제설명" />
-      <TextArea fx:id="txtDesc" layoutX="90.0" layoutY="165.0" prefHeight="100.0" prefWidth="245.0" />
+      <TextArea fx:id="txtDesc" layoutX="90.0" layoutY="165.0" prefHeight="100.0" prefWidth="245.0" wrapText="true"/>
       <Label fx:id="lblDescCount" alignment="CENTER_RIGHT" layoutX="245.0" layoutY="265.0" prefHeight="20.0" prefWidth="90.0" />
       
       <!-- 만점 점수 -->
