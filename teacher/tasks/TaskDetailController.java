@@ -27,7 +27,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -128,11 +127,11 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 			int selectedNo = Integer
 					.valueOf(selectedCombo.substring(selectedCombo.indexOf("[") + 1, selectedCombo.lastIndexOf("]")));
 			System.out.println(selectedNo);
-
+			
 			// 선택된 과제로 데이터변경
 			taskNo = selectedNo;
 			currentTask = tDao.selectTask(taskNo);
-
+			
 			Platform.runLater(() -> {
 				setLabel();
 			});
@@ -149,21 +148,16 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 		tcScore.setCellValueFactory(new PropertyValueFactory<>("colScore"));
 		tcMark.setCellValueFactory(new PropertyValueFactory<>("colMarkStatus"));
 		tcBtn.setCellValueFactory(new PropertyValueFactory<>("btnDetail"));
-
+		tcBtn.setCellFactory(setButton());
+		
 		//cell에 색상 넣어서 강조
 		setCellColor(tcSubmitStatus, "N", "Y", "highlightRed");
 		setCellColor(tcMark, "채점 전", "채점 완료", "highlightYellow");
-		
-//		tcSubmitStatus.setCellFactory(setCellHighlight1()); // 미제출 cell에 강조 css
-//		tcMark.setCellFactory(setCellHighlight()); // 미채점 cell에 강조 css
-//		tblView.setRowFactory(setRowHighlight()); // 미제출 row에 강조css
-
-		tcBtn.setCellFactory(setButton()); // 버튼생성
 
 		// 테이블 채우기
 		refreshTable();
 	}
-
+	
 	private void setCellColor(TableColumn<TaskDetailDto, String> col, String applyCellValue, String defaultCellValue, String styleClass) {
 
 		col.setCellFactory(new Callback<TableColumn<TaskDetailDto, String>, TableCell<TaskDetailDto, String>>() {
@@ -196,100 +190,7 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 
 		});
 	}
-
-//	// 채점여부에 따라 Cell에 강조Css styleClass 적용
-//	public Callback<TableColumn<TaskDetailDto, String>, TableCell<TaskDetailDto, String>> setCellHighlight1() {
-//		return tc -> {
-//			return new TableCell<TaskDetailDto, String>() {
-//				@Override
-//				protected void updateItem(String item, boolean empty) {
-//					super.updateItem(item, empty);
-//
-//					ObservableList<String> styles = getStyleClass();
-//
-//					if (item != null && !empty) {
-//						setText(item);
-//
-//						if (item.equals("N") && !styles.contains("highlightRed")) {
-//
-//							getStyleClass().remove("table-row-cell");
-//							getStyleClass().add("highlightRed");
-//
-//						} else if (item.equals("Y")) {
-//							styles.removeAll(Collections.singleton("highlightRed"));
-//						}
-//					}
-//				}
-//			};
-//		};
-//	}
-//
-//	// 채점여부에 따라 Cell에 강조Css styleClass 적용
-//	public Callback<TableColumn<TaskDetailDto, String>, TableCell<TaskDetailDto, String>> setCellHighlight() {
-//		return tc -> {
-//			return new TableCell<TaskDetailDto, String>() {
-//				@Override
-//				protected void updateItem(String item, boolean empty) {
-//					super.updateItem(item, empty);
-//
-//					ObservableList<String> styles = getStyleClass();
-//
-//					if (item != null && !empty) {
-//						setText(item);
-//
-//						if (item.equals("채점 전") && !styles.contains("highlightYellow")) {
-//
-//							getStyleClass().remove("table-row-cell");
-//							getStyleClass().add("highlightYellow");
-//
-//						} else if (item.equals("채점 완료")) {
-//							styles.removeAll(Collections.singleton("highlightYellow"));
-//						}
-//					}
-//				}
-//			};
-//		};
-//	}
-
-	// 제출상태의 Y/N에 따라 row에 강조 css styleClass 적용
-	public Callback<TableView<TaskDetailDto>, TableRow<TaskDetailDto>> setRowHighlight() {
-		return tbv -> {
-			return new TableRow<TaskDetailDto>() {
-				ObservableList<String> styles = getStyleClass();
-
-				@Override
-				protected void updateItem(TaskDetailDto item, boolean empty) {
-					super.updateItem(item, empty);
-					if (item != null && !empty) {
-						setItem(item);
-
-						if (item.getSubmitStatus().equals("N")) {
-							highlightRow(this);
-
-						} else if (item.getSubmitStatus().equals("Y")) {
-							unhighlightRow(this);
-						}
-					}
-
-				}
-
-				private void unhighlightRow(TableRow<TaskDetailDto> tableRow) {
-					if (!styles.contains("table-row-cell")) {
-						getStyleClass().add("table-row-cell");
-					}
-					styles.removeAll(Collections.singleton("highlightRed"));
-				}
-
-				private void highlightRow(TableRow<TaskDetailDto> tableRow) {
-					if (!styles.contains("highlightRed")) {
-						getStyleClass().remove("table-row-cell");
-						getStyleClass().add("highlightRed");
-					}
-				}
-
-			};
-		};
-	}
+	
 
 	// 상세보기 컬럼설정
 	private Callback<TableColumn<TaskDetailDto, Boolean>, TableCell<TaskDetailDto, Boolean>> setButton() {
@@ -335,8 +236,7 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 
 					// fmxl, controller
 //					FXMLLoader loader = new FXMLLoader(getClass().getResource("../../fxml/teacher/tasks/TaskMark.fxml"));
-					FXMLLoader loader = new FXMLLoader(Class.forName("teacher.tasks.TaskDetailController")
-							.getResource("/fxml/teacher/tasks/TaskMark.fxml"));
+					FXMLLoader loader = new FXMLLoader(Class.forName("teacher.tasks.TaskDetailController").getResource("/fxml/teacher/tasks/TaskMark.fxml"));
 					loader.setController(new TaskMarkController(selectedTdDto));
 
 					Parent parent = loader.load();

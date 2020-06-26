@@ -399,13 +399,15 @@ public class AssignmentDao {
 			if(rs.next()) {
 				assign.setTask_name(rs.getString(2));					// 과제명
 				assign.setTask_desc(rs.getString(3));					// 과제설명
-				if(rs.getInt(4)>=0) {									//내 점수를 확인해서 -1이면 점수책정여부(CheckTask값) false, 0이상이면 true
-					assign.setCheckTask(true);							//그리고 -1이면 점수를 0점으로 변환하여 화면에 출력
-					assign.setMyScore(rs.getInt(4));
-				} else {
+				if(rs.getInt(4)==-1||rs.getObject(4)==null){			//내 점수를 확인해서 -1이면 점수책정여부(CheckTask값) false, 0이상이면 true
+					System.out.println("aaaa"+rs.getInt(4));			//그리고 -1이면 점수를 0점으로 변환하여 화면에 출력
 					assign.setCheckTask(false);
 					assign.setMyScore(0);
-				}
+				} else if(rs.getInt(4)>=0) {							
+					System.out.println("aaaa"+rs.getInt(4));
+					assign.setCheckTask(true);							
+					assign.setMyScore(rs.getInt(4));
+				} 
 				assign.setPerfect_score(rs.getInt(5));					// 만점
 				assign.setScore(rs.getInt(4)+" / "+rs.getInt(5));		// 과제 점수 / 만점
 				assign.setExpire_date(rs.getDate(6));					// 제출기한

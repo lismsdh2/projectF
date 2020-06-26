@@ -19,41 +19,31 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 import util.Mail;
 import util.Util;
 
 public class search_pass_Controller implements Initializable {
 
-	@FXML
-	private TextField namefield;
-	@FXML
-	private TextField emailfield;
-	@FXML
-	private TextField idfield;
-	@FXML
-	private TextField certificationfield;
-	@FXML
-	private Button done;
-	@FXML
-	private Button cancle;
-	@FXML
-	private Button student;
-	@FXML
-	private Button teacher;
-	@FXML
-	private Button btnSendMail;
-	@FXML
-	private ComboBox<String> email2;
-	@FXML
-	private Label lblIdWarning;
-	@FXML
-	private Label lblNameWarning;
-	@FXML
-	private Label lblMailWarning;
-	@FXML
-	private Label lblCertificationWarning;
+	@FXML private TextField namefield;
+	@FXML private TextField emailfield1;
+	@FXML private TextField emailfield2;
+	@FXML private TextField idfield;
+	@FXML private TextField certificationfield;
+	@FXML private Button done;
+	@FXML private Button cancle;
+	@FXML private ToggleButton student;
+	@FXML private ToggleButton teacher;
+	@FXML private Button btnSendMail;
+	@FXML private ComboBox<String> email2;
+	@FXML private Label lblIdWarning;
+	@FXML private Label lblNameWarning;
+	@FXML private Label lblMailWarning;
+	@FXML private Label lblCertificationWarning;
 	@FXML private Label lblTimer;
+	@FXML private ToggleGroup tg_group;
 
 	private boolean type;
 	private Stage pop;
@@ -65,15 +55,23 @@ public class search_pass_Controller implements Initializable {
 	private boolean isTimerRunning = false;			//타이머 플래그
 	private Timer timer;
 	private int timeLimit;							//sec
-
+	
+	
 	public void initialize(URL location, ResourceBundle resources) {
 
+		//신분 버튼 그룹화
+		tg_group = new ToggleGroup();
+		student.setToggleGroup(tg_group);
+		teacher.setToggleGroup(tg_group);
+		
 		done.setOnAction(e -> handledone(e));
 		cancle.setOnAction(e -> handlecancle(e));
 		student.setOnAction(e -> handlestudent(e));
 		teacher.setOnAction(e -> handleteacher(e));
 		btnSendMail.setOnAction(e->{handleEmailCheck();});
+		email2.setOnAction(e -> handleCombobox());
 		
+		emailfield2.setEditable(false);
 		certificationfield.setVisible(false);
 		lblCertificationWarning.setVisible(false);
 		
@@ -81,26 +79,37 @@ public class search_pass_Controller implements Initializable {
 		Util.showWarningLabel(idfield, lblIdWarning);
 		Util.showWarningLabel(namefield, lblNameWarning);
 
+		// 이메일 텍스트필드, 콤보박스 모두 입력 안될 시 라벨
 		BooleanBinding isEmailEmpty = Bindings.createBooleanBinding(
-				// 이메일 텍스트필드 비었거나 / 콤보박스 선택 안되면 true 리턴
-				() -> (emailfield.getText().length() == 0 || email2.getValue() == null), emailfield.textProperty(),
-				email2.valueProperty());
-
+			// 이메일 텍스트필드1,2 비었으면 true 리턴
+			() -> (emailfield1.getText().length() == 0 || emailfield2.getText().length() ==0 ), emailfield1.textProperty(),
+			emailfield2.textProperty());
 		lblMailWarning.visibleProperty().bind(isEmailEmpty); // true면 보이고 false면 lblWarning 안보이게
-
+		
 	}
 	
+	//이메일 콤보박스 선택
+	public void handleCombobox() {
+		if(email2.getValue().equals("직접입력")) {
+			emailfield2.setEditable(true);
+			emailfield2.setText("");
+		} else {
+			emailfield2.setEditable(false);
+			String emailField2 = email2.getValue();	
+			emailfield2.setText(emailField2);
+		}
+	}
+		
 	//이메일 인증
 	private void handleEmailCheck() {
 		
-		if(this.emailfield.getText().length() != 0 &&
-		   this.email2.getSelectionModel().getSelectedItem() != null) {
+		if(this.emailfield1.getText().length() != 0 && this.emailfield2.getText().length() != 0) {
 			
 			String txt = "인증메일 보내는 중";
 			Alert waitAlert = Util.showAlert("", txt, AlertType.NONE);
 			waitAlert.show();
 
-			String address = emailfield.getText() + "@" + this.email2.getSelectionModel().getSelectedItem();
+			String address = emailfield1.getText() + "@" + emailfield2.getText();
 				
 			//인증번호 입력칸 생성
 			this.certificationfield.setVisible(true);
@@ -186,23 +195,36 @@ public class search_pass_Controller implements Initializable {
 		try {
 			String id = idfield.getText().trim();
 			String name = namefield.getText().trim();
-			String email = emailfield.getText().trim() + "@" + (String) email2.getValue();
+			String email = emailfield1.getText().trim() + "@" + emailfield2.getText().trim();
 			System.out.println(email);
 		
-			if(id.length() == 0) {
-				lblIdWarning.setVisible(true);
-			}
-			if(name.length() == 0) {
-				lblNameWarning.setVisible(true);
-			}
-			if(email.length() == 0 || email2.getValue() == null) {
-				lblMailWarning.setVisible(true);
-			}
-			if(id.length() == 0 || name.length() == 0 ||
-					email.length() == 0 || email2.getValue() == null ) {
-				
+			if (id.length() == 0 ) {
+				Util.showAlert("입력오류", "아이디를 입력해 주세요", AlertType.ERROR);
 				throw new Exception();
 			}
+			if(name.length() == 0) {
+				Util.showAlert("입력오류", "이름을 입력해 주세요", AlertType.ERROR);
+				throw new Exception();
+			}
+			if(emailfield1.getText().length() == 0 || emailfield2.getText().length() == 0) {
+				Util.showAlert("입력오류", "이메일을 입력해 주세요", AlertType.ERROR);
+				throw new Exception();
+			}
+			
+//			if(id.length() == 0) {
+//				lblIdWarning.setVisible(true);
+//			}
+//			if(name.length() == 0) {
+//				lblNameWarning.setVisible(true);
+//			}
+//			if(email.length() == 0 || email2.getValue() == null) {
+//				lblMailWarning.setVisible(true);
+//			}
+//			if(id.length() == 0 || name.length() == 0 ||
+//					email.length() == 0 || email2.getValue() == null ) {
+//				
+//				throw new Exception();
+//			}
 			
 			//인증메일
 			if(!this.checkMail) {

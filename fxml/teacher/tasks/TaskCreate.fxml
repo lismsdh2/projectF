@@ -1,78 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<!-- 
+ * 작성자 : 도현호
+ -->
+
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane alignment="CENTER" hgap="10.0" prefHeight="400.0" prefWidth="450.0" vgap="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-      <Label text="과제 등록" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-      <Label text="과제명" GridPane.rowIndex="2" />
-      <Label prefHeight="100.0" text="과제 내용" GridPane.rowIndex="3" />
-      <Label text="만점 점수" GridPane.rowIndex="4" />
-      <Label text="제출 기한" GridPane.rowIndex="5" />
-      <Label text="첨부파일" GridPane.rowIndex="6" />
-
-      <ComboBox fx:id="comboClassName" prefHeight="23.0" prefWidth="307.0" promptText="강의명을 선택해주세요." visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-      <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
-         <children>
-            <TextField id="txtReportName" fx:id="txtTitle" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-            <Label fx:id="lblTitleCount" />
-         </children>
-      </VBox>
-      <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
-         <children>
+<AnchorPane prefHeight="495.0" prefWidth="350.0" stylesheets="@../../../css/login/popup.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <!-- 제목 -->
+	  <Label alignment="CENTER" layoutX="143.0" layoutY="15.0" text="과제 등록">
+		 <font>
+            <Font size="16.0" />
+         </font>
+       </Label>
+      <!-- 강의명 -->
+      <Label layoutX="15.0" layoutY="55.0" prefHeight="35.0" prefWidth="60.0" text="강의명" />
+      <ComboBox fx:id="comboClassName" layoutX="90.0" layoutY="55.0" prefHeight="35.0" prefWidth="245.0" promptText="강의명을 선택해주세요." />
+      <Label fx:id="txtClassName" layoutX="90.0" layoutY="55.0" prefHeight="35.0" prefWidth="245.0" />
       
-            <TextArea id="txtReportDesc" fx:id="txtDesc" minHeight="150.0" prefWidth="214.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-            <Label fx:id="lblDescCount" />
-         </children>
-      </VBox>
-      <TextField id="txtPerfectScore" fx:id="txtPerfectScore" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-      <DatePicker id="dateExpire" fx:id="dateExpire" editable="false" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-      <TextField id="txtFileName" fx:id="txtFile" editable="false" prefHeight="23.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-      <HBox alignment="CENTER" spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
-         <children>
-            <Button id="btnFile" fx:id="btnFile" prefHeight="23.0" prefWidth="40.0" text="선택" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-            <Button id="btnFile" fx:id="btnFileDel" prefHeight="23.0" prefWidth="40.0" text="삭제" />
-         </children>
-      </HBox>
-
-      <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
-         <children>
-            <Label fx:id="lblFileSize" />
-         </children>
-      </VBox>
+      <!-- 과제명 -->
+      <Label layoutX="15.0" layoutY="105.0" prefHeight="35.0" prefWidth="60.0" text="과제명" />
+      <TextField id="field" fx:id="txtTitle" layoutX="90.0" layoutY="105.0" prefHeight="35.0" prefWidth="245.0" />
+      <Label fx:id="lblTitleCount" alignment="CENTER_RIGHT" layoutX="275.0" layoutY="140.0" prefHeight="20.0" prefWidth="60.0" />
       
-      <Button id="btnSubmit" fx:id="btnSubmit" prefWidth="100.0" text="등록" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
-      <Label text="강의명" GridPane.rowIndex="1" />
-      <Label fx:id="txtClassName" prefHeight="15.0" prefWidth="318.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-    
-      <HBox alignment="TOP_RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="5">
-         <children>
-            <Button id="btnFile" fx:id="btnDateDel" prefHeight="23.0" prefWidth="40.0" text="삭제" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-         </children>
-      </HBox>
+      <!-- 과제설명 -->
+      <Label layoutX="15.0" layoutY="165.0" prefHeight="35.0" prefWidth="60.0" text="과제설명" />
+      <TextArea fx:id="txtDesc" layoutX="90.0" layoutY="165.0" prefHeight="100.0" prefWidth="245.0" />
+      <Label fx:id="lblDescCount" alignment="CENTER_RIGHT" layoutX="245.0" layoutY="265.0" prefHeight="20.0" prefWidth="90.0" />
+      
+      <!-- 만점 점수 -->
+      <Label layoutX="15.0" layoutY="280.0" prefHeight="35.0" prefWidth="60.0" text="만점 점수" />
+      <TextField id="field" fx:id="txtPerfectScore" layoutX="90.0" layoutY="280.0" prefHeight="35.0" prefWidth="120.0" />
+      
+      <!-- 제출기한 --> 
+      <Label layoutX="14.0" layoutY="330.0" prefHeight="35.0" prefWidth="60.0" text="제출 기한" />
+      <DatePicker id="field" fx:id="dateExpire" layoutX="90.0" layoutY="330.0" prefHeight="35.0" prefWidth="150.0" />
+      <Button id="innerButton" fx:id="btnDateDel" layoutX="275.0" layoutY="330.0" prefHeight="35.0" prefWidth="60.0" text="삭제" />
+      
+      <!-- 첨부파일 -->
+      <Label layoutX="15.0" layoutY="380.0" prefHeight="35.0" prefWidth="60.0" text="첨부 파일" />
+      <TextField id="field" fx:id="txtFile" layoutX="90.0" layoutY="380.0" prefHeight="35.0" prefWidth="170.0" />
+      <Button id="innerButton" fx:id="btnFile" layoutX="275.0" layoutY="380.0" prefHeight="35.0" prefWidth="30" text="+" />
+      <Button id="innerButton" fx:id="btnFileDel" layoutX="305.0" layoutY="380.0" prefHeight="35.0" prefWidth="30" text="-" />
+      <Label fx:id="lblFileSize" layoutX="205.0" layoutY="415.0" prefHeight="20.0" prefWidth="130.0" />
+      
+      <!-- 버튼 -->
+      <Button id="btnSubmit" fx:id="btnSubmit" layoutX="15.0" layoutY="445.0" prefHeight="35.0" prefWidth="158.5" text="등록" />
+      <Label id="pipe" alignment="CENTER" layoutX="173.5" layoutY="445.0" prefHeight="35.0" prefWidth="3.0" text="|" />
+      <Button fx:id="btnCancle" layoutX="178.0" layoutY="445.0" prefHeight="35.0" prefWidth="158.5" text="취소" />
    </children>
-
-   <padding>
-      <Insets bottom="30.0" left="20.0" right="20.0" top="30.0" />
-   </padding>
-   
-   <columnConstraints>
-      <ColumnConstraints />
-      <ColumnConstraints />
-      <ColumnConstraints />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" />
-      <RowConstraints />
-      <RowConstraints />
-      <RowConstraints />
-      <RowConstraints />
-      <RowConstraints />
-      <RowConstraints />
-   </rowConstraints>
-   
-</GridPane>
+</AnchorPane>

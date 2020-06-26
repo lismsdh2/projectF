@@ -32,7 +32,7 @@ public class AppMain extends Application {
 			System.out.println(e.getMessage());
 		} 
 		Scene scene = new Scene(root);
-		primaryStage.setTitle("LOGIN");
+		primaryStage.setTitle("과제제출프로그램");
 
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);

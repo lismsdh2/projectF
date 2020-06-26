@@ -25,6 +25,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import util.Util;
 
 /**
@@ -54,6 +55,8 @@ public class TaskModifyController implements Initializable {
 	private Button btnSubmit;
 
 	@FXML
+	private Button btnCancle;
+	@FXML
 	private TextField txtTitle;
 
 	@FXML
@@ -80,7 +83,7 @@ public class TaskModifyController implements Initializable {
 		//입력길이 제한
 		Util.textLengthLimit(txtTitle, lblTitle, 20);
 		Util.textLengthLimit(txtDesc, lblDesc, 5000);
-
+		
 		// 숫자만 입력할 수 있도록 제한
 		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));
 
@@ -98,6 +101,10 @@ public class TaskModifyController implements Initializable {
 			arr = null;
 			txtFile.clear();
 			this.lblFileSize.setText(null);
+		});
+		btnCancle.setOnAction(e ->{
+			Stage stage = (Stage)btnCancle.getScene().getWindow();
+			stage.close();
 		});
 	}
 

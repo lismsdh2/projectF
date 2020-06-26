@@ -43,5 +43,4 @@ public class TaskSubMenuController implements Initializable {
 			Navigator.loadPages(Navigator.TEACHER_TASK_LIST);
 		});
 	}
-
 }

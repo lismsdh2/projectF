@@ -30,6 +30,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import launch.AppMain;
 import util.Util;
 
@@ -62,6 +63,8 @@ public class TaskCreateController implements Initializable {
 	@FXML
 	private Button btnSubmit;
 
+	@FXML
+	private Button btnCancle;
 	@FXML
 	private TextField txtTitle;
 
@@ -99,11 +102,9 @@ public class TaskCreateController implements Initializable {
 		// 콤보박스 클릭 시 강의선택
 		comboClassName.setOnAction(e -> handleCombobox());
 
-		// 글자 수 제한
+		// 글자 수 표시
 		Util.textLengthLimit(txtTitle, lblTitleCount, 20);
 		Util.textLengthLimit(txtDesc, lblDescCount, 5000);
-
-		// 글자 수 표시
 
 		// 점수필드 - 숫자만 입력할 수 있도록 제한
 		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));
@@ -122,6 +123,11 @@ public class TaskCreateController implements Initializable {
 			arr = null;
 			txtFile.clear();
 			lblFileSize.setText(null);
+		});
+		//취소버튼
+		btnCancle.setOnAction(e ->{
+			Stage stage = (Stage)btnCancle.getScene().getWindow();
+			stage.close();
 		});
 
 	}

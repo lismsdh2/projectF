@@ -18,8 +18,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import launch.AppMain;
 
@@ -32,13 +35,19 @@ public class LoginController implements Initializable {
 	@FXML private Button passsearch;
 	@FXML private Button signup;
 	@FXML private Button login;
-	@FXML private Button student;
-	@FXML private Button teacher;
+	@FXML private ToggleButton student;
+	@FXML private ToggleButton teacher;
+	@FXML private ToggleGroup tg_group;
 	private boolean type;
 	BasicDao bDao = new BasicDao();
 	
 	public void initialize(URL location, ResourceBundle resources) {
-	
+
+		//신분 버튼 그룹화
+		tg_group = new ToggleGroup();
+		student.setToggleGroup(tg_group);
+		teacher.setToggleGroup(tg_group);
+		
 		handleStudent();
 		login.setOnAction(e -> handleLogin(e));
 		signup.setOnAction(e->popupWindow(e));
@@ -72,19 +81,19 @@ public class LoginController implements Initializable {
 	}
 
 	//교사버튼
-	public void handleTeacher() {
+	private void handleTeacher() {
 		this.type=true;
 		System.out.println("교사로 전환");
 	}
 
 	//학생버튼
-	public void handleStudent() {
+	private void handleStudent() {
 		this.type=false;
 		System.out.println("학생으로 전환");
 	}
 	
 	//로그인버튼
-	public void handleLogin(Event event) {
+	private void handleLogin(Event event) {
 
 		String loginid = id.getText();
 		String loginpas = password.getText();
@@ -106,6 +115,7 @@ public class LoginController implements Initializable {
 
 			if (user.gettype2()) { // 선생님일때 main_teacher.fxml
 				try {
+					//properties를 사용안하면 getClass를 사용해도 예외 발생 안함.......
 //					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_teacher.fxml"));
 					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_teacher.fxml"));
 					stage.setTitle("teacher_main");
@@ -114,7 +124,8 @@ public class LoginController implements Initializable {
 				}
 
 			} else { // 학생일때 main_student.fxml
-				try {
+				try { 
+					//properties를 사용안하면 getClass를 사용해도 예외 발생 안함.......
 //					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_student.fxml"));
 					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_student.fxml"));
 					stage.setTitle("student_main");
@@ -123,12 +134,6 @@ public class LoginController implements Initializable {
 				}
 			}
 
-			try {
-				root.getStylesheets().add(Class.forName("login.LoginController").getResource("/css/main/main.css").toExternalForm());
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			stage.setScene(new Scene(root));
 			stage.setResizable(false);
 			stage.show();
@@ -138,42 +143,51 @@ public class LoginController implements Initializable {
 		}
 	}
 	
-	public void popupWindow(ActionEvent event) {
+	//회원가입
+	private void popupWindow(ActionEvent event) {
 
-	      try {
-//	         Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/signup.fxml"));
-	         Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/signup.fxml"));
-	         Scene scene = new Scene(parent);
-	         Stage stage = new Stage();
-	         stage.setScene(scene);
-	         stage.show();
-	         
-	         System.out.println("팝업호출 성공");
-	      } catch (Exception e) {
-	         
-	    	  System.out.println(e.getMessage());
-	    	  System.out.println("팝업호출 실패");
-	      }
-	   }
-	
-	public void handleidsearch(ActionEvent e) {
 		try {
-//	         Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_id.fxml"));
-	         Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/search_id.fxml"));
-	         Scene scene = new Scene(parent);
-	         Stage stage = new Stage();
-	         stage.setScene(scene);
-	         stage.show();
-	         
-	         System.out.println("아이디 찾기 호출");
-	      } catch (Exception e1) {
-	         
-	    	  System.out.println(e1.getMessage());
-	    	  System.out.println("아이디 찾기 호출 실패");
-	      }
-		
+//	        Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/signup.fxml"));
+			Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/signup.fxml"));
+			Scene scene = new Scene(parent);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			stage.setResizable(false);
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.initOwner(anchorPane.getScene().getWindow());
+			stage.show();
+
+			System.out.println("회원가입 호출 성공");
+		} catch (Exception e) {
+
+			System.out.println(e.getMessage());
+			System.out.println("회원가입 호출 실패");
+		}
 	}
-	public void handlepasssearch(ActionEvent e) {
+	//아이디 찾기
+	private void handleidsearch(ActionEvent e) {
+		try {
+//			Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_id.fxml"));
+			Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/search_id.fxml"));
+			Scene scene = new Scene(parent);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			stage.setResizable(false);
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.initOwner(anchorPane.getScene().getWindow());
+			stage.show();
+
+			System.out.println("아이디 찾기 호출");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			System.out.println(e1.getMessage());
+			System.out.println("아이디 찾기 호출 실패");
+		}
+
+	}
+	
+	//비밀번호 찾기
+	private void handlepasssearch(ActionEvent e) {
 		
 		try {
 //			Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password.fxml"));
@@ -181,6 +195,9 @@ public class LoginController implements Initializable {
 			Scene scene = new Scene(parent);
 			Stage stage = new Stage();
 			stage.setScene(scene);
+			stage.setResizable(false);
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.initOwner(anchorPane.getScene().getWindow());
 			stage.show();
 
 			System.out.println("비밀번호 찾기 호출");
