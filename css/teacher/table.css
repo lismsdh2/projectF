@@ -1,15 +1,16 @@
 /*글씨체 import */
 @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
+
+/* 
+ *  -fx-font-family: 'Do Hyeon', sans-serif;
+ *  -fx-font-family: 'Nanum Gothic', sans-serif;
+ * */
+
 .text {
-    -fx-font-family: 'Do Hyeon', sans-serif;
+   -fx-font-family: 'Nanum Gothic', sans-serif;
     -fx-font-size: 13;
 }
-
-.label{
-	-fx-font-family: 'Do Hyeon', sans-serif;
-    -fx-font-size: 13;
-}
-
 
 /* 배경 */
 AnchorPane {
@@ -91,10 +92,13 @@ Button:pressed {
 .table-view,
 .table-view:focused {
    -fx-background-color: transparent;
+  -fx-border-width: 0 0 1 0;
+	-fx-border-color: #EDEDED;
 }
 
 .table-view .column-header-background{
     -fx-background-color: linear-gradient(#131313 0.0%, #424141 100.0%);
+    -fx-pref-height: 30;
 }
 
 .table-view .column-header-background .label{

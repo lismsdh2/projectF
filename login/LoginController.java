@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -28,71 +29,81 @@ import launch.AppMain;
 
 public class LoginController implements Initializable {
 
-	@FXML private AnchorPane anchorPane;
-	@FXML private TextField id;
-	@FXML private PasswordField password;
-	@FXML private Button idsearch;
-	@FXML private Button passsearch;
-	@FXML private Button signup;
-	@FXML private Button login;
-	@FXML private ToggleButton student;
-	@FXML private ToggleButton teacher;
-	@FXML private ToggleGroup tg_group;
+	@FXML
+	private AnchorPane anchorPane;
+	@FXML
+	private TextField id;
+	@FXML
+	private PasswordField password;
+	@FXML
+	private Button idsearch;
+	@FXML
+	private Button passsearch;
+	@FXML
+	private Button signup;
+	@FXML
+	private Button login;
+	@FXML
+	private ToggleButton student;
+	@FXML
+	private ToggleButton teacher;
+	@FXML
+	private ToggleGroup tg_group;
 	private boolean type;
 	BasicDao bDao = new BasicDao();
-	
+
 	public void initialize(URL location, ResourceBundle resources) {
 
-		//신분 버튼 그룹화
+		// 신분 버튼 그룹화
 		tg_group = new ToggleGroup();
 		student.setToggleGroup(tg_group);
 		teacher.setToggleGroup(tg_group);
-		
+
 		handleStudent();
 		login.setOnAction(e -> handleLogin(e));
-		signup.setOnAction(e->popupWindow(e));
-		student.setOnAction(e->handleStudent());
-		teacher.setOnAction(e->handleTeacher());
-		idsearch.setOnAction(e->handleidsearch(e));
-		passsearch.setOnAction(e->handlepasssearch(e));
-		
-		id.setOnKeyPressed(e->{
-			
-			if(e.getCode() == KeyCode.F2) {				//F2 학생선택
+		signup.setOnAction(e -> popupWindow(e));
+		student.setOnAction(e -> handleStudent());
+		teacher.setOnAction(e -> handleTeacher());
+		idsearch.setOnAction(e -> handleidsearch(e));
+		passsearch.setOnAction(e -> handlepasssearch(e));
+
+		id.setOnKeyPressed(e -> {
+
+			if (e.getCode() == KeyCode.F2) { // F2 학생선택
 				handleStudent();
-			}else if(e.getCode() == KeyCode.F3) {		//F3 교사선택
+			} else if (e.getCode() == KeyCode.F3) { // F3 교사선택
 				handleTeacher();
-			}else if(e.getCode() == KeyCode.ENTER) {	//로그인 시 엔터 효과
+			} else if (e.getCode() == KeyCode.ENTER) { // 로그인 시 엔터 효과
 				handleLogin(e);
 			}
 		});
-		
-		password.setOnKeyPressed(e->{
-			
-			if(e.getCode() == KeyCode.F2) {				//F2 학생선택
+
+		password.setOnKeyPressed(e -> {
+
+			if (e.getCode() == KeyCode.F2) { // F2 학생선택
 				handleStudent();
-			}else if(e.getCode() == KeyCode.F3) {		//F3 교사선택
+			} else if (e.getCode() == KeyCode.F3) { // F3 교사선택
 				handleTeacher();
-			}else if(e.getCode() == KeyCode.ENTER) {	//로그인 시 엔터 효과
+			} else if (e.getCode() == KeyCode.ENTER) { // 로그인 시 엔터 효과
 				handleLogin(e);
 			}
 		});
-		
+
 	}
 
-	//교사버튼
+	// 교사버튼
 	private void handleTeacher() {
-		this.type=true;
+		this.type = true;
 		System.out.println("교사로 전환");
 	}
 
-	//학생버튼
+	// 학생버튼
 	private void handleStudent() {
-		this.type=false;
+		this.type = false;
 		System.out.println("학생으로 전환");
 	}
-	
-	//로그인버튼
+
+	// 로그인버튼
 	private void handleLogin(Event event) {
 
 		String loginid = id.getText();
@@ -102,33 +113,32 @@ public class LoginController implements Initializable {
 		BasicDto user = bDao.selectOne(new BasicDto(loginid, loginpas, logintype));
 
 		if (user == null) {
-				Alert alert =new Alert(AlertType.INFORMATION);
-				alert.setContentText("로그인 실패: 아이디 혹은 비밀번호가 틀립니다.");
-			    alert.show();
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setContentText("로그인 실패: 아이디 혹은 비밀번호가 틀립니다.");
+			alert.show();
 			return;
-		} 
-		else { // user != null
-			// 로그인한 유저정보 넘겨주기
+		} else { // user != null
+					// 로그인한 유저정보 넘겨주기
 			AppMain.app.setBasic(user);
 			Parent root = null;
 			Stage stage = new Stage();
 
 			if (user.gettype2()) { // 선생님일때 main_teacher.fxml
 				try {
-					//properties를 사용안하면 getClass를 사용해도 예외 발생 안함.......
-//					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_teacher.fxml"));
-					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_teacher.fxml"));
-					stage.setTitle("teacher_main");
+					root = FXMLLoader
+							.load(Class.forName("login.LoginController").getResource("/fxml/main/main_teacher.fxml"));
+					stage.setTitle("과제 제출 프로그램");
+					stage.getIcons().add(new Image("/resources/icon.png"));
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
 
 			} else { // 학생일때 main_student.fxml
-				try { 
-					//properties를 사용안하면 getClass를 사용해도 예외 발생 안함.......
-//					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_student.fxml"));
-					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_student.fxml"));
-					stage.setTitle("student_main");
+				try {
+					root = FXMLLoader
+							.load(Class.forName("login.LoginController").getResource("/fxml/main/main_student.fxml"));
+					stage.setTitle("과제 제출 프로그램");
+					stage.getIcons().add(new Image("/resources/icon.png"));
 				} catch (Exception e2) {
 					System.out.println(e2.getMessage());
 				}
@@ -142,13 +152,12 @@ public class LoginController implements Initializable {
 			((Node) (event.getSource())).getScene().getWindow().hide();
 		}
 	}
-	
-	//회원가입
-	private void popupWindow(ActionEvent event) {
 
+	// 회원가입
+	private void popupWindow(ActionEvent event) {
 		try {
-//	        Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/signup.fxml"));
-			Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/signup.fxml"));
+			Parent parent = FXMLLoader
+					.load(Class.forName("login.LoginController").getResource("/fxml/login/signup.fxml"));
 			Scene scene = new Scene(parent);
 			Stage stage = new Stage();
 			stage.setScene(scene);
@@ -164,11 +173,12 @@ public class LoginController implements Initializable {
 			System.out.println("회원가입 호출 실패");
 		}
 	}
-	//아이디 찾기
+
+	// 아이디 찾기
 	private void handleidsearch(ActionEvent e) {
 		try {
-//			Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_id.fxml"));
-			Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/search_id.fxml"));
+			Parent parent = FXMLLoader
+					.load(Class.forName("login.LoginController").getResource("/fxml/login/search_id.fxml"));
 			Scene scene = new Scene(parent);
 			Stage stage = new Stage();
 			stage.setScene(scene);
@@ -185,13 +195,13 @@ public class LoginController implements Initializable {
 		}
 
 	}
-	
-	//비밀번호 찾기
+
+	// 비밀번호 찾기
 	private void handlepasssearch(ActionEvent e) {
-		
+
 		try {
-//			Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password.fxml"));
-	        Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/search_password.fxml"));
+			Parent parent = FXMLLoader
+					.load(Class.forName("login.LoginController").getResource("/fxml/login/search_password.fxml"));
 			Scene scene = new Scene(parent);
 			Stage stage = new Stage();
 			stage.setScene(scene);
