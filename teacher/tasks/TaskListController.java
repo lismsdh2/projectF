@@ -109,7 +109,8 @@ public class TaskListController extends Main_Master_Controller implements Initia
 
 			// fxml 및 컨트롤러 연결
 //			FXMLLoader loader = new FXMLLoader(getClass().getResource("../../fxml/teacher/tasks/TaskCreate.fxml"));
-			FXMLLoader loader = new FXMLLoader(Class.forName("teacher.tasks.TaskListController").getResource("/fxml/teacher/tasks/TaskCreate.fxml"));
+			FXMLLoader loader = new FXMLLoader(Class.forName("teacher.tasks.TaskListController")
+					.getResource("/fxml/teacher/tasks/TaskCreate.fxml"));
 			loader.setController(new TaskCreateController(currentClass));
 			Parent parent = loader.load();
 			stage.setScene(new Scene(parent));
@@ -246,7 +247,8 @@ public class TaskListController extends Main_Master_Controller implements Initia
 
 					// fmxl, controller
 //					FXMLLoader loader = new FXMLLoader( getClass().getResource("../../fxml/teacher/tasks/TaskModify.fxml"));
-					FXMLLoader loader = new FXMLLoader(Class.forName("teacher.tasks.TaskDetailController").getResource("/fxml/teacher/tasks/TaskModify.fxml"));
+					FXMLLoader loader = new FXMLLoader(Class.forName("teacher.tasks.TaskDetailController")
+							.getResource("/fxml/teacher/tasks/TaskModify.fxml"));
 					loader.setController(new TaskModifyController(selectedReportNo));
 					Parent parent = loader.load();
 					stage.setScene(new Scene(parent));

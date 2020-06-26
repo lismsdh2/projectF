@@ -100,11 +100,10 @@ public class TaskCreateController implements Initializable {
 		comboClassName.setOnAction(e -> handleCombobox());
 
 		// 글자 수 제한
-		txtPerfectScore.textProperty().addListener(Util.textCountLimit(txtPerfectScore, 9));
-		
-		// 글자 수 표시
 		Util.textLengthLimit(txtTitle, lblTitleCount, 20);
 		Util.textLengthLimit(txtDesc, lblDescCount, 5000);
+
+		// 글자 수 표시
 
 		// 점수필드 - 숫자만 입력할 수 있도록 제한
 		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));

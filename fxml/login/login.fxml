@@ -6,7 +6,8 @@
 
 <AnchorPane prefHeight="450.0" prefWidth="330.0"
 			xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-			fx:id="anchorPane" fx:controller="login.LoginController">
+			fx:id="anchorPane" fx:controller="login.LoginController"
+			stylesheets = "@../../css/login/login.css">
 			
    <children>
       <Button id="student" fx:id="student" layoutX="15.0" layoutY="35.0" prefHeight="36.0" prefWidth="150.0" text="학생 " />

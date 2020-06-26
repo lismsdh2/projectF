@@ -106,7 +106,6 @@ public class LoginController implements Initializable {
 
 			if (user.gettype2()) { // 선생님일때 main_teacher.fxml
 				try {
-					//properties를 사용안하면 getClass를 사용해도 예외 발생 안함.......
 //					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_teacher.fxml"));
 					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_teacher.fxml"));
 					stage.setTitle("teacher_main");
@@ -115,8 +114,7 @@ public class LoginController implements Initializable {
 				}
 
 			} else { // 학생일때 main_student.fxml
-				try { 
-					//properties를 사용안하면 getClass를 사용해도 예외 발생 안함.......
+				try {
 //					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_student.fxml"));
 					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_student.fxml"));
 					stage.setTitle("student_main");
@@ -125,6 +123,12 @@ public class LoginController implements Initializable {
 				}
 			}
 
+			try {
+				root.getStylesheets().add(Class.forName("login.LoginController").getResource("/css/main/main.css").toExternalForm());
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			stage.setScene(new Scene(root));
 			stage.setResizable(false);
 			stage.show();

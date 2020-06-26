@@ -80,8 +80,7 @@ public class TaskModifyController implements Initializable {
 		//입력길이 제한
 		Util.textLengthLimit(txtTitle, lblTitle, 20);
 		Util.textLengthLimit(txtDesc, lblDesc, 5000);
-		txtPerfectScore.textProperty().addListener(Util.textCountLimit(txtPerfectScore, 9));
-		
+
 		// 숫자만 입력할 수 있도록 제한
 		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));
 

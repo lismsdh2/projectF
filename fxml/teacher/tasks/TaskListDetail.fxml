@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="taskDetailListPane" prefHeight="668.0" prefWidth="1024.0" style="-fx-background-color: #F4F4F4;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="teacher.tasks.TaskDetailController">
+<AnchorPane fx:id="taskDetailListPane" prefHeight="668.0" prefWidth="1024.0" stylesheets="@../../../css/teacher/table.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="teacher.tasks.TaskDetailController">
    <children>
      
       <TableView fx:id="tblView" layoutX="15.0" layoutY="40.0" prefHeight="520.0" prefWidth="994.0">
@@ -36,7 +36,7 @@
       </HBox>
       <ComboBox fx:id="comboTaskList" layoutX="810.0" layoutY="13.0" prefHeight="23.0" prefWidth="200.0" />
     
-      <GridPane layoutX="512.0" layoutY="570.0">
+      <GridPane layoutX="512.0" layoutY="596.0">
          <children>
             <ProgressBar fx:id="pbarSubmitRate" prefWidth="200.0" progress="0.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
             <Label text="* 과제 제출율 : " />
@@ -52,7 +52,7 @@
          </rowConstraints>
       </GridPane>
      
-      <GridPane layoutX="810.0" layoutY="570.0">
+      <GridPane layoutX="810.0" layoutY="596.0">
          <children>
             <ProgressBar fx:id="pbarAvg" prefWidth="200.0" progress="0.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
             <Label text="* 과제 평균점수 : " />

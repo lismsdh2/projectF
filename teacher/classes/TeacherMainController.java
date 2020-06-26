@@ -4,6 +4,7 @@
  * 설명 : 선생님메인컨트롤러(강의리스트출력, 강의만들기, 강의수정및삭제, 강의검색)
  */
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -115,8 +116,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 			if (selectedRowClass != null && selectedRowClass.getTeacherId().contentEquals(userid)) {
 				System.out.println("과제리스트로 이동");
 				AppMain.app.getBasic().setClass_no(selectedRowClass.getClassNo());
-//				Navigator.loadPages("../fxml/teacher/tasks/TaskList.fxml");
-				Navigator.loadPages("/fxml/teacher/tasks/TaskList.fxml");
+				Navigator.loadPages("../fxml/teacher/tasks/TaskList.fxml");
 				Navigator.loadSubMenu(Navigator.TEACHER_TASK_MENU);
 			}
 		}
@@ -182,16 +182,13 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 						dialog.setTitle("강의수정");
 										
 						try {
-//							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/update_class.fxml"));
-							Parent parent = FXMLLoader.load(Class.forName("teacher.classes.TeacherMainController").getResource("/fxml/teacher/classes/update_class.fxml"));
+							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/update_class.fxml"));
 							ClassDto class1 = cDao.selectClassOne(selectedClassNo);
 							
 							TextField txtClassName = (TextField) parent.lookup("#className");
-							Label lblClassName = (Label) parent.lookup("#lblclassname");
 							Label txtTeacherName = (Label) parent.lookup("#teacherName");
 							txtTeacherName.setText(username);
 							TextArea txtDescription = (TextArea) parent.lookup("#description");
-							Label lblClassDesc = (Label) parent.lookup("#lblclassdesc");
 							DatePicker localDateStartDate = (DatePicker) parent.lookup("#startDate");
 							DatePicker localDateEndDate = (DatePicker) parent.lookup("#endDate");
 							Label txtCurrentStudent = (Label) parent.lookup("#currentStudent");
@@ -200,10 +197,9 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							Button btnCancel = (Button) parent.lookup("#cancel");
 							
 							//글자수 입력제한
+							txtClassName.textProperty().addListener(Util.textCountLimit(txtClassName, 20));
 							txtLimitStudent.textProperty().addListener(Util.textCountLimit(txtLimitStudent, 9));
-							//라벨에 글자수 표시
-							Util.textLengthLimit(txtClassName, lblClassName, 20);
-							Util.textLengthLimit(txtDescription, lblClassDesc, 5000);
+							txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 5000));
 							//숫자만 입력가능
 							txtLimitStudent.textProperty().addListener(Util.numberOnlyListener(txtLimitStudent));
 							//상세정보 줄바꿈
@@ -305,7 +301,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							dialog.setScene(scene);
 							dialog.setResizable(false);
 							dialog.show();
-						} catch (Exception e1) {
+						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
 					});
@@ -361,8 +357,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 						dialog.setTitle("강의상세보기");
 						
 						try {
-//							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/detail_class.fxml"));
-							Parent parent = FXMLLoader.load(Class.forName("teacher.classes.TeacherMainController").getResource("/fxml/teacher/classes/detail_class.fxml"));
+							Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/detail_class.fxml"));
 							ClassDto classDto = cDao.selectClassOne(selectedClassNo);
 									
 							Label txtClassName = (Label) parent.lookup("#className");
@@ -393,7 +388,7 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 							dialog.setScene(scene);
 							dialog.setResizable(false);
 							dialog.show();
-						} catch (Exception e1) {
+						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
 					});
@@ -413,25 +408,21 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		dialog.initOwner(teacherMain.getScene().getWindow());
 		dialog.setTitle("강의추가");
 						
-//		Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/add_class.fxml"));
-		Parent parent = FXMLLoader.load(Class.forName("teacher.classes.TeacherMainController").getResource("/fxml/teacher/classes/add_class.fxml"));
+		Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/add_class.fxml"));
 		
 		TextField txtClassName = (TextField) parent.lookup("#className");
-		Label lblClassName = (Label) parent.lookup("#lblclassname");
 		Label txtTeacherName = (Label) parent.lookup("#teacherName");
 		txtTeacherName.setText(username);
 		TextArea txtDescription = (TextArea) parent.lookup("#description");
-		Label lblClassDesc = (Label) parent.lookup("#lblclassdesc");
 		DatePicker localDateStartDate = (DatePicker) parent.lookup("#startDate");
 		DatePicker localDateEndDate = (DatePicker) parent.lookup("#endDate");
 		TextField txtLimitStudent = (TextField) parent.lookup("#limitStudent");
 		Button btnSave = (Button) parent.lookup("#save");
 		
 		//글자수 입력제한
+		txtClassName.textProperty().addListener(Util.textCountLimit(txtClassName, 20));
 		txtLimitStudent.textProperty().addListener(Util.textCountLimit(txtLimitStudent, 9));
-		//라벨에 글자수 표시
-		Util.textLengthLimit(txtClassName, lblClassName, 20);
-		Util.textLengthLimit(txtDescription, lblClassDesc, 5000);
+		txtDescription.textProperty().addListener(Util.textCountLimit(txtDescription, 5000));
 		//숫자만 입력가능
 		txtLimitStudent.textProperty().addListener(Util.numberOnlyListener(txtLimitStudent));
 		//상세정보 줄바꿈

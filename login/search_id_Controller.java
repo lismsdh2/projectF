@@ -26,8 +26,7 @@ import util.Util;
 public class search_id_Controller implements Initializable {
 
 	@FXML private TextField namefield;
-	@FXML private TextField emailfield1;
-	@FXML private TextField emailfield2;
+	@FXML private TextField emailfield;
 	@FXML private TextField certificationfield;
 	@FXML private TextField phonefield;
 	@FXML private Button done;
@@ -59,21 +58,18 @@ public class search_id_Controller implements Initializable {
 		cancle.setOnAction(e -> handlecancle(e));
 		student.setOnAction(e -> handlestudent(e));
 		teacher.setOnAction(e -> handleteacher(e));
-		email2.setOnAction(e -> handleCombobox());
-		emailfield2.setEditable(false);
 		certificationfield.setVisible(false);
 		lblCertificationWarning.setVisible(false);
-		phonefield.textProperty().addListener(Util.textCountLimit(phonefield, 11));
 		
 		// textfield warning label
 		Util.showWarningLabel(namefield, lblNameWarning);
 		Util.showWarningLabel(phonefield, lblPhoneWarning);
 
-		// 이메일 텍스트필드, 콤보박스 모두 입력 안될 시 라벨
 		BooleanBinding isEmailEmpty = Bindings.createBooleanBinding(
-				// 이메일 텍스트필드1,2 비었으면 true 리턴
-				() -> (emailfield1.getText().length() == 0 || emailfield2.getText().length() ==0 ), emailfield1.textProperty(),
-				emailfield2.textProperty());
+				// 이메일 텍스트필드 비었거나 / 콤보박스 선택 안되면 true 리턴
+				() -> (emailfield.getText().length() == 0 || email2.getValue() == null), emailfield.textProperty(),
+				email2.valueProperty());
+
 		lblMailWarning.visibleProperty().bind(isEmailEmpty); // true면 보이고 false면 lblWarning 안보이게
 
 		// 전화번호 필드에 숫자만 오도록 제한
@@ -87,28 +83,17 @@ public class search_id_Controller implements Initializable {
 
 	}
 	
-	//이메일 콤보박스 선택
-	public void handleCombobox() {
-		if(email2.getValue().equals("직접입력")) {
-			emailfield2.setEditable(true);
-			emailfield2.setText("");
-		} else {
-			emailfield2.setEditable(false);
-			String emailField2 = email2.getValue();	
-			emailfield2.setText(emailField2);
-		}
-	}
-	
 	//이메일 인증
 	private void handleEmailCheck() {
 		
-		if(this.emailfield1.getText().length() != 0 && this.emailfield2.getText().length() != 0) {
+		if(this.emailfield.getText().length() != 0 &&
+		   this.email2.getSelectionModel().getSelectedItem() != null) {
 			
 			String txt = "인증메일 보내는 중";
 			Alert waitAlert = Util.showAlert("", txt, AlertType.NONE);
 			waitAlert.show();
 
-			String address = emailfield1.getText() + "@" + emailfield2.getText();
+			String address = emailfield.getText() + "@" + this.email2.getSelectionModel().getSelectedItem();
 				
 			//인증번호 입력칸 생성
 			this.certificationfield.setVisible(true);
@@ -189,27 +174,33 @@ public class search_id_Controller implements Initializable {
 	}
 	
 	public void handledone(ActionEvent e) {
+		
 		try {
 			String name = namefield.getText().trim();
 			String phone = phonefield.getText().trim();
-			String email = emailfield1.getText().trim() + "@" + emailfield2.getText().trim();
+			String email = emailfield.getText().trim() + "@" + (String) email2.getValue();
 			
 			if(name.length() == 0) {
-				Util.showAlert("입력오류", "이름을 입력해 주세요", AlertType.ERROR);
-				throw new Exception();
+				lblNameWarning.setVisible(true);
+				System.out.println("이름 미입력");
 			}
-			if(emailfield1.getText().length() == 0 || emailfield2.getText().length() == 0) {
-				Util.showAlert("입력오류", "이메일을 입력해 주세요", AlertType.ERROR);
-				throw new Exception();
+			if(email.length() == 0 || email2.getValue() == null) {
+				lblMailWarning.setVisible(true);
+				System.out.println("메일 미입력");
 			}
 			if (phone.length() == 0 ) {
-				Util.showAlert("입력오류", "전화번호를 입력해 주세요", AlertType.ERROR);
+				lblPhoneWarning.setVisible(true);
+				System.out.println("연락처 미입력");
+			}
+			if(name.length() == 0 || email.length() == 0
+					|| email2.getValue() == null || phone.length() ==0) {
+				
 				throw new Exception();
 			}
-			
 			
 			//인증메일
 			if(!checkMail) {
+				
 				Alert alert = Util.showAlert("", "인증메일발송버튼을 눌러 주세요.", AlertType.INFORMATION);
 				alert.showAndWait();
 			    throw new Exception();
@@ -236,7 +227,6 @@ public class search_id_Controller implements Initializable {
 
 		} catch (Exception ex) {
 			System.out.println("아이디 찾기 실패");
-			
 //         ex.printStackTrace();
 		}
 	}

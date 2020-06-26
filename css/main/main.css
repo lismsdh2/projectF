@@ -1,0 +1,26 @@
+/*배경색 */
+.root {
+	-fx-background-color: #FFFFFF;
+}
+
+/*메인버튼 */
+.mainBtn {
+-fx-background-color: #FFFFFF;
+-fx-text-fill: #000000;
+}
+
+.mainBtn:hover {
+-fx-background-color: #AAAAAA;
+-fx-text-fill: #000000;
+}
+
+.mainBtn:pressed {
+-fx-background-color: #808080;
+-fx-text-fill: #000000;
+}
+
+.mainBtn:selected {
+-fx-background-color: #B41D05;
+-fx-text-fill: #000000;
+}
+
