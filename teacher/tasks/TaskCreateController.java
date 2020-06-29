@@ -108,7 +108,10 @@ public class TaskCreateController implements Initializable {
 
 		// 점수필드 - 숫자만 입력할 수 있도록 제한
 		txtPerfectScore.textProperty().addListener(Util.numberOnlyListener(txtPerfectScore));
-
+		
+		// 점수필드 - 글자수 제한
+		txtPerfectScore.textProperty().addListener(Util.textCountLimit(txtPerfectScore, 9));
+		
 		// 첨부파일 버튼
 		btnFile.setOnAction(e -> handleAttachedFileBtn());
 
