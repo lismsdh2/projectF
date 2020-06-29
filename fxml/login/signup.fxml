@@ -143,7 +143,7 @@
             <Font size="11.0" />
          </font>
       </Label>
-      <Label fx:id="emailinputlabel" layoutX="102.0" layoutY="443.0" prefHeight="14.0" prefWidth="201.0" style="-fx-background-color: white;" text="*알파벳,숫자,특수문자만 입력가능합니다." textFill="#ee0202">
+      <Label fx:id="emailinputlabel" layoutX="102.0" layoutY="443.0" prefHeight="14.0" prefWidth="270.0" style="-fx-background-color: white;" text="*알파벳,숫자,특수문자만 입력가능합니다." textFill="#ee0202">
          <font>
             <Font size="11.0" />
          </font>
