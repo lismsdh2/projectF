@@ -42,5 +42,6 @@
       <Button id="update" fx:id="btnSubmit" layoutX="15.0" layoutY="480.0" prefHeight="30.0" prefWidth="158.5" text="수정" />
       <Label id="pipe" alignment="CENTER" layoutX="173.5" layoutY="480.0" prefHeight="30.0" prefWidth="3.0" text="|" />
       <Button id="cancel" layoutX="178" layoutY="480.0" prefHeight="30.0" prefWidth="158.5" text="취소" />
+      
    </children>
 </AnchorPane>

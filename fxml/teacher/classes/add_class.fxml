@@ -15,6 +15,7 @@
       <!-- 강의명 -->
       <Label layoutX="15.0" layoutY="75.0" prefHeight="30.0" prefWidth="60.0" text="강의명" />
       <TextField id="className" layoutX="80.0" layoutY="75.0" prefHeight="30.0" prefWidth="250.0" />
+      <Label id="lblclassname" alignment="CENTER_RIGHT" layoutX="205.0" layoutY="98.0" prefHeight="15.0" prefWidth="125.0" />
       
       <!-- 강사명 -->
       <Label layoutX="15.0" layoutY="125.0" prefHeight="30.0" prefWidth="60.0" text="강사명" />
@@ -23,6 +24,7 @@
       <!-- 강의설명 -->
       <Label layoutX="15.0" layoutY="175.0" prefHeight="30.0" prefWidth="60.0" text="강의설명" />
       <TextArea id="description" layoutX="80.0" layoutY="175.0" prefHeight="140.0" prefWidth="250.0" />
+      <Label id="lblclassdesc" alignment="CENTER_RIGHT" layoutX="205.0" layoutY="320.0" prefHeight="15.0" prefWidth="125.0" />
       
       <!-- 강의기간 -->
       <Label layoutX="15.0" layoutY="335.0" prefHeight="30.0" prefWidth="60.0" text="강의기간" />
@@ -38,5 +40,6 @@
       <Button id="save" layoutX="15.0" layoutY="480" prefHeight="35.0" prefWidth="158.5" text="등록" />
       <Label id="pipe" alignment="CENTER" layoutX="173.5" layoutY="480" prefHeight="35.0" prefWidth="3.0" text="|" />
       <Button id="cancel" layoutX="178.0" layoutY="480" prefHeight="35.0" prefWidth="158.5" text="취소" />
+      
    </children>
 </AnchorPane>
