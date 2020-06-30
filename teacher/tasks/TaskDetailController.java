@@ -36,6 +36,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import launch.AppMain;
 import main.Main_Master_Controller;
+import util.Util;
 
 /**
  * @author 김지현
@@ -77,6 +78,9 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 	@FXML
 	private ProgressBar pbarAvg;
 
+	@FXML
+	private Button btnExport;
+
 	int taskNo = AppMain.app.getBasic().getTask_no();
 
 	TaskDao tDao = new TaskDao();
@@ -95,6 +99,15 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 
 		// 테이블에 과제별 학생 제출 정보 표시
 		setTableColumns();
+
+		//엑셀 반출 바튼 클릭 시
+		btnExport.setOnAction(e -> {
+			//파일명과 시트명 초기설정
+			String fileName = "["+currentTask.getTcNo()+"]"+currentTask.getTcTitle()+" 제출현황 및 점수";
+			String sheetName = "과제 "+currentTask.getTcNo();
+			
+			Util.excelExport(fileName, sheetName, tblView);
+		});
 
 	}
 
@@ -127,11 +140,11 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 			int selectedNo = Integer
 					.valueOf(selectedCombo.substring(selectedCombo.indexOf("[") + 1, selectedCombo.lastIndexOf("]")));
 			System.out.println(selectedNo);
-			
+
 			// 선택된 과제로 데이터변경
 			taskNo = selectedNo;
 			currentTask = tDao.selectTask(taskNo);
-			
+
 			Platform.runLater(() -> {
 				setLabel();
 			});
@@ -149,16 +162,17 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 		tcMark.setCellValueFactory(new PropertyValueFactory<>("colMarkStatus"));
 		tcBtn.setCellValueFactory(new PropertyValueFactory<>("btnDetail"));
 		tcBtn.setCellFactory(setButton());
-		
-		//cell에 색상 넣어서 강조
+
+		// cell에 색상 넣어서 강조
 		setCellColor(tcSubmitStatus, "N", "Y", "highlightRed");
 		setCellColor(tcMark, "채점 전", "채점 완료", "highlightYellow");
 
 		// 테이블 채우기
 		refreshTable();
 	}
-	
-	private void setCellColor(TableColumn<TaskDetailDto, String> col, String applyCellValue, String defaultCellValue, String styleClass) {
+
+	private void setCellColor(TableColumn<TaskDetailDto, String> col, String applyCellValue, String defaultCellValue,
+			String styleClass) {
 
 		col.setCellFactory(new Callback<TableColumn<TaskDetailDto, String>, TableCell<TaskDetailDto, String>>() {
 
@@ -190,7 +204,6 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 
 		});
 	}
-	
 
 	// 상세보기 컬럼설정
 	private Callback<TableColumn<TaskDetailDto, Boolean>, TableCell<TaskDetailDto, Boolean>> setButton() {
@@ -236,7 +249,8 @@ public class TaskDetailController extends Main_Master_Controller implements Init
 
 					// fmxl, controller
 //					FXMLLoader loader = new FXMLLoader(getClass().getResource("../../fxml/teacher/tasks/TaskMark.fxml"));
-					FXMLLoader loader = new FXMLLoader(Class.forName("teacher.tasks.TaskDetailController").getResource("/fxml/teacher/tasks/TaskMark.fxml"));
+					FXMLLoader loader = new FXMLLoader(Class.forName("teacher.tasks.TaskDetailController")
+							.getResource("/fxml/teacher/tasks/TaskMark.fxml"));
 					loader.setController(new TaskMarkController(selectedTdDto));
 
 					Parent parent = loader.load();

@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="taskDetailListPane" prefHeight="668.0" prefWidth="1024.0" stylesheets="@../../../css/teacher/table.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="teacher.tasks.TaskDetailController">
+<AnchorPane fx:id="taskDetailListPane" prefHeight="668.0" prefWidth="1024.0" stylesheets="@../../../css/teacher/table.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="teacher.tasks.TaskDetailController">
    <children>
      
       <TableView fx:id="tblView" layoutX="15.0" layoutY="40.0" prefHeight="520.0" prefWidth="994.0">
@@ -58,6 +66,7 @@
             <RowConstraints />
          </rowConstraints>
       </GridPane>
+      <Button fx:id="btnExport" layoutX="15.0" layoutY="602.0" mnemonicParsing="false" text="Excel로 내보내기" />
    
    </children>
 </AnchorPane>

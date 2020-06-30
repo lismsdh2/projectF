@@ -1,25 +1,27 @@
+/*작성자 김지현*/
+
 /*배경색 */
 .root {
 	-fx-background-color: #FFFFFF;
 }
 
 /*메인버튼 */
-.mainBtn {
+.button {
 -fx-background-color: #FFFFFF;
 -fx-text-fill: #000000;
 }
 
-.mainBtn:hover {
+.button:hover {
 -fx-background-color: #AAAAAA;
 -fx-text-fill: #000000;
 }
 
-.mainBtn:pressed {
+.button:pressed {
 -fx-background-color: #808080;
 -fx-text-fill: #000000;
 }
 
-.mainBtn:selected {
+.button:selected {
 -fx-background-color: #B41D05;
 -fx-text-fill: #000000;
 }
