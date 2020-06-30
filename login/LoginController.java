@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -115,25 +116,21 @@ public class LoginController implements Initializable {
 
 			if (user.gettype2()) { // 선생님일때 main_teacher.fxml
 				try {
-					//properties를 사용안하면 getClass를 사용해도 예외 발생 안함.......
-//					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_teacher.fxml"));
 					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_teacher.fxml"));
-					stage.setTitle("teacher_main");
+					stage.setTitle("과제제출프로그램");
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
 
 			} else { // 학생일때 main_student.fxml
 				try { 
-					//properties를 사용안하면 getClass를 사용해도 예외 발생 안함.......
-//					root = FXMLLoader.load(getClass().getResource("../fxml/main/main_student.fxml"));
 					root = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/main/main_student.fxml"));
-					stage.setTitle("student_main");
+					stage.setTitle("과제제출프로그램");
 				} catch (Exception e2) {
 					System.out.println(e2.getMessage());
 				}
 			}
-
+			stage.getIcons().add(new Image("/resources/icon.png"));
 			stage.setScene(new Scene(root));
 			stage.setResizable(false);
 			stage.show();
@@ -147,7 +144,6 @@ public class LoginController implements Initializable {
 	private void popupWindow(ActionEvent event) {
 
 		try {
-//	        Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/signup.fxml"));
 			Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/signup.fxml"));
 			Scene scene = new Scene(parent);
 			Stage stage = new Stage();
@@ -167,7 +163,6 @@ public class LoginController implements Initializable {
 	//아이디 찾기
 	private void handleidsearch(ActionEvent e) {
 		try {
-//			Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_id.fxml"));
 			Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/search_id.fxml"));
 			Scene scene = new Scene(parent);
 			Stage stage = new Stage();
@@ -190,7 +185,6 @@ public class LoginController implements Initializable {
 	private void handlepasssearch(ActionEvent e) {
 		
 		try {
-//			Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password.fxml"));
 	        Parent parent = FXMLLoader.load(Class.forName("login.LoginController").getResource("/fxml/login/search_password.fxml"));
 			Scene scene = new Scene(parent);
 			Stage stage = new Stage();
