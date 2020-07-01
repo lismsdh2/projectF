@@ -88,6 +88,7 @@ public class TaskMarkController implements Initializable {
 
 		if (score > selectedDto.getFullscore()) {
 			Util.showAlert("점수 오류", "과제 최고점보다 점수가 클 수는 없습니다.", AlertType.ERROR);
+			return;
 		}
 
 		selectedDto.setAnswer(answer);
@@ -99,6 +100,7 @@ public class TaskMarkController implements Initializable {
 
 	// 첨부파일 다운로드
 	private void handleBtnDownload() {
+		System.out.println("click");
 
 		// 파일 확장자 찾기
 		String fileName = selectedDto.getFilename();
@@ -118,7 +120,8 @@ public class TaskMarkController implements Initializable {
 		fileChooser.setInitialFileName(fileSaveName);
 
 		try {
-			File file = fileChooser.showSaveDialog(anchorPane.getScene().getWindow());
+			File file = fileChooser.showSaveDialog(btnDownload.getScene().getWindow());
+//			File file = fileChooser.showSaveDialog(anchorPane.getScene().getWindow());
 
 			if (file != null) {// 취소하면 null
 
