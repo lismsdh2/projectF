@@ -34,5 +34,7 @@ public class Main_Teacher_Controller extends Main_Master_Controller implements I
 			Navigator.loadSubMenu(Navigator.TEACHER_TASK_MENU);
 			Navigator.loadPages(Navigator.TEACHER_TASK_LIST);
 		});
+		
+		btn3.setOnAction(e->Navigator.loadPages(Navigator.TEACHER_STUDENT_MANAGER));
 	}
 }

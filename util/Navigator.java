@@ -13,6 +13,7 @@ public class Navigator {
 	public static final String TEACHER_CLASS_LIST = "/fxml/teacher/classes/teacher_main.fxml";
 	public static final String TEACHER_TASK_LIST = "/fxml/teacher/tasks/TaskList.fxml";
 	public static final String TEACHER_TASK_DETAIL_LIST = "/fxml/teacher/tasks/TaskListDetail.fxml";
+	public static final String TEACHER_STUDENT_MANAGER = "/fxml/teacher/classes/teacher_main2.fxml";
 
 	//강사-메뉴
 	public static final String TEACHER_CLASS_MENU = "/fxml/teacher/classes/class_menu.fxml";
