@@ -53,7 +53,7 @@ public class Util {
 
 				@Override
 				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					if (!(newValue.matches("\\d*") || newValue.matches("[a-z]*") || newValue.matches("[A-Z]*"))) {
+					if (!(newValue.matches("[\\d||a-z||A-Z]*"))) {
 						textInputControl.setText(newValue.replaceAll("[^\\d||a-z||A-Z]", ""));
 						lbl.setVisible(true);
 					} else {

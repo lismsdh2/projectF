@@ -142,8 +142,7 @@ public class AssignmentPopupController_yes implements Initializable {
 		//질문사항 줄바꿈
 		this.txtQuestion.setWrapText(true);
 		//다운로드할 파일 없을 경우 버튼 비활성화
-		if(this.assign.getAttachedFile() == null) {
-	
+		if(this.lblAttachedFilename.getText() == null) {
 			this.btnDownload.setDisable(true);
 		}
 		//점수책정이되면 제출버튼과 첨부파일 버튼 비활성화

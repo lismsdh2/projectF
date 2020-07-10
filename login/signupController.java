@@ -258,6 +258,8 @@ public class signupController implements Initializable {
 								throw new Exception();
 							} 
 							this.checkCertification = true;
+							emailfield1.setEditable(false);
+							this.timer.cancel();
 							Alert alert = Util.showAlert("", "인증되었습니다.", AlertType.INFORMATION);
 							alert.showAndWait();
 						} catch (Exception e1) { }

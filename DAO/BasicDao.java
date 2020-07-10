@@ -22,7 +22,7 @@ public class BasicDao {
 	private ResultSet rs;
 	private JdbcUtil ju;
 //	private int id_count = 1;
-    private String private_id;
+    private static String private_id;
     private boolean private_type;
 
 
@@ -193,8 +193,8 @@ public class BasicDao {
               
               System.out.println(email);
               
-              this.private_id=id;
-             this.private_type=type;
+              private_id=id;
+              this.private_type=type;
               
               rs = pstmt.executeQuery();
               if (rs.next()) {  
@@ -207,7 +207,7 @@ public class BasicDao {
               if(name.equals(name2)&&email.equals(email2)&&id.equals(id2)) {
                  success="success";
                  try {
-                    Parent parent = FXMLLoader.load(getClass().getResource("../fxml/login/search_password2.fxml"));
+                    Parent parent = FXMLLoader.load(getClass().getResource("/fxml/login/search_password2.fxml"));
                     Scene scene = new Scene(parent);
                     Stage stage = new Stage();
                     stage.setScene(scene);
@@ -243,7 +243,7 @@ public class BasicDao {
 		try {
 			pstmt = connection.prepareStatement(sql2);
 			pstmt.setString(1, pass);
-			pstmt.setString(2, this.private_id);
+			pstmt.setString(2, private_id);
 			pstmt.executeUpdate();
 
 			Alert alert =new Alert(AlertType.INFORMATION);

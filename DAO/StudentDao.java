@@ -23,7 +23,7 @@ public class StudentDao {
 	private PreparedStatement pstmt;
 	private ResultSet rs;
 	private JdbcUtil ju;
-	private int i = 1;
+//	private int i = 1;
 
 
 	// DB연결
@@ -48,20 +48,20 @@ public class StudentDao {
 
 		ObservableList<StudentDto> list = FXCollections.observableArrayList();
 		try {
-			String sql = "select * from class_student where class_no=?";
+			String sql = "select * from class_student where class_no=? order by user_name";
 
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setInt(1, classno);
 
 			ResultSet re = pstmt.executeQuery();
-
+			int i = 1;
 			while (re.next()) {
 				StudentDto st = new StudentDto();
 
-				st.setStNo(re.getInt("class_no"));
+				st.setStNo(i);
 				st.setStTitle(re.getString("user_name"));
 				st.setStDesc(re.getString("student_id"));
-				st.setStFile("sdfsdf");
+//				st.setStFile("sdfsdf");
 //				st.setstRegdate(LocalDate.parse(re.getString("reg_date"), DateTimeFormatter.ISO_DATE));
 
 //				if (re.getString("expire_date") == null) {

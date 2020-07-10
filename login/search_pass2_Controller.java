@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
+import util.Util;
 
 
 public class search_pass2_Controller implements Initializable {
@@ -24,6 +25,13 @@ public class search_pass2_Controller implements Initializable {
 	
 	public void initialize(URL location, ResourceBundle resources) {
 
+	//입력양식 제한
+	passfield.textProperty().addListener(Util.pwListener(passfield,null));
+	repassfield.textProperty().addListener(Util.pwListener(repassfield,null));
+	//글자수 제한
+	passfield.textProperty().addListener(Util.textCountLimit(passfield, 20));
+	repassfield.textProperty().addListener(Util.textCountLimit(repassfield, 20));
+	
 	done.setOnAction(e->handledone(e));
 	cancle.setOnAction(e->handlecancle(e));
 			

@@ -65,7 +65,7 @@ public class StudentManger extends Main_Master_Controller implements Initializab
 		stNo.setCellValueFactory(new PropertyValueFactory<>("stNo"));
 		stTitle.setCellValueFactory(new PropertyValueFactory<>("stTitle"));
 		stDesc.setCellValueFactory(new PropertyValueFactory<>("stDesc"));
-		stFile.setCellValueFactory(new PropertyValueFactory<>("stFile"));
+//		stFile.setCellValueFactory(new PropertyValueFactory<>("stFile"));
 		
 		this.tblViewReport.setItems(this.list);
 		// 테이블 채우기

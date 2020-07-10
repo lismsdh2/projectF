@@ -200,6 +200,8 @@ public class search_pass_Controller implements Initializable {
 						return;
 					}
 					this.checkCertification = true;
+					emailfield1.setEditable(false);
+					this.timer.cancel();
 					Alert alert = Util.showAlert("", "인증되었습니다.", AlertType.INFORMATION);
 					certificationNum = null;
 					btnSendMail.setText("인증메일보내기");

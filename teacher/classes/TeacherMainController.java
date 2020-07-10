@@ -412,8 +412,9 @@ public class TeacherMainController extends Main_Master_Controller implements Ini
 		dialog.initModality(Modality.WINDOW_MODAL);
 		dialog.initOwner(teacherMain.getScene().getWindow());
 		dialog.setTitle("강의추가");
-						
-		Parent parent = FXMLLoader.load(getClass().getResource("../../fxml/teacher/classes/add_class.fxml"));
+		
+		Parent parent = FXMLLoader.load(Class.forName("teacher.classes.TeacherMainController").getResource("/fxml/teacher/classes/add_class.fxml"));
+		//Parent parent = FXMLLoader.load(getClass().getResource("/../fxml/teacher/classes/add_class.fxml"));
 		
 		TextField txtClassName = (TextField) parent.lookup("#className");
 		Label lblClassName = (Label) parent.lookup("#lblclassname");

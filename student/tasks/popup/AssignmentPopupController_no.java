@@ -145,8 +145,7 @@ public class AssignmentPopupController_no implements Initializable {
 		//질문사항 줄바꿈
 		this.txtQuestion.setWrapText(true);
 		//다운로드할 파일 없을 경우 버튼 비활성화
-		if(this.assign.getAttachedFile() == null) {
-
+		if(this.lblAttachedFilename.getText() == null) {
 			this.btnDownload.setDisable(true);
 		}
 		//강의기간 아닐 때 제출버튼활성화
@@ -160,10 +159,12 @@ public class AssignmentPopupController_no implements Initializable {
 		
 		Date start_date = assign.getStart_date();
 		Date end_date = assign.getEnd_date();
-		
+		System.out.println(today);
+		System.out.println(start_date);
+		System.out.println(end_date);
 		int sdDiff = today.compareTo(start_date);
 		int edDiff = today.compareTo(end_date);
-		
+		System.out.println(sdDiff + " " + edDiff);
 		if((sdDiff ==1 && edDiff ==1) || (sdDiff ==-1 && edDiff ==-1) ) {
 			
 			this.btnSubmit.setDisable(true);
@@ -171,11 +172,11 @@ public class AssignmentPopupController_no implements Initializable {
 			this.btnSubmit.setDisable(false);
 		}
 		//점수가 책정되어있으면 제출 버튼 비활성화
-		if(this.assign.getCheckTask()) {
-			this.btnSubmit.setDisable(true);
-		} else {
-			this.btnSubmit.setDisable(false);
-		}
+//		if(this.assign.getCheckTask()) {
+//			this.btnSubmit.setDisable(true);
+//		} else {
+//			this.btnSubmit.setDisable(false);
+//		}
 	}
 	
 	//참고파일 다운로드 버튼

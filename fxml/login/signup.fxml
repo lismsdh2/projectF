@@ -148,5 +148,6 @@
             <Font size="11.0" />
          </font>
       </Label>
+      <Label layoutX="270.0" layoutY="596.0" text="-" />
    </children>
 </AnchorPane>

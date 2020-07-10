@@ -11,7 +11,7 @@
 		<TableView fx:id="classTableView" layoutX="15.0" layoutY="40.0" prefHeight="520.0" prefWidth="994.0">
 			<columns>
 				<TableColumn fx:id="tcClassNo" prefWidth="70.0" text="NO." />
-				<TableColumn fx:id="tcClassName" prefWidth="270.0" text="아 하느님 제발 " />
+				<TableColumn fx:id="tcClassName" prefWidth="270.0" text="강의명" />
 				<TableColumn fx:id="tcTeacherName" prefWidth="89.0" text="강사명" />
 				<TableColumn fx:id="tcStartDate" prefWidth="115.0" text="시작일" />
 				<TableColumn fx:id="tcEndDate" prefWidth="115.0" text="종료일" />
